@@ -17,6 +17,8 @@ var lesshint = require('gulp-lesshint');
 var autoprefixer = require('gulp-autoprefixer');
 var templateCache = require('gulp-angular-templatecache');
 
+require('gulp-release-tasks')(gulp);
+
 var config = {
 	applicationUrl : 'http://localhost:3000',
 	mainPath : './src/',

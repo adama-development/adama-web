@@ -29,10 +29,10 @@ Application is available on http://localhost:9000.
 
 Before release, don't forget to do a full build in order to validate all code base !
 
-	grunt
+	gulp clean css js --type production
 
 The release process tag the source control and update project version :
 
-	grunt release
+	gulp tag
 
-The project use [grunt-release](https://github.com/geddski/grunt-release) for its versionning an tag process.
+The project use [gulp-release-tasks](https://www.npmjs.com/package/gulp-release-tasks) for its versionning an tag process.
