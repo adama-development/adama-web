@@ -1,7 +1,7 @@
 /*jshint bitwise: false*/
 'use strict';
 
-angular.module('adama-toolkit').service('Base64', function() {
+angular.module('adama-web').service('Base64', function() {
 	var keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 	this.encode = function(input) {
 		var output = '';

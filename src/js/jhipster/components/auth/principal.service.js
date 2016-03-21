@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit')
+angular.module('adama-web')
 	.factory('Principal', function Principal($q, Account) {
 		var _identity;
 		var _authenticated = false;

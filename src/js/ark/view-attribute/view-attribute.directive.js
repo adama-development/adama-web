@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('adama-toolkit').directive('viewAttribute', function() {
+angular.module('adama-web').directive('viewAttribute', function() {
 	return {
-		templateUrl: 'adama-toolkit/ark/view-attribute/view-attribute.html',
+		templateUrl: 'adama-web/ark/view-attribute/view-attribute.html',
 		restrict: 'E',
 		transclude: true,
 		scope: {},

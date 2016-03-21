@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').directive('dsPrincipalIdentity', function($parse, Principal) {
+angular.module('adama-web').directive('dsPrincipalIdentity', function($parse, Principal) {
 	return {
 		scope: false,
 		link: function(scope, element, attrs) {

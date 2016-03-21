@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('adama-toolkit').directive('btnCreate', function() {
+angular.module('adama-web').directive('btnCreate', function() {
 	return {
-		templateUrl: 'adama-toolkit/crud/btn-create.html',
+		templateUrl: 'adama-web/crud/btn-create.html',
 		restrict: 'E'
 	};
 });

@@ -1,9 +1,9 @@
 'use strict';
 
-angular.module('adama-toolkit').config(function($stateProvider) {
+angular.module('adama-web').config(function($stateProvider) {
 	$stateProvider.state('app.personal.password', {
 		url: '/password',
-		templateUrl: 'adama-toolkit/account/password/password.html',
+		templateUrl: 'adama-web/account/password/password.html',
 		controller: 'PasswordCtrl',
 		controllerAs: 'ctrl',
 		data: {
@@ -12,7 +12,7 @@ angular.module('adama-toolkit').config(function($stateProvider) {
 	});
 });
 
-angular.module('adama-toolkit').config(function($translateProvider) {
+angular.module('adama-web').config(function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'ACCOUNT_PASSWORD': 'Modifier mon mot de passe',
 		'ACCOUNT_PASSWORD_TITLE': 'Modifier mon mot de passe',

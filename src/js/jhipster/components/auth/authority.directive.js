@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').directive('hasAnyAuthority', ['Principal', function(Principal) {
+angular.module('adama-web').directive('hasAnyAuthority', ['Principal', function(Principal) {
 	return {
 		restrict: 'A',
 		link: function(scope, element, attrs) {

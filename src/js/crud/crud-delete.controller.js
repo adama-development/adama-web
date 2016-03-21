@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').controller('CrudDeleteCtrl', function($scope, entity, AlertService) {
+angular.module('adama-web').controller('CrudDeleteCtrl', function($scope, entity, AlertService) {
 	var ctrl = this;
 	ctrl.entity = entity;
 	ctrl.dismiss = function() {

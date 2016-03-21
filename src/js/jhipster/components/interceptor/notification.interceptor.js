@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').factory('notificationInterceptor', function($q, AlertService, jHipsterConstant) {
+angular.module('adama-web').factory('notificationInterceptor', function($q, AlertService, jHipsterConstant) {
 	return {
 		response: function(response) {
 			var alertKey = response.headers('X-' + jHipsterConstant.appModule + '-alert');

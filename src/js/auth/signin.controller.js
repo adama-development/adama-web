@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').controller('SigninCtrl', function($rootScope, $state, Auth) {
+angular.module('adama-web').controller('SigninCtrl', function($rootScope, $state, Auth) {
 	var ctrl = this;
 	ctrl.signin = function(userName, userPassword) {
 		ctrl.authenticationError = false;

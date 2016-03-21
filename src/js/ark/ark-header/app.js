@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').config(function($translateProvider) {
+angular.module('adama-web').config(function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'TOGGLE_NAVIGATION': 'Navigation',
 		'USERINFO_PROFILE': 'Profil',

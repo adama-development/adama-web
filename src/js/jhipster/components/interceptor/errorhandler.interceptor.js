@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').factory('errorHandlerInterceptor', function($q, $rootScope, jHipsterConstant) {
+angular.module('adama-web').factory('errorHandlerInterceptor', function($q, $rootScope, jHipsterConstant) {
 	return {
 		'responseError': function(response) {
 			if (!(response.status === 401 && response.data.path.indexOf('/api/account') === 0)) {

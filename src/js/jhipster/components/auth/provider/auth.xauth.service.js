@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').factory('AuthServerProvider', function loginService($http, localStorageService, Base64, jHipsterConstant) {
+angular.module('adama-web').factory('AuthServerProvider', function loginService($http, localStorageService, Base64, jHipsterConstant) {
 	return {
 		login: function(credentials) {
 			var data = 'username=' + encodeURIComponent(credentials.username) + '&password=' + encodeURIComponent(credentials.password);

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').directive('crudActionDropdown', function() {
+angular.module('adama-web').directive('crudActionDropdown', function() {
 	return {
 		scope: {},
 		bindToController: {
@@ -8,7 +8,7 @@ angular.module('adama-toolkit').directive('crudActionDropdown', function() {
 		},
 		controller: function() {},
 		controllerAs: 'ctrl',
-		templateUrl: 'adama-toolkit/crud/crud-action-dropdown.html',
+		templateUrl: 'adama-web/crud/crud-action-dropdown.html',
 		restrict: 'E'
 	};
 });

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').config(function($translateProvider) {
+angular.module('adama-web').config(function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'CRUD_BACK_TO_LIST': 'Retour à la liste',
 		'CRUD_CANCEL': 'Annuler',

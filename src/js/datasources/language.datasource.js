@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').directive('dsLanguage', function($parse, language) {
+angular.module('adama-web').directive('dsLanguage', function($parse, language) {
 	return {
 		scope: false,
 		link: function(scope, element, attrs) {

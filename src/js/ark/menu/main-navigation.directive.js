@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('adama-toolkit').directive('mainNavigation', function() {
+angular.module('adama-web').directive('mainNavigation', function() {
 	return {
-		templateUrl: 'adama-toolkit/ark/menu/main-navigation.html',
+		templateUrl: 'adama-web/ark/menu/main-navigation.html',
 		restrict: 'E',
 		scope: {},
 		bindToController: {},

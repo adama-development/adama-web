@@ -1,6 +1,6 @@
 	'use strict';
 
-angular.module('adama-toolkit').config(function($provide) {
+angular.module('adama-web').config(function($provide) {
 	$provide.decorator('$httpBackend', function($delegate) {
 		var proxy = function(method, url, data, callback, headers) {
 			var interceptor = function() {

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').provider('language', function() {
+angular.module('adama-web').provider('language', function() {
 	var languages = ['en', 'fr'];
 	var selectorData = [{
 		code: 'en',

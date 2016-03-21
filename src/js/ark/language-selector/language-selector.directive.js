@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('adama-toolkit').directive('languageSelector', function() {
+angular.module('adama-web').directive('languageSelector', function() {
 	return {
-		templateUrl: 'adama-toolkit/ark/language-selector/language-selector.html',
+		templateUrl: 'adama-web/ark/language-selector/language-selector.html',
 		restrict: 'E',
 		scope: {},
 		bindToController: {},

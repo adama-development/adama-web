@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').directive('lazyControl', function($rootScope, $filter) {
+angular.module('adama-web').directive('lazyControl', function($rootScope, $filter) {
 	var translateFilter = $filter('translate');
 	return {
 		link: function postLink(scope, element, attrs) {

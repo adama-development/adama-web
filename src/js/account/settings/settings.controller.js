@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').controller('SettingsCtrl', function(Principal, Auth, language, AlertService, $translate) {
+angular.module('adama-web').controller('SettingsCtrl', function(Principal, Auth, language, AlertService, $translate) {
 	var ctrl = this;
 	var copyAccount = function(account) {
 		// Store the "settings account" in a separate variable, and not in the

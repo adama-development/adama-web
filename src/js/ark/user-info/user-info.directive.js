@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('adama-toolkit').directive('userInfo', function() {
+angular.module('adama-web').directive('userInfo', function() {
 	return {
-		templateUrl: 'adama-toolkit/ark/user-info/user-info.html',
+		templateUrl: 'adama-web/ark/user-info/user-info.html',
 		restrict: 'E',
 		scope: {},
 		bindToController: {},

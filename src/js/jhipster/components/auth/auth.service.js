@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit')
+angular.module('adama-web')
 	.factory('Auth', function Auth($rootScope, $state, $q, $translate, Principal, AuthServerProvider, Account, Password, PasswordResetInit, PasswordResetFinish) {
 		return {
 			login: function(credentials, callback) {

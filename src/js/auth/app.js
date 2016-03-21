@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').config(function($stateProvider) {
+angular.module('adama-web').config(function($stateProvider) {
 	$stateProvider.state('auth', {
 		abstract: true,
 		url: '/auth',
@@ -11,7 +11,7 @@ angular.module('adama-toolkit').config(function($stateProvider) {
 
 	$stateProvider.state('auth.signin', {
 		url: '/',
-		templateUrl: 'adama-toolkit/auth/signin.html',
+		templateUrl: 'adama-web/auth/signin.html',
 		controller: 'SigninCtrl',
 		controllerAs: 'ctrl',
 		data: {
@@ -22,7 +22,7 @@ angular.module('adama-toolkit').config(function($stateProvider) {
 
 	$stateProvider.state('auth.recoverPassword', {
 		url: '/recoverPassword',
-		templateUrl: 'adama-toolkit/auth/recoverPassword.html',
+		templateUrl: 'adama-web/auth/recoverPassword.html',
 		controller: 'RecoverPasswordCtrl',
 		controllerAs: 'ctrl',
 		data: {
@@ -33,7 +33,7 @@ angular.module('adama-toolkit').config(function($stateProvider) {
 
 	$stateProvider.state('auth.accessDenied', {
 		url: '/accessDenied',
-		templateUrl: 'adama-toolkit/auth/accessDenied.html',
+		templateUrl: 'adama-web/auth/accessDenied.html',
 		controller: 'AccessDeniedCtrl',
 		controllerAs: 'ctrl',
 		data: {
@@ -43,7 +43,7 @@ angular.module('adama-toolkit').config(function($stateProvider) {
 	});
 });
 
-angular.module('adama-toolkit').config(function($translateProvider) {
+angular.module('adama-web').config(function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'SIGNIN': 'Identification',
 		'SIGNIN_INTRO': 'Identifiez-vous pour démarrer votre session',

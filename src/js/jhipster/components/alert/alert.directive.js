@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit')
+angular.module('adama-web')
 	.directive('jhAlert', function(AlertService) {
 		return {
 			restrict: 'E',

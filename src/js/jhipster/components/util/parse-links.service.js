@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit')
+angular.module('adama-web')
 	.service('ParseLinks', function() {
 		this.parse = function(header) {
 			if (header.length === 0) {

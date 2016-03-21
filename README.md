@@ -13,8 +13,8 @@ Gulp is a Node application that requires a global insstall :
 
 You have to retrieve the project dependencies in order to make it work :
 
-	git clone git@bitbucket.org:adama/adama_toolkit.git
-	cd adama_toolkit
+	git clone git@bitbucket.org:adama/adama_web.git
+	cd adama_web
 	npm install
 
 Then, you'll need to trigger the development workflow :

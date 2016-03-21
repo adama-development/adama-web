@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('adama-toolkit').directive('selectAll', function() {
+angular.module('adama-web').directive('selectAll', function() {
 	return {
-		templateUrl: 'adama-toolkit/ark/select-all/select-all.html',
+		templateUrl: 'adama-web/ark/select-all/select-all.html',
 		restrict: 'E',
 		scope: {},
 		bindToController: {

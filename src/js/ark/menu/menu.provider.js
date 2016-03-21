@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').provider('menuService', function() {
+angular.module('adama-web').provider('menuService', function() {
 	var menuItems = [];
 
 	this.addItem = function(newItem) {

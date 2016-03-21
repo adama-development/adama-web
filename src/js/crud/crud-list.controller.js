@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').controller('CrudListCtrl', function(EntityGenericResource, NgTableParams) {
+angular.module('adama-web').controller('CrudListCtrl', function(EntityGenericResource, NgTableParams) {
 	// TODO filter search results
 	var ctrl = this;
 

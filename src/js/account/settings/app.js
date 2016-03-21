@@ -1,9 +1,9 @@
 'use strict';
 
-angular.module('adama-toolkit').config(function($stateProvider) {
+angular.module('adama-web').config(function($stateProvider) {
 	$stateProvider.state('app.personal.settings', {
 		url: '/settings',
-		templateUrl: 'adama-toolkit/account/settings/settings.html',
+		templateUrl: 'adama-web/account/settings/settings.html',
 		controller: 'SettingsCtrl',
 		controllerAs: 'ctrl',
 		data: {
@@ -12,7 +12,7 @@ angular.module('adama-toolkit').config(function($stateProvider) {
 	});
 });
 
-angular.module('adama-toolkit').config(function($translateProvider) {
+angular.module('adama-web').config(function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'ACCOUNT_SETTINGS': 'Mon profil',
 		'ACCOUNT_SETTINGS_TITLE': 'Mon profil',

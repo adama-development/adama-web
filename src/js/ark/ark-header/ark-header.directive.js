@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('adama-toolkit').directive('arkHeader', function() {
+angular.module('adama-web').directive('arkHeader', function() {
 	return {
-		templateUrl: 'adama-toolkit/ark/ark-header/ark-header.html',
+		templateUrl: 'adama-web/ark/ark-header/ark-header.html',
 		restrict: 'E',
 		scope: {}
 	};

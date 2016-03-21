@@ -2,5 +2,5 @@
 
 angular.module('adamaDemoApp', [ //
 'ngMockE2E', //
-'adama-toolkit' //
+'adama-web' //
 ]);

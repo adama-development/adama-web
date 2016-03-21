@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit', [ //
+angular.module('adama-web', [ //
 	'ngSanitize', //
 	'ngMessages', //
 	'ui.router', //
@@ -14,11 +14,11 @@ angular.module('adama-toolkit', [ //
 	'angular-loading-bar' //
 ]);
 
-angular.module('adama-toolkit').config(["$urlRouterProvider", function($urlRouterProvider) {
+angular.module('adama-web').config(["$urlRouterProvider", function($urlRouterProvider) {
 	$urlRouterProvider.otherwise('/app/');
 }]);
 
-angular.module('adama-toolkit').run(["$rootScope", function($rootScope) {
+angular.module('adama-web').run(["$rootScope", function($rootScope) {
 	// change body class depending on application main state (app or login)
 	$rootScope.additionalBodyClass = 'sidebar-mini';
 
@@ -31,7 +31,7 @@ angular.module('adama-toolkit').run(["$rootScope", function($rootScope) {
 	});
 }]);
 
-angular.module('adama-toolkit').run(["$rootScope", "appGlobal", function($rootScope, appGlobal) {
+angular.module('adama-web').run(["$rootScope", "appGlobal", function($rootScope, appGlobal) {
 	// change page title depending on current page
 	$rootScope.$on('$stateChangeSuccess', function(event, toState) {
 		if (toState && toState.data && toState.data.pageTitle) {
@@ -40,7 +40,7 @@ angular.module('adama-toolkit').run(["$rootScope", "appGlobal", function($rootSc
 	});
 }]);
 
-angular.module('adama-toolkit').config(["$translateProvider", function($translateProvider) {
+angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
 	$translateProvider.useSanitizeValueStrategy('escapeParameters');
 
 	$translateProvider.useLocalStorage();
@@ -53,7 +53,7 @@ angular.module('adama-toolkit').config(["$translateProvider", function($translat
 	$translateProvider.determinePreferredLanguage();
 }]);
 
-angular.module('adama-toolkit').config(["$stateProvider", function($stateProvider) {
+angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 	$stateProvider.state('app', {
 		abstract: true,
 		url: '/app',
@@ -79,7 +79,7 @@ angular.module('adama-toolkit').config(["$stateProvider", function($stateProvide
 	});
 }]);
 
-angular.module('adama-toolkit').run(["ngTableDefaults", function(ngTableDefaults) {
+angular.module('adama-web').run(["ngTableDefaults", function(ngTableDefaults) {
 	ngTableDefaults.settings = angular.extend({}, ngTableDefaults.settings, {
 		counts: [10, 20, 50]
 	});
@@ -91,7 +91,7 @@ angular.module('adama-toolkit').run(["ngTableDefaults", function(ngTableDefaults
 	});
 }]);
 
-angular.module('adama-toolkit').config(["$translateProvider", function($translateProvider) {
+angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'MENU_CATEGORY_USERS': 'Utilisateurs',
 		'PAGER_RESULT': '{{ total }} entrées',
@@ -111,7 +111,7 @@ angular.module('adama-toolkit').config(["$translateProvider", function($translat
 
 'use strict';
 
-angular.module('adama-toolkit').config(["$stateProvider", function($stateProvider) {
+angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 	$stateProvider.state('app.personal', {
 		abstract: true,
 		url: '/personal',
@@ -123,13 +123,13 @@ angular.module('adama-toolkit').config(["$stateProvider", function($stateProvide
 
 'use strict';
 
-angular.module('adama-toolkit').controller('AccessDeniedCtrl', function() {
+angular.module('adama-web').controller('AccessDeniedCtrl', function() {
 	// nothing to do
 });
 
 'use strict';
 
-angular.module('adama-toolkit').config(["$stateProvider", function($stateProvider) {
+angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 	$stateProvider.state('auth', {
 		abstract: true,
 		url: '/auth',
@@ -140,7 +140,7 @@ angular.module('adama-toolkit').config(["$stateProvider", function($stateProvide
 
 	$stateProvider.state('auth.signin', {
 		url: '/',
-		templateUrl: 'adama-toolkit/auth/signin.html',
+		templateUrl: 'adama-web/auth/signin.html',
 		controller: 'SigninCtrl',
 		controllerAs: 'ctrl',
 		data: {
@@ -151,7 +151,7 @@ angular.module('adama-toolkit').config(["$stateProvider", function($stateProvide
 
 	$stateProvider.state('auth.recoverPassword', {
 		url: '/recoverPassword',
-		templateUrl: 'adama-toolkit/auth/recoverPassword.html',
+		templateUrl: 'adama-web/auth/recoverPassword.html',
 		controller: 'RecoverPasswordCtrl',
 		controllerAs: 'ctrl',
 		data: {
@@ -162,7 +162,7 @@ angular.module('adama-toolkit').config(["$stateProvider", function($stateProvide
 
 	$stateProvider.state('auth.accessDenied', {
 		url: '/accessDenied',
-		templateUrl: 'adama-toolkit/auth/accessDenied.html',
+		templateUrl: 'adama-web/auth/accessDenied.html',
 		controller: 'AccessDeniedCtrl',
 		controllerAs: 'ctrl',
 		data: {
@@ -172,7 +172,7 @@ angular.module('adama-toolkit').config(["$stateProvider", function($stateProvide
 	});
 }]);
 
-angular.module('adama-toolkit').config(["$translateProvider", function($translateProvider) {
+angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'SIGNIN': 'Identification',
 		'SIGNIN_INTRO': 'Identifiez-vous pour démarrer votre session',
@@ -224,7 +224,7 @@ angular.module('adama-toolkit').config(["$translateProvider", function($translat
 
 'use strict';
 
-angular.module('adama-toolkit').controller('RecoverPasswordCtrl', ["Auth", function(Auth) {
+angular.module('adama-web').controller('RecoverPasswordCtrl', ["Auth", function(Auth) {
 	var ctrl = this;
 	ctrl.recover = function(userEmail) {
 		ctrl.recoverSuccess = false;
@@ -247,7 +247,7 @@ angular.module('adama-toolkit').controller('RecoverPasswordCtrl', ["Auth", funct
 
 'use strict';
 
-angular.module('adama-toolkit').controller('SigninCtrl', ["$rootScope", "$state", "Auth", function($rootScope, $state, Auth) {
+angular.module('adama-web').controller('SigninCtrl', ["$rootScope", "$state", "Auth", function($rootScope, $state, Auth) {
 	var ctrl = this;
 	ctrl.signin = function(userName, userPassword) {
 		ctrl.authenticationError = false;
@@ -268,7 +268,7 @@ angular.module('adama-toolkit').controller('SigninCtrl', ["$rootScope", "$state"
 
 'use strict';
 
-angular.module('adama-toolkit').config(["$translateProvider", function($translateProvider) {
+angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'CRUD_BACK_TO_LIST': 'Retour à la liste',
 		'CRUD_CANCEL': 'Annuler',
@@ -322,16 +322,16 @@ angular.module('adama-toolkit').config(["$translateProvider", function($translat
 
 'use strict';
 
-angular.module('adama-toolkit').directive('btnCreate', function() {
+angular.module('adama-web').directive('btnCreate', function() {
 	return {
-		templateUrl: 'adama-toolkit/crud/btn-create.html',
+		templateUrl: 'adama-web/crud/btn-create.html',
 		restrict: 'E'
 	};
 });
 
 'use strict';
 
-angular.module('adama-toolkit').directive('crudActionDropdown', function() {
+angular.module('adama-web').directive('crudActionDropdown', function() {
 	return {
 		scope: {},
 		bindToController: {
@@ -339,14 +339,14 @@ angular.module('adama-toolkit').directive('crudActionDropdown', function() {
 		},
 		controller: function() {},
 		controllerAs: 'ctrl',
-		templateUrl: 'adama-toolkit/crud/crud-action-dropdown.html',
+		templateUrl: 'adama-web/crud/crud-action-dropdown.html',
 		restrict: 'E'
 	};
 });
 
 'use strict';
 
-angular.module('adama-toolkit').controller('CrudDeleteCtrl', ["$scope", "entity", "AlertService", function($scope, entity, AlertService) {
+angular.module('adama-web').controller('CrudDeleteCtrl', ["$scope", "entity", "AlertService", function($scope, entity, AlertService) {
 	var ctrl = this;
 	ctrl.entity = entity;
 	ctrl.dismiss = function() {
@@ -364,7 +364,7 @@ angular.module('adama-toolkit').controller('CrudDeleteCtrl', ["$scope", "entity"
 
 'use strict';
 
-angular.module('adama-toolkit').controller('CrudEditCtrl', ["$scope", "entity", "EntityGenericResource", "AlertService", function($scope, entity, EntityGenericResource, AlertService) {
+angular.module('adama-web').controller('CrudEditCtrl', ["$scope", "entity", "EntityGenericResource", "AlertService", function($scope, entity, EntityGenericResource, AlertService) {
 	var ctrl = this;
 	ctrl.isEdition = !!entity;
 	ctrl.entity = entity;
@@ -391,7 +391,7 @@ angular.module('adama-toolkit').controller('CrudEditCtrl', ["$scope", "entity", 
 
 'use strict';
 
-angular.module('adama-toolkit').controller('CrudListCtrl', ["EntityGenericResource", "NgTableParams", function(EntityGenericResource, NgTableParams) {
+angular.module('adama-web').controller('CrudListCtrl', ["EntityGenericResource", "NgTableParams", function(EntityGenericResource, NgTableParams) {
 	// TODO filter search results
 	var ctrl = this;
 
@@ -426,16 +426,16 @@ angular.module('adama-toolkit').controller('CrudListCtrl', ["EntityGenericResour
 
 'use strict';
 
-angular.module('adama-toolkit').directive('crudSearchField', function() {
+angular.module('adama-web').directive('crudSearchField', function() {
 	return {
-		templateUrl: 'adama-toolkit/crud/crud-search-field.html',
+		templateUrl: 'adama-web/crud/crud-search-field.html',
 		restrict: 'E'
 	};
 });
 
 'use strict';
 
-angular.module('adama-toolkit').controller('CrudViewCtrl', ["$scope", "entity", function($scope, entity) {
+angular.module('adama-web').controller('CrudViewCtrl', ["$scope", "entity", function($scope, entity) {
 	var ctrl = this;
 	ctrl.entity = entity;
 	ctrl.dismiss = function() {
@@ -443,45 +443,38 @@ angular.module('adama-toolkit').controller('CrudViewCtrl', ["$scope", "entity", 
 	};
 }]);
 
+
+
 'use strict';
 
-angular.module('adama-toolkit').directive('modalBtnBackToList', function() {
+angular.module('adama-web').directive('modalBtnCancel', function() {
 	return {
-		templateUrl: 'adama-toolkit/crud/modal-btn-back-to-list.html',
+		templateUrl: 'adama-web/crud/modal-btn-cancel.html',
 		restrict: 'E'
 	};
 });
 
 'use strict';
 
-angular.module('adama-toolkit').directive('modalBtnCancel', function() {
+angular.module('adama-web').directive('modalBtnConfirmDelete', function() {
 	return {
-		templateUrl: 'adama-toolkit/crud/modal-btn-cancel.html',
+		templateUrl: 'adama-web/crud/modal-btn-confirm-delete.html',
 		restrict: 'E'
 	};
 });
 
 'use strict';
 
-angular.module('adama-toolkit').directive('modalBtnConfirmDelete', function() {
+angular.module('adama-web').directive('modalBtnConfirmEdit', function() {
 	return {
-		templateUrl: 'adama-toolkit/crud/modal-btn-confirm-delete.html',
+		templateUrl: 'adama-web/crud/modal-btn-confirm-edit.html',
 		restrict: 'E'
 	};
 });
 
 'use strict';
 
-angular.module('adama-toolkit').directive('modalBtnConfirmEdit', function() {
-	return {
-		templateUrl: 'adama-toolkit/crud/modal-btn-confirm-edit.html',
-		restrict: 'E'
-	};
-});
-
-'use strict';
-
-angular.module('adama-toolkit').directive('dsAuthorities', ["$parse", function($parse) {
+angular.module('adama-web').directive('dsAuthorities', ["$parse", function($parse) {
 	return {
 		scope: false,
 		link: function(scope, element, attrs) {
@@ -493,7 +486,7 @@ angular.module('adama-toolkit').directive('dsAuthorities', ["$parse", function($
 
 'use strict';
 
-angular.module('adama-toolkit').directive('dsLanguage', ["$parse", "language", function($parse, language) {
+angular.module('adama-web').directive('dsLanguage', ["$parse", "language", function($parse, language) {
 	return {
 		scope: false,
 		link: function(scope, element, attrs) {
@@ -506,7 +499,7 @@ angular.module('adama-toolkit').directive('dsLanguage', ["$parse", "language", f
 
 'use strict';
 
-angular.module('adama-toolkit').directive('dsPrincipalIdentity', ["$parse", "Principal", function($parse, Principal) {
+angular.module('adama-web').directive('dsPrincipalIdentity', ["$parse", "Principal", function($parse, Principal) {
 	return {
 		scope: false,
 		link: function(scope, element, attrs) {
@@ -519,7 +512,7 @@ angular.module('adama-toolkit').directive('dsPrincipalIdentity', ["$parse", "Pri
 
 'use strict';
 
-angular.module('adama-toolkit').directive('layoutFix', ["$rootScope", function($rootScope) {
+angular.module('adama-web').directive('layoutFix', ["$rootScope", function($rootScope) {
 	return {
 		scope: {
 			addEvent: '='
@@ -538,7 +531,7 @@ angular.module('adama-toolkit').directive('layoutFix', ["$rootScope", function($
 
 'use strict';
 
-angular.module('adama-toolkit').directive('lazyControl', ["$rootScope", "$filter", function($rootScope, $filter) {
+angular.module('adama-web').directive('lazyControl', ["$rootScope", "$filter", function($rootScope, $filter) {
 	var translateFilter = $filter('translate');
 	return {
 		link: function postLink(scope, element, attrs) {
@@ -570,7 +563,7 @@ angular.module('adama-toolkit').directive('lazyControl', ["$rootScope", "$filter
 
 'use strict';
 
-angular.module('adama-toolkit').run(["$rootScope", "$state", "Principal", "Auth", function($rootScope, $state, Principal, Auth) {
+angular.module('adama-web').run(["$rootScope", "$state", "Principal", "Auth", function($rootScope, $state, Principal, Auth) {
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams) {
 		$rootScope.toState = toState;
 		$rootScope.toStateParams = toStateParams;
@@ -600,7 +593,7 @@ angular.module('adama-toolkit').run(["$rootScope", "$state", "Principal", "Auth"
 	};
 }]);
 
-angular.module('adama-toolkit').config(["$httpProvider", function($httpProvider) {
+angular.module('adama-web').config(["$httpProvider", function($httpProvider) {
 	$httpProvider.interceptors.push('errorHandlerInterceptor');
 	$httpProvider.interceptors.push('authExpiredInterceptor');
 	$httpProvider.interceptors.push('authInterceptor');
@@ -609,14 +602,14 @@ angular.module('adama-toolkit').config(["$httpProvider", function($httpProvider)
 
 'use strict';
 
-angular.module('adama-toolkit').constant('jHipsterConstant', {
+angular.module('adama-web').constant('jHipsterConstant', {
 	apiBase: 'http://localhost:13337/',
 	appModule: 'mySuperApp'
 });
 
 'use strict';
 
-angular.module('adama-toolkit').factory('jHipsterResourceConfig', ["ParseLinks", function(ParseLinks) {
+angular.module('adama-web').factory('jHipsterResourceConfig', ["ParseLinks", function(ParseLinks) {
 	return {
 		'query': {
 			method: 'GET',
@@ -658,7 +651,7 @@ angular.module('adama-toolkit').factory('jHipsterResourceConfig', ["ParseLinks",
 
 'use strict';
 
-angular.module('adama-toolkit').factory('appGlobal', ["$rootScope", "$translate", function($rootScope, $translate) {
+angular.module('adama-web').factory('appGlobal', ["$rootScope", "$translate", function($rootScope, $translate) {
 	var api = {};
 	api.setPageTitle = function(pageTitle) {
 		$translate(pageTitle).then(function(i18nPageTitle) {
@@ -670,7 +663,7 @@ angular.module('adama-toolkit').factory('appGlobal', ["$rootScope", "$translate"
 
 'use strict';
 
-angular.module('adama-toolkit').provider('language', function() {
+angular.module('adama-web').provider('language', function() {
 	var languages = ['en', 'fr'];
 	var selectorData = [{
 		code: 'en',
@@ -715,10 +708,10 @@ angular.module('adama-toolkit').provider('language', function() {
 
 'use strict';
 
-angular.module('adama-toolkit').config(["$stateProvider", function($stateProvider) {
+angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 	$stateProvider.state('app.user', {
 		url: '/users',
-		templateUrl: 'adama-toolkit/user/user-list.html',
+		templateUrl: 'adama-web/user/user-list.html',
 		controller: 'CrudListCtrl',
 		controllerAs: 'ctrl',
 		resolve: {
@@ -742,7 +735,7 @@ angular.module('adama-toolkit').config(["$stateProvider", function($stateProvide
 			}];
 		}
 		$uibModal.open({
-			templateUrl: 'adama-toolkit/user/' + templateName,
+			templateUrl: 'adama-web/user/' + templateName,
 			resolve: {
 				entity: resolveEntity,
 				EntityGenericResource: ["User", function(User) {
@@ -804,7 +797,7 @@ angular.module('adama-toolkit').config(["$stateProvider", function($stateProvide
 	});
 }]);
 
-angular.module('adama-toolkit').config(["$translateProvider", function($translateProvider) {
+angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'USER_MENU': 'Utilisateurs',
 		'USER_TITLE_DELETE': 'Suppression d\'un utilisateur',
@@ -850,10 +843,10 @@ angular.module('adama-toolkit').config(["$translateProvider", function($translat
 
 'use strict';
 
-angular.module('adama-toolkit').config(["$stateProvider", function($stateProvider) {
+angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 	$stateProvider.state('app.personal.password', {
 		url: '/password',
-		templateUrl: 'adama-toolkit/account/password/password.html',
+		templateUrl: 'adama-web/account/password/password.html',
 		controller: 'PasswordCtrl',
 		controllerAs: 'ctrl',
 		data: {
@@ -862,7 +855,7 @@ angular.module('adama-toolkit').config(["$stateProvider", function($stateProvide
 	});
 }]);
 
-angular.module('adama-toolkit').config(["$translateProvider", function($translateProvider) {
+angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'ACCOUNT_PASSWORD': 'Modifier mon mot de passe',
 		'ACCOUNT_PASSWORD_TITLE': 'Modifier mon mot de passe',
@@ -904,7 +897,7 @@ angular.module('adama-toolkit').config(["$translateProvider", function($translat
 
 'use strict';
 
-angular.module('adama-toolkit').controller('PasswordCtrl', ["Auth", "Principal", "AlertService", function(Auth, Principal, AlertService) {
+angular.module('adama-web').controller('PasswordCtrl', ["Auth", "Principal", "AlertService", function(Auth, Principal, AlertService) {
 	var ctrl = this;
 	Principal.identity().then(function(account) {
 		ctrl.account = account;
@@ -920,10 +913,10 @@ angular.module('adama-toolkit').controller('PasswordCtrl', ["Auth", "Principal",
 
 'use strict';
 
-angular.module('adama-toolkit').config(["$stateProvider", function($stateProvider) {
+angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 	$stateProvider.state('app.personal.settings', {
 		url: '/settings',
-		templateUrl: 'adama-toolkit/account/settings/settings.html',
+		templateUrl: 'adama-web/account/settings/settings.html',
 		controller: 'SettingsCtrl',
 		controllerAs: 'ctrl',
 		data: {
@@ -932,7 +925,7 @@ angular.module('adama-toolkit').config(["$stateProvider", function($stateProvide
 	});
 }]);
 
-angular.module('adama-toolkit').config(["$translateProvider", function($translateProvider) {
+angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'ACCOUNT_SETTINGS': 'Mon profil',
 		'ACCOUNT_SETTINGS_TITLE': 'Mon profil',
@@ -980,7 +973,7 @@ angular.module('adama-toolkit').config(["$translateProvider", function($translat
 
 'use strict';
 
-angular.module('adama-toolkit').controller('SettingsCtrl', ["Principal", "Auth", "language", "AlertService", "$translate", function(Principal, Auth, language, AlertService, $translate) {
+angular.module('adama-web').controller('SettingsCtrl', ["Principal", "Auth", "language", "AlertService", "$translate", function(Principal, Auth, language, AlertService, $translate) {
 	var ctrl = this;
 	var copyAccount = function(account) {
 		// Store the "settings account" in a separate variable, and not in the
@@ -1016,9 +1009,9 @@ angular.module('adama-toolkit').controller('SettingsCtrl', ["Principal", "Auth",
 
 'use strict';
 
-angular.module('adama-toolkit').directive('arkFooter', function() {
+angular.module('adama-web').directive('arkFooter', function() {
 	return {
-		templateUrl: 'adama-toolkit/ark/ark-footer/ark-footer.html',
+		templateUrl: 'adama-web/ark/ark-footer/ark-footer.html',
 		restrict: 'E',
 		scope: {}
 	};
@@ -1026,7 +1019,7 @@ angular.module('adama-toolkit').directive('arkFooter', function() {
 
 'use strict';
 
-angular.module('adama-toolkit').config(["$translateProvider", function($translateProvider) {
+angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'TOGGLE_NAVIGATION': 'Navigation',
 		'USERINFO_PROFILE': 'Profil',
@@ -1044,9 +1037,9 @@ angular.module('adama-toolkit').config(["$translateProvider", function($translat
 
 'use strict';
 
-angular.module('adama-toolkit').directive('arkHeader', function() {
+angular.module('adama-web').directive('arkHeader', function() {
 	return {
-		templateUrl: 'adama-toolkit/ark/ark-header/ark-header.html',
+		templateUrl: 'adama-web/ark/ark-header/ark-header.html',
 		restrict: 'E',
 		scope: {}
 	};
@@ -1054,9 +1047,9 @@ angular.module('adama-toolkit').directive('arkHeader', function() {
 
 'use strict';
 
-angular.module('adama-toolkit').directive('languageSelector', function() {
+angular.module('adama-web').directive('languageSelector', function() {
 	return {
-		templateUrl: 'adama-toolkit/ark/language-selector/language-selector.html',
+		templateUrl: 'adama-web/ark/language-selector/language-selector.html',
 		restrict: 'E',
 		scope: {},
 		bindToController: {},
@@ -1087,9 +1080,9 @@ angular.module('adama-toolkit').directive('languageSelector', function() {
 
 'use strict';
 
-angular.module('adama-toolkit').directive('mainNavigation', function() {
+angular.module('adama-web').directive('mainNavigation', function() {
 	return {
-		templateUrl: 'adama-toolkit/ark/menu/main-navigation.html',
+		templateUrl: 'adama-web/ark/menu/main-navigation.html',
 		restrict: 'E',
 		scope: {},
 		bindToController: {},
@@ -1128,7 +1121,7 @@ angular.module('adama-toolkit').directive('mainNavigation', function() {
 
 'use strict';
 
-angular.module('adama-toolkit').provider('menuService', function() {
+angular.module('adama-web').provider('menuService', function() {
 	var menuItems = [];
 
 	this.addItem = function(newItem) {
@@ -1149,9 +1142,9 @@ angular.module('adama-toolkit').provider('menuService', function() {
 
 'use strict';
 
-angular.module('adama-toolkit').directive('selectAll', function() {
+angular.module('adama-web').directive('selectAll', function() {
 	return {
-		templateUrl: 'adama-toolkit/ark/select-all/select-all.html',
+		templateUrl: 'adama-web/ark/select-all/select-all.html',
 		restrict: 'E',
 		scope: {},
 		bindToController: {
@@ -1173,9 +1166,9 @@ angular.module('adama-toolkit').directive('selectAll', function() {
 
 'use strict';
 
-angular.module('adama-toolkit').directive('userInfo', function() {
+angular.module('adama-web').directive('userInfo', function() {
 	return {
-		templateUrl: 'adama-toolkit/ark/user-info/user-info.html',
+		templateUrl: 'adama-web/ark/user-info/user-info.html',
 		restrict: 'E',
 		scope: {},
 		bindToController: {},
@@ -1195,9 +1188,9 @@ angular.module('adama-toolkit').directive('userInfo', function() {
 
 'use strict';
 
-angular.module('adama-toolkit').directive('viewAttribute', function() {
+angular.module('adama-web').directive('viewAttribute', function() {
 	return {
-		templateUrl: 'adama-toolkit/ark/view-attribute/view-attribute.html',
+		templateUrl: 'adama-web/ark/view-attribute/view-attribute.html',
 		restrict: 'E',
 		transclude: true,
 		scope: {},
@@ -1213,7 +1206,7 @@ angular.module('adama-toolkit').directive('viewAttribute', function() {
 
 'use strict';
 
-angular.module('adama-toolkit')
+angular.module('adama-web')
 	.directive('jhAlert', ["AlertService", function(AlertService) {
 		return {
 			restrict: 'E',
@@ -1323,7 +1316,7 @@ angular.module('adama-toolkit')
 
 'use strict';
 
-angular.module('adama-toolkit')
+angular.module('adama-web')
 	.provider('AlertService', function() {
 		var toast = false;
 
@@ -1454,7 +1447,7 @@ angular.module('adama-toolkit')
 
 'use strict';
 
-angular.module('adama-toolkit')
+angular.module('adama-web')
 	.factory('Auth', ["$rootScope", "$state", "$q", "$translate", "Principal", "AuthServerProvider", "Account", "Password", "PasswordResetInit", "PasswordResetFinish", function Auth($rootScope, $state, $q, $translate, Principal, AuthServerProvider, Account, Password, PasswordResetInit, PasswordResetFinish) {
 		return {
 			login: function(credentials, callback) {
@@ -1566,7 +1559,7 @@ angular.module('adama-toolkit')
 
 'use strict';
 
-angular.module('adama-toolkit').directive('hasAnyAuthority', ['Principal', function(Principal) {
+angular.module('adama-web').directive('hasAnyAuthority', ['Principal', function(Principal) {
 	return {
 		restrict: 'A',
 		link: function(scope, element, attrs) {
@@ -1643,7 +1636,7 @@ angular.module('adama-toolkit').directive('hasAnyAuthority', ['Principal', funct
 
 'use strict';
 
-angular.module('adama-toolkit')
+angular.module('adama-web')
 	.factory('Principal', ["$q", "Account", function Principal($q, Account) {
 		var _identity;
 		var _authenticated = false;
@@ -1719,7 +1712,7 @@ angular.module('adama-toolkit')
 
 'use strict';
 
-angular.module('adama-toolkit').factory('authInterceptor', ["$rootScope", "$q", "$location", "localStorageService", function($rootScope, $q, $location, localStorageService) {
+angular.module('adama-web').factory('authInterceptor', ["$rootScope", "$q", "$location", "localStorageService", function($rootScope, $q, $location, localStorageService) {
 	return {
 		// Add authorization token to headers
 		request: function(config) {
@@ -1752,7 +1745,7 @@ angular.module('adama-toolkit').factory('authInterceptor', ["$rootScope", "$q", 
 
 'use strict';
 
-angular.module('adama-toolkit').factory('errorHandlerInterceptor', ["$q", "$rootScope", "jHipsterConstant", function($q, $rootScope, jHipsterConstant) {
+angular.module('adama-web').factory('errorHandlerInterceptor', ["$q", "$rootScope", "jHipsterConstant", function($q, $rootScope, jHipsterConstant) {
 	return {
 		'responseError': function(response) {
 			if (!(response.status === 401 && response.data.path.indexOf('/api/account') === 0)) {
@@ -1765,7 +1758,7 @@ angular.module('adama-toolkit').factory('errorHandlerInterceptor', ["$q", "$root
 
 'use strict';
 
-angular.module('adama-toolkit').factory('notificationInterceptor', ["$q", "AlertService", "jHipsterConstant", function($q, AlertService, jHipsterConstant) {
+angular.module('adama-web').factory('notificationInterceptor', ["$q", "AlertService", "jHipsterConstant", function($q, AlertService, jHipsterConstant) {
 	return {
 		response: function(response) {
 			var alertKey = response.headers('X-' + jHipsterConstant.appModule + '-alert');
@@ -1781,7 +1774,7 @@ angular.module('adama-toolkit').factory('notificationInterceptor', ["$q", "Alert
 
 'use strict';
 
-angular.module('adama-toolkit').factory('User', ["$resource", "jHipsterConstant", "jHipsterResourceConfig", function($resource, jHipsterConstant, jHipsterResourceConfig) {
+angular.module('adama-web').factory('User', ["$resource", "jHipsterConstant", "jHipsterResourceConfig", function($resource, jHipsterConstant, jHipsterResourceConfig) {
 	var config = angular.extend({}, jHipsterResourceConfig, {
 		'delete': {
 			method: 'DELETE',
@@ -1796,7 +1789,7 @@ angular.module('adama-toolkit').factory('User', ["$resource", "jHipsterConstant"
 /*jshint bitwise: false*/
 'use strict';
 
-angular.module('adama-toolkit').service('Base64', function() {
+angular.module('adama-web').service('Base64', function() {
 	var keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 	this.encode = function(input) {
 		var output = '';
@@ -1885,7 +1878,7 @@ angular.module('adama-toolkit').service('Base64', function() {
 
 'use strict';
 
-angular.module('adama-toolkit')
+angular.module('adama-web')
 	.service('ParseLinks', function() {
 		this.parse = function(header) {
 			if (header.length === 0) {
@@ -1923,7 +1916,7 @@ angular.module('adama-toolkit')
 
 'use strict';
 
-angular.module('adama-toolkit').factory('AuthServerProvider', ["$http", "localStorageService", "Base64", "jHipsterConstant", function loginService($http, localStorageService, Base64, jHipsterConstant) {
+angular.module('adama-web').factory('AuthServerProvider', ["$http", "localStorageService", "Base64", "jHipsterConstant", function loginService($http, localStorageService, Base64, jHipsterConstant) {
 	return {
 		login: function(credentials) {
 			var data = 'username=' + encodeURIComponent(credentials.username) + '&password=' + encodeURIComponent(credentials.password);
@@ -1953,7 +1946,7 @@ angular.module('adama-toolkit').factory('AuthServerProvider', ["$http", "localSt
 
 'use strict';
 
-angular.module('adama-toolkit')
+angular.module('adama-web')
 	.factory('Account', ["$resource", "jHipsterConstant", function Account($resource, jHipsterConstant) {
 		return $resource(jHipsterConstant.apiBase + 'api/account', {}, {
 			'get': {
@@ -1972,16 +1965,16 @@ angular.module('adama-toolkit')
 
 'use strict';
 
-angular.module('adama-toolkit').factory('Password', ["$resource", "jHipsterConstant", function($resource, jHipsterConstant) {
+angular.module('adama-web').factory('Password', ["$resource", "jHipsterConstant", function($resource, jHipsterConstant) {
 	return $resource(jHipsterConstant.apiBase + 'api/account/change_password', {}, {});
 }]);
 
-angular.module('adama-toolkit').factory('PasswordResetInit', ["$resource", "jHipsterConstant", function($resource, jHipsterConstant) {
+angular.module('adama-web').factory('PasswordResetInit', ["$resource", "jHipsterConstant", function($resource, jHipsterConstant) {
 	return $resource(jHipsterConstant.apiBase + 'api/account/reset_password/init', {}, {});
 }]);
 
-angular.module('adama-toolkit').factory('PasswordResetFinish', ["$resource", "jHipsterConstant", function($resource, jHipsterConstant) {
+angular.module('adama-web').factory('PasswordResetFinish', ["$resource", "jHipsterConstant", function($resource, jHipsterConstant) {
 	return $resource(jHipsterConstant.apiBase + 'api/account/reset_password/finish', {}, {});
 }]);
 
-//# sourceMappingURL=adama-toolkit.js.map
+//# sourceMappingURL=adama-web.js.map

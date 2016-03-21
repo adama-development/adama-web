@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').controller('RecoverPasswordCtrl', function(Auth) {
+angular.module('adama-web').controller('RecoverPasswordCtrl', function(Auth) {
 	var ctrl = this;
 	ctrl.recover = function(userEmail) {
 		ctrl.recoverSuccess = false;

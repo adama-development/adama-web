@@ -12,11 +12,11 @@
 					<table
 						class="table table-bordered table-striped"
 						ng-table="ctrl.tableParams"
-						template-pagination="adama-toolkit/ark/ngtable/ngtable-pager.html"
+						template-pagination="adama-web/ark/ngtable/ngtable-pager.html"
 					>
 						<tr ng-repeat="user in $data">
 							<td
-								header="'adama-toolkit/ark/ngtable/ngtable-checkbox.html'"
+								header="'adama-web/ark/ngtable/ngtable-checkbox.html'"
 							>
 								<input type="checkbox" ng-model="user.isSelected" />
 							</td>

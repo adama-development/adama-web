@@ -2,7 +2,7 @@
 // jscs:disable validateQuoteMarks
 'use strict';
 
-angular.module('adama-toolkit').run(function($httpBackend) {
+angular.module('adama-web').run(function($httpBackend) {
 	// mock authentication
 	var isLogged = false;
 

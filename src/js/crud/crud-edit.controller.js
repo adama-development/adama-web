@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').controller('CrudEditCtrl', function($scope, entity, EntityGenericResource, AlertService) {
+angular.module('adama-web').controller('CrudEditCtrl', function($scope, entity, EntityGenericResource, AlertService) {
 	var ctrl = this;
 	ctrl.isEdition = !!entity;
 	ctrl.entity = entity;

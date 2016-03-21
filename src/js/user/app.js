@@ -1,9 +1,9 @@
 'use strict';
 
-angular.module('adama-toolkit').config(function($stateProvider) {
+angular.module('adama-web').config(function($stateProvider) {
 	$stateProvider.state('app.user', {
 		url: '/users',
-		templateUrl: 'adama-toolkit/user/user-list.html',
+		templateUrl: 'adama-web/user/user-list.html',
 		controller: 'CrudListCtrl',
 		controllerAs: 'ctrl',
 		resolve: {
@@ -27,7 +27,7 @@ angular.module('adama-toolkit').config(function($stateProvider) {
 			};
 		}
 		$uibModal.open({
-			templateUrl: 'adama-toolkit/user/' + templateName,
+			templateUrl: 'adama-web/user/' + templateName,
 			resolve: {
 				entity: resolveEntity,
 				EntityGenericResource: function(User) {
@@ -89,7 +89,7 @@ angular.module('adama-toolkit').config(function($stateProvider) {
 	});
 });
 
-angular.module('adama-toolkit').config(function($translateProvider) {
+angular.module('adama-web').config(function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'USER_MENU': 'Utilisateurs',
 		'USER_TITLE_DELETE': 'Suppression d\'un utilisateur',

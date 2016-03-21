@@ -56,21 +56,21 @@ gulp.task('js', function() {
 		// Concat version
 		jsPipe //
 		.pipe(sourcemaps.init()) //
-		.pipe(concat('adama-toolkit.js')) //
+		.pipe(concat('adama-web.js')) //
 		.pipe(sourcemaps.write('./')) //
 		.pipe(gulp.dest(config.targetPath));
 		// Concat and minified version
 		jsPipe //
 		.pipe(sourcemaps.init()) //
-		.pipe(concat('adama-toolkit-min.js')) //
+		.pipe(concat('adama-web-min.js')) //
 		.pipe(uglify()) //
 		.pipe(sourcemaps.write('./')) //
 		.pipe(gulp.dest(config.targetPath));
 		// export template
 		gulp.src(config.mainPath + 'js/**/*.html') //
-		.pipe(templateCache('adama-toolkit-templates.js', {
-			root : 'adama-toolkit/',
-			module : 'adama-toolkit'
+		.pipe(templateCache('adama-web-templates.js', {
+			root : 'adama-web/',
+			module : 'adama-web'
 		})) //
 		.pipe(gulp.dest(config.targetPath));
 	}
@@ -79,7 +79,7 @@ gulp.task('js', function() {
 });
 
 gulp.task('css', function() {
-	return gulp.src([ config.mainPath + 'less/adama-toolkit.less' ]) //
+	return gulp.src([ config.mainPath + 'less/adama-web.less' ]) //
 	.pipe(plugins.plumber({
 		errorHandler : onError
 	})) //
@@ -99,12 +99,12 @@ gulp.task('css', function() {
 	.pipe(gulp.dest(config.targetPath));
 });
 
-gulp.task('serve', [ 'js', 'css' ], function() {
+gulp.task('serve', [ 'clean', 'js', 'css' ], function() {
 	browserSync.init({
 		server : {
 			baseDir : [ 'demo', './' ],
 			routes : {
-				'/adama-toolkit' : config.mainPath + 'js/',
+				'/adama-web' : config.mainPath + 'js/',
 				'/dist' : 'dist',
 				'/mock' : 'mock',
 				'/node_modules' : 'node_modules',

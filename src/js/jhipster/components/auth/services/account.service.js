@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit')
+angular.module('adama-web')
 	.factory('Account', function Account($resource, jHipsterConstant) {
 		return $resource(jHipsterConstant.apiBase + 'api/account', {}, {
 			'get': {

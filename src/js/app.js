@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit', [ //
+angular.module('adama-web', [ //
 	'ngSanitize', //
 	'ngMessages', //
 	'ui.router', //
@@ -14,11 +14,11 @@ angular.module('adama-toolkit', [ //
 	'angular-loading-bar' //
 ]);
 
-angular.module('adama-toolkit').config(function($urlRouterProvider) {
+angular.module('adama-web').config(function($urlRouterProvider) {
 	$urlRouterProvider.otherwise('/app/');
 });
 
-angular.module('adama-toolkit').run(function($rootScope) {
+angular.module('adama-web').run(function($rootScope) {
 	// change body class depending on application main state (app or login)
 	$rootScope.additionalBodyClass = 'sidebar-mini';
 
@@ -31,7 +31,7 @@ angular.module('adama-toolkit').run(function($rootScope) {
 	});
 });
 
-angular.module('adama-toolkit').run(function($rootScope, appGlobal) {
+angular.module('adama-web').run(function($rootScope, appGlobal) {
 	// change page title depending on current page
 	$rootScope.$on('$stateChangeSuccess', function(event, toState) {
 		if (toState && toState.data && toState.data.pageTitle) {
@@ -40,7 +40,7 @@ angular.module('adama-toolkit').run(function($rootScope, appGlobal) {
 	});
 });
 
-angular.module('adama-toolkit').config(function($translateProvider) {
+angular.module('adama-web').config(function($translateProvider) {
 	$translateProvider.useSanitizeValueStrategy('escapeParameters');
 
 	$translateProvider.useLocalStorage();
@@ -53,7 +53,7 @@ angular.module('adama-toolkit').config(function($translateProvider) {
 	$translateProvider.determinePreferredLanguage();
 });
 
-angular.module('adama-toolkit').config(function($stateProvider) {
+angular.module('adama-web').config(function($stateProvider) {
 	$stateProvider.state('app', {
 		abstract: true,
 		url: '/app',
@@ -79,7 +79,7 @@ angular.module('adama-toolkit').config(function($stateProvider) {
 	});
 });
 
-angular.module('adama-toolkit').run(function(ngTableDefaults) {
+angular.module('adama-web').run(function(ngTableDefaults) {
 	ngTableDefaults.settings = angular.extend({}, ngTableDefaults.settings, {
 		counts: [10, 20, 50]
 	});
@@ -91,7 +91,7 @@ angular.module('adama-toolkit').run(function(ngTableDefaults) {
 	});
 });
 
-angular.module('adama-toolkit').config(function($translateProvider) {
+angular.module('adama-web').config(function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'MENU_CATEGORY_USERS': 'Utilisateurs',
 		'PAGER_RESULT': '{{ total }} entrées',

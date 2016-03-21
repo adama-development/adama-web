@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').run(function($rootScope, $state, Principal, Auth) {
+angular.module('adama-web').run(function($rootScope, $state, Principal, Auth) {
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams) {
 		$rootScope.toState = toState;
 		$rootScope.toStateParams = toStateParams;
@@ -30,7 +30,7 @@ angular.module('adama-toolkit').run(function($rootScope, $state, Principal, Auth
 	};
 });
 
-angular.module('adama-toolkit').config(function($httpProvider) {
+angular.module('adama-web').config(function($httpProvider) {
 	$httpProvider.interceptors.push('errorHandlerInterceptor');
 	$httpProvider.interceptors.push('authExpiredInterceptor');
 	$httpProvider.interceptors.push('authInterceptor');

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').directive('layoutFix', function($rootScope) {
+angular.module('adama-web').directive('layoutFix', function($rootScope) {
 	return {
 		scope: {
 			addEvent: '='

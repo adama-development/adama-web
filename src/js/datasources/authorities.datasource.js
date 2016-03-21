@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').directive('dsAuthorities', function($parse) {
+angular.module('adama-web').directive('dsAuthorities', function($parse) {
 	return {
 		scope: false,
 		link: function(scope, element, attrs) {

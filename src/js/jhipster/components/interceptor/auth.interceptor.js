@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').factory('authInterceptor', function($rootScope, $q, $location, localStorageService) {
+angular.module('adama-web').factory('authInterceptor', function($rootScope, $q, $location, localStorageService) {
 	return {
 		// Add authorization token to headers
 		request: function(config) {

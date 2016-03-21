@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-toolkit').controller('PasswordCtrl', function(Auth, Principal, AlertService) {
+angular.module('adama-web').controller('PasswordCtrl', function(Auth, Principal, AlertService) {
 	var ctrl = this;
 	Principal.identity().then(function(account) {
 		ctrl.account = account;
