@@ -1,11 +1,11 @@
 <!doctype html>
-<html ng-app="myDemo">
+<html ng-app="adamaDemoApp">
 	<head>
 		<meta charset="utf-8">
 		<title ng-bind-template="ADAMA DEVELOPMENT - {{pageTitle}}">ADAMA DEVELOPMENT</title>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta content="width=device-width, initial-scale=1" name="viewport"></meta>
-		<link rel="SHORTCUT ICON" href="img/favicon.ico" />
+		<link rel="SHORTCUT ICON" href="img/favicon.png" />
 
 		<link rel="stylesheet" href="node_modules/admin-lte/bootstrap/css/bootstrap.min.css" />
 		<link rel="stylesheet" href="node_modules/admin-lte/dist/css/AdminLTE.min.css" />
@@ -35,6 +35,7 @@
 	<body class="hold-transition skin-blue" ng-class="additionalBodyClass">
 		<ui-view></ui-view>
 
+		<!-- vendors -->
 		<script src="node_modules/jquery/dist/jquery.js"></script>
 		<script src="node_modules/admin-lte/bootstrap/js/bootstrap.min.js"></script>
 		<script src="node_modules/admin-lte/dist/js/app.min.js"></script>
@@ -54,6 +55,7 @@
 		<script src="node_modules/angular-loading-bar/build/loading-bar.js"></script>
 		<script src="vendor-no-npm/ng-table.min.js"></script>
 
+		<!-- adama-web -->
 		<script src="adama-toolkit/app.js"></script>
 		<script src="adama-toolkit/account/app.js"></script>
 		<script src="adama-toolkit/account/password/app.js"></script>
@@ -111,5 +113,26 @@
 		<script src="adama-toolkit/services/appGlobal.service.js"></script>
 		<script src="adama-toolkit/services/language.provider.js"></script>
 		<script src="adama-toolkit/user/app.js"></script>
+
+		<!--  mocks -->
+		<script src="node_modules/angular-mocks/angular-mocks.js"></script>
+		<script src="mock/app.js"></script>
+		<script src="mock/httpBackend-with-latency.decorator.js"></script>
+		<script src="mock/mock-backend-auth.js"></script>
+		<script src="mock/mock-backend-basic.js"></script>
+		<script src="mock/mock-backend-users.js"></script>
+
+		<!-- demo application -->
+		<script src="scripts/app-config.js"></script>
+		<script src="modules/main/app.js"></script>
+		<script src="modules/main/main.controller.js"></script>
+		<script src="modules/user/app.js"></script>
+
+		<script>
+			angular.module('adamaDemoApp').config(function(jHipsterConstant){
+				jHipsterConstant.apiBase = '/';
+			});
+		</script>
+
 	</body>
 </html>

@@ -22,7 +22,7 @@ angular.module('adama-toolkit').run(function($httpBackend) {
 		"password": null,
 		"firstName": "Admin",
 		"lastName": "Doe",
-		"email": "admin-no-reply@adama-development.com"",
+		"email": "admin-no-reply@adama-development.com",
 		"activated": true,
 		"langKey": "en",
 		"authorities": ["ROLE_ADMIN"],
@@ -32,7 +32,8 @@ angular.module('adama-toolkit').run(function($httpBackend) {
 		"lastModifiedDate": new Date("2016-02-21T14:18:11.862Z"),
 		"joinDate": new Date("2016-02-21T16:09:07.867Z")
 	}];
-	$httpBackend.when('GET', /^\/api\/users\?.*/).respond(function() {
+	$httpBackend.when('GET', /^\/api\/users\?.*/).respond(function(method, url) {
+		console.warn('GET /api/users', url);
 		return [200, entities, {
 			'Link': '</api/users?page=0&size=20>; rel="last",</api/users?page=0&size=20>; rel="first"',
 			'X-Total-Count': 35
@@ -48,6 +49,7 @@ angular.module('adama-toolkit').run(function($httpBackend) {
 		return entity;
 	};
 	$httpBackend.when('GET', /^\/api\/users\/.*/).respond(function(method, url) {
+		console.warn('GET /api/users/xx', url);
 		var id = url.substring('/api/users/'.length);
 		var entity = getById(id);
 		if (entity) {

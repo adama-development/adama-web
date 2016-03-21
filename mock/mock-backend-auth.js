@@ -7,6 +7,7 @@ angular.module('adama-toolkit').run(function($httpBackend) {
 	var isLogged = false;
 
 	$httpBackend.when('POST', '/api/authenticate', function(postdata) {
+		console.warn('POST /api/authenticate');
 		var data = {};
 		postdata.split('&').forEach(function(queryParam) {
 			var couple = queryParam.split('=');
@@ -34,7 +35,7 @@ angular.module('adama-toolkit').run(function($httpBackend) {
 
 	$httpBackend.when('GET', '/api/account').respond(function() {
 		if (isLogged) {
-			console.log('GET /api/account : logged');
+			console.warn('GET /api/account : logged');
 			return [200, {
 				"login": "admin",
 				"password": null,
@@ -46,7 +47,7 @@ angular.module('adama-toolkit').run(function($httpBackend) {
 				"authorities": ["ROLE_ADMIN"]
 			}];
 		}
-		console.log('GET /api/account : not logged');
+		console.warn('GET /api/account : not logged');
 		return [401, {
 			error: "Unauthorized",
 			message: "Access Denied",
