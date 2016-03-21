@@ -1,0 +1,75 @@
+<div class="content-wrapper">
+	<section class="content-header">
+		<h1 translate>ACCOUNT_SETTINGS_TITLE</h1>
+	</section>
+	<section class="content">
+		<div class="box box-primary">
+			<form name="form" novalidate ng-submit="ctrl.save()">
+				<div class="box-body">
+					<input
+						type="text"
+						name="firstName"
+						placeholder="{{'ACCOUNT_SETTINGS_FIRSTNAME_PLACEHOLDER' | translate}}"
+						ng-model="ctrl.settingsAccount.firstName"
+						minlength=1
+						maxlength=50
+						required
+						lazy-control
+						lazy-control-label-key="ACCOUNT_SETTINGS_FIRSTNAME"
+					/>
+					<div ng-messages="form.firstName.$error" ng-if="form.firstName.$touched">
+						<div ng-message="required" translate>ACCOUNT_SETTINGS_FIRSTNAME_REQUIRED</div>
+						<div ng-message="maxlength" translate>ACCOUNT_SETTINGS_FIRSTNAME_MAXLENGTH</div>
+					</div>
+					<input
+						type="text"
+						name="lastName"
+						placeholder="{{'ACCOUNT_SETTINGS_LASTNAME_PLACEHOLDER' | translate}}"
+						ng-model="ctrl.settingsAccount.lastName"
+						minlength=1
+						maxlength=50
+						required
+						lazy-control
+						lazy-control-label-key="ACCOUNT_SETTINGS_LASTNAME"
+					/>
+					<div ng-messages="form.lastName.$error" ng-if="form.lastName.$touched">
+						<div ng-message="required" translate>ACCOUNT_SETTINGS_FIRSTNAME_REQUIRED</div>
+						<div ng-message="maxlength" translate>ACCOUNT_SETTINGS_FIRSTNAME_MAXLENGTH</div>
+					</div>
+					<input
+						type="email"
+						name="email"
+						placeholder="{{'ACCOUNT_SETTINGS_EMAIL_PLACEHOLDER' | translate}}"
+						ng-model="ctrl.settingsAccount.email"
+						minlength=5
+						maxlength=100
+						required
+						lazy-control
+						lazy-control-label-key="ACCOUNT_SETTINGS_EMAIL"
+					/>
+					<div ng-messages="form.email.$error" ng-if="form.email.$touched">
+						<div ng-message="required" translate>ACCOUNT_SETTINGS_EMAIL_REQUIRED</div>
+						<div ng-message="email" translate>ACCOUNT_SETTINGS_EMAIL_EMAIL</div>
+						<div ng-message="maxlength" translate>ACCOUNT_SETTINGS_EMAIL_MAXLENGTH</div>
+					</div>
+					<ds-language data="languages"></ds-language>
+					<select
+						name="langKey"
+						ng-model="ctrl.settingsAccount.langKey"
+						ng-options="code as code for code in languages"
+						lazy-control
+						lazy-control-label-key="ACCOUNT_SETTINGS_LANGUAGE"
+					></select>
+				</div>
+				<div class="box-footer">
+					<button
+						type="submit"
+						class="btn btn-primary"
+						ng-disabled="form.$invalid"
+						translate
+					>ACCOUNT_SETTINGS_SUBMIT</button>
+				</div>
+			</form>
+		</div>
+	</section>
+</div>

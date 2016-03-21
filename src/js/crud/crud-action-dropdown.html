@@ -1,0 +1,26 @@
+<div class="dropdown">
+	<button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown">
+		<i class="glyphicon glyphicon-cog"></i>
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu dropdown-menu-right">
+		<li>
+			<a ui-sref=".view(ctrl.routeMapping)">
+				<i class="glyphicon glyphicon-eye-open"></i>
+				<span translate>CRUD_ACTION_VIEW</span>
+			</a>
+		</li>
+		<li>
+			<a ui-sref=".edit(ctrl.routeMapping)">
+				<i class="glyphicon glyphicon-pencil"></i>
+				<span translate>CRUD_ACTION_EDIT</span>
+			</a>
+		</li>
+		<li>
+			<a ui-sref=".delete(ctrl.routeMapping)">
+				<i class="glyphicon glyphicon-trash"></i>
+				<span translate>CRUD_ACTION_DELETE</span>
+			</a>
+		</li>
+	</ul>
+</div>

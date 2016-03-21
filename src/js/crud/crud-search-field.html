@@ -1,0 +1,22 @@
+<form class="form-inline pull-right crud-search-box" name="searchForm">
+	<div class="input-group">
+		<label for="fullSearch" class="sr-only" translate>CRUD_FORM_SEARCH</label>
+		<input
+			type="text"
+			class="form-control"
+			id="fullSearch"
+			required
+			placeholder="{{ 'CRUD_FORM_SEARCH' | translate }}"
+		/>
+		<span class="input-group-btn">
+			<button
+				type="submit"
+				class="btn btn-default"
+				ng-disabled="searchForm.$invalid"
+			>
+				<i class="fa fa-search"></i>
+				<span class="sr-only" translate>CRUD_FORM_SEARCH_SUBMIT</span>
+			</button>
+		</span>
+	</div>
+</form>

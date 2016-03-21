@@ -1,0 +1,31 @@
+.crud-search-box {
+	input + span .btn {
+		transition: border-color 0.15s ease-in-out 0s;
+	}
+
+	input:focus + span .btn {
+		border-bottom: 1px solid #3c8dbc;
+		border-right: 1px solid #3c8dbc;
+		border-top: 1px solid #3c8dbc;
+	}
+}
+
+@media (max-width:767px) {
+	.crud-content-header {
+		display: flex;
+		flex-direction: column-reverse;
+		width: 100%;
+
+		> * + * {
+			margin-bottom: 10px !important;
+		}
+
+		.pull-right {
+			float: none !important;
+		}
+	}
+}
+
+btn-create + crud-search-field form {
+	margin-right: 10px;
+}

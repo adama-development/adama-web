@@ -1,0 +1,24 @@
+<ul class="sidebar-menu">
+	<li
+		ng-repeat="item in ctrl.menuItems | orderBy:'rank'"
+		ng-class="{'header':item.divider, 'treeview': !item.url && !item.divider}"
+	>
+		<span ng-if="item.divider">{{ item.label }}</span>
+		<a ng-href="{{::item.url}}" ng-if="item.url">
+			<i ng-class="item.iconClass" ng-if="item.iconClass"></i>
+			<span>{{ item.label }}</span>
+		</a>
+		<a ng-if="!item.url && !item.divider">
+			<i ng-class="item.iconClass" ng-if="item.iconClass"></i>
+			<span>{{ item.label }}</span>
+			<i class="fa fa-angle-left pull-right"></i>
+		</a>
+		<ul class="treeview-menu" ng-if="!item.url && !item.divider">
+			<li ng-repeat="subItem in item.subItems | orderBy:'rank'">
+				<a
+					ng-href="{{::subItem.url}}"
+				>{{ subItem.label }}</a>
+			</li>
+		</ul>
+	</li>
+</ul>

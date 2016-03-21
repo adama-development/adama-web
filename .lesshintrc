@@ -1,0 +1,83 @@
+{
+  "attributeQuotes": {
+    "style": "simple"
+  },
+  "comment": {
+    "enabled": false
+  },
+  "duplicateProperty": {
+    "exclude": []
+  },
+  "emptyRule": {
+    "enabled": true
+  },
+  "finalNewline": {
+    "enabled": true
+  },
+  "hexLength": {
+    "style": "long"
+  },
+  "hexNotation": {
+    "style": "lowercase"
+  },
+  "hexValidation": {
+    "enabled": true
+  },
+  "idSelector": {
+    "enabled": false
+  },
+  "importantRule": {
+    "enabled": false
+  },
+  "importPath": {
+    "filenameExtension": false,
+    "leadingUnderscore": true,
+    "exclude": [
+      "../../node_modules/admin-lte/build/bootstrap-less/variables"
+    ]
+  },
+  "leadingZero": {
+    "style": "include_zero"
+  },
+  "qualifyingElement": {
+    "allowWithAttribute": false,
+    "allowWithClass": true,
+    "allowWithId": false
+  },
+  "spaceAfterComma": {
+    "style": "one_space"
+  },
+  "spaceAfterPropertyColon": {
+    "style": "one_space"
+  },
+  "spaceAfterPropertyName": {
+    "style": "no_space"
+  },
+  "spaceAfterPropertyValue": {
+    "style": "no_space"
+  },
+  "spaceBeforeBrace": {
+    "style": "one_space"
+  },
+  "spaceBeforeComma": {
+    "style": "no_space"
+  },
+  "spaceBetweenParens": {
+    "style": "no_space"
+  },
+  "trailingSemicolon": {
+    "enabled": true
+  },
+  "trailingZero": {
+    "style": "exclude_zero"
+  },
+  "urlFormat": {
+    "style": "relative"
+  },
+  "urlQuotes": {
+    "enabled": true
+  },
+  "zeroUnit": {
+    "style": "no_unit"
+  }
+}

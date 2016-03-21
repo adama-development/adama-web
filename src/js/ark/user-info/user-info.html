@@ -1,0 +1,50 @@
+<div class="navbar-custom-menu">
+	<ul class="nav navbar-nav">
+		<li class="dropdown user user-menu">
+			<ds-principal-identity data="ctrl.account"></ds-principal-identity>
+			<a class="dropdown-toggle noajax" data-toggle="dropdown" aria-expanded="false">
+				<img src="img/male-fill-circle-512.png" class="user-image"></img>
+				<span class="hidden-xs">
+					<span>
+						{{ ctrl.account.firstName }}
+						{{ ctrl.account.lastName }}
+					</span>
+				</span>
+			</a>
+			<ul class="dropdown-menu">
+				<li class="user-header">
+					<img src="img/male-fill-circle-512.png" class="img-circle" />
+					<p>
+						<span>
+							{{ ctrl.account.firstName }}
+							{{ ctrl.account.lastName }}
+						</span>
+						<small>
+							<span ng-repeat="authority in ctrl.account.authorities"> {{ ::authority | translate }} </span>
+						</small>
+					</p>
+				</li>
+				<li class="user-footer">
+					<div class="pull-left">
+						<a ui-sref="app.personal.settings" class="btn btn-default btn-flat">
+							<i class="glyphicon glyphicon-user"></i>
+							<span class="sr-only" translate>USERINFO_PROFILE</span>
+						</a>
+					</div>
+					<div class="pull-left">
+						<a ui-sref="app.personal.password" class="btn btn-default btn-flat">
+							<i class="glyphicon glyphicon-lock"></i>
+							<span class="sr-only" translate>USERINFO_PASSWORD</span>
+						</a>
+					</div>
+					<div class="pull-right">
+						<a class="btn btn-default btn-flat" ng-click="ctrl.signout()">
+							<i class="glyphicon glyphicon-log-out"></i>
+							<span class="sr-only" translate>USERINFO_SIGNOUT</span>
+						</a>
+					</div>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</div>

@@ -1,0 +1,27 @@
+<div class="angular-table-pager">
+	<div 
+		class="col-sm-5"
+		translate="PAGER_RESULT"
+		translate-values="{ total: params.total() }"
+	></div>
+	<div class="col-sm-7">
+		<ul class="pagination pagination-sm" ng-show="pages">
+			<li
+				ng-repeat="page in pages"
+				ng-class="{'active': page.current}"
+				ng-switch="page.type"
+			>
+				<a ng-switch-when="prev" ng-click="params.page(page.number)" ng-if="page.active">
+					&lt;
+				</a>
+				<a ng-switch-when="next" ng-click="params.page(page.number)" ng-if="page.active">
+					&gt;
+				</a>
+				<a
+					ng-click="params.page(page.number)"
+					ng-switch-default
+				>{{ page.number }}</a>
+			</li>
+		</ul>
+	</div>
+</div>

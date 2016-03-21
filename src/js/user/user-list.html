@@ -1,0 +1,51 @@
+<div class="content-wrapper">
+	<section class="content-header crud-content-header">
+		<btn-create></btn-create>
+		<crud-search-field></crud-search-field>
+		<h1 translate>USER_TITLE_LIST</h1>
+	</section>
+	<section class="content">
+		<div class="box box-primary">
+			<div class="box-body">
+				<div class="table-responsive">
+					<ds-principal-identity data="currentAccount"></ds-principal-identity>
+					<table
+						class="table table-bordered table-striped"
+						ng-table="ctrl.tableParams"
+						template-pagination="adama-toolkit/ark/ngtable/ngtable-pager.html"
+					>
+						<tr ng-repeat="user in $data">
+							<td
+								header="'adama-toolkit/ark/ngtable/ngtable-checkbox.html'"
+							>
+								<input type="checkbox" ng-model="user.isSelected" />
+							</td>
+							<td
+								data-title="'USER_LIST_LOGIN' | translate"
+								sortable="'login'"
+							>{{user.login}}</td>
+							<td
+								data-title="'USER_LIST_MAIL' | translate"
+								sortable="'email'"
+							>{{user.email}}</td>
+							<td
+								data-title="'USER_LIST_LANGUAGE' | translate"
+								sortable="'langKey'"
+						   	>{{user.langKey}}</td>
+							<td
+								data-title="'USER_LIST_AUTHORITIES' | translate"
+							>
+								<div ng-repeat="authority in user.authorities">
+									<span class="label label-info">{{ authority }}</span>
+								</div>
+							</td>
+							<td class="text-right">
+								<crud-action-dropdown route-mapping="{login:user.login}"></crud-action-dropdown>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>

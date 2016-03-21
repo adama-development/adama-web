@@ -1,0 +1,115 @@
+<!doctype html>
+<html ng-app="myDemo">
+	<head>
+		<meta charset="utf-8">
+		<title ng-bind-template="ADAMA DEVELOPMENT - {{pageTitle}}">ADAMA DEVELOPMENT</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta content="width=device-width, initial-scale=1" name="viewport"></meta>
+		<link rel="SHORTCUT ICON" href="img/favicon.ico" />
+
+		<link rel="stylesheet" href="node_modules/admin-lte/bootstrap/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="node_modules/admin-lte/dist/css/AdminLTE.min.css" />
+		<link rel="stylesheet" href="node_modules/admin-lte/dist/css/skins/skin-blue.min.css" />
+		<link rel="stylesheet" href="node_modules/famfamfam-flags/dist/sprite/famfamfam-flags.min.css" />
+		<link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="node_modules/angular-loading-bar/build/loading-bar.css" />
+		<link rel="stylesheet" href="vendor-no-npm/ng-table.min.css" />
+		<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic" />
+		<link rel="stylesheet" href="dist/adama-toolkit.css" />
+
+		<style>
+			body:before {
+				background: red;
+				position: fixed;
+				right: -60px;
+				text-align: center;
+				top: 30px;
+				transform: rotate(45deg);
+				transform-origin: center;
+				width: 200px;
+				z-index: 9999;
+				content: "DEMO";
+			}
+		</style>
+	</head>
+	<body class="hold-transition skin-blue" ng-class="additionalBodyClass">
+		<ui-view></ui-view>
+
+		<script src="node_modules/jquery/dist/jquery.js"></script>
+		<script src="node_modules/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+		<script src="node_modules/admin-lte/dist/js/app.min.js"></script>
+		<script src="node_modules/angular/angular.js"></script>
+		<script src="node_modules/angular-sanitize/angular-sanitize.min.js"></script>
+		<script src="node_modules/angular-cookies/angular-cookies.min.js"></script>
+		<script src="node_modules/angular-resource/angular-resource.min.js"></script>
+		<script src="node_modules/angular-combine/dist/angular-combine-without-console.min.js"></script>
+		<script src="node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
+		<script src="node_modules/angular-ui-router/release/angular-ui-router.min.js"></script>
+		<script src="node_modules/angular-local-storage/dist/angular-local-storage.min.js"></script>
+		<script src="node_modules/angular-translate/dist/angular-translate.min.js"></script>
+		<script src="node_modules/angular-translate-storage-cookie/angular-translate-storage-cookie.min.js"></script>
+		<script src="node_modules/angular-translate-storage-local/angular-translate-storage-local.min.js"></script>
+		<script src="node_modules/angular-messages/angular-messages.min.js"></script>
+		<script src="node_modules/angular-file-saver/dist/angular-file-saver.bundle.min.js"></script>
+		<script src="node_modules/angular-loading-bar/build/loading-bar.js"></script>
+		<script src="vendor-no-npm/ng-table.min.js"></script>
+
+		<script src="adama-toolkit/app.js"></script>
+		<script src="adama-toolkit/account/app.js"></script>
+		<script src="adama-toolkit/account/password/app.js"></script>
+		<script src="adama-toolkit/account/password/password.controller.js"></script>
+		<script src="adama-toolkit/account/settings/app.js"></script>
+		<script src="adama-toolkit/account/settings/settings.controller.js"></script>
+		<script src="adama-toolkit/ark/app.js"></script>
+		<script src="adama-toolkit/ark/ark-footer/ark-footer.directive.js"></script>
+		<script src="adama-toolkit/ark/ark-header/ark-header.directive.js"></script>
+		<script src="adama-toolkit/ark/language-selector/language-selector.directive.js"></script>
+		<script src="adama-toolkit/ark/menu/app.js"></script>
+		<script src="adama-toolkit/ark/menu/main-navigation.directive.js"></script>
+		<script src="adama-toolkit/ark/menu/menu.provider.js"></script>
+		<script src="adama-toolkit/ark/select-all/select-all.directive.js"></script>
+		<script src="adama-toolkit/ark/user-info/user-info.directive.js"></script>
+		<script src="adama-toolkit/ark/view-attribute/view-attribute.directive.js"></script>
+		<script src="adama-toolkit/auth/app.js"></script>
+		<script src="adama-toolkit/auth/accessDenied.controller.js"></script>
+		<script src="adama-toolkit/auth/recoverPassword.controller.js"></script>
+		<script src="adama-toolkit/auth/signin.controller.js"></script>
+		<script src="adama-toolkit/crud/app.js"></script>
+		<script src="adama-toolkit/crud/btn-create.directive.js"></script>
+		<script src="adama-toolkit/crud/crud-action-dropdown.directive.js"></script>
+		<script src="adama-toolkit/crud/crud-delete.controller.js"></script>
+		<script src="adama-toolkit/crud/crud-edit.controller.js"></script>
+		<script src="adama-toolkit/crud/crud-list.controller.js"></script>
+		<script src="adama-toolkit/crud/crud-search-field.directive.js"></script>
+		<script src="adama-toolkit/crud/crud-view.controller.js"></script>
+		<script src="adama-toolkit/crud/modal-btn-back-to-list.directive.js"></script>
+		<script src="adama-toolkit/crud/modal-btn-cancel.directive.js"></script>
+		<script src="adama-toolkit/crud/modal-btn-confirm-delete.directive.js"></script>
+		<script src="adama-toolkit/crud/modal-btn-confirm-edit.directive.js"></script>
+		<script src="adama-toolkit/datasources/authorities.datasource.js"></script>
+		<script src="adama-toolkit/datasources/language.datasource.js"></script>
+		<script src="adama-toolkit/datasources/principal-identity.datasource.js"></script>
+		<script src="adama-toolkit/directives/lazyControl.directive.js"></script>
+		<script src="adama-toolkit/directives/layoutFix.directive.js"></script>
+		<script src="adama-toolkit/jhipster/app.js"></script>
+		<script src="adama-toolkit/jhipster/jhipster-constant.service.js"></script>
+		<script src="adama-toolkit/jhipster/jhipster-resource-config.service.js"></script>
+		<script src="adama-toolkit/jhipster/components/alert/alert.directive.js"></script>
+		<script src="adama-toolkit/jhipster/components/alert/alert.service.js"></script>
+		<script src="adama-toolkit/jhipster/components/auth/provider/auth.xauth.service.js"></script>
+		<script src="adama-toolkit/jhipster/components/auth/services/account.service.js"></script>
+		<script src="adama-toolkit/jhipster/components/auth/services/password.service.js"></script>
+		<script src="adama-toolkit/jhipster/components/auth/auth.service.js"></script>
+		<script src="adama-toolkit/jhipster/components/auth/authority.directive.js"></script>
+		<script src="adama-toolkit/jhipster/components/auth/principal.service.js"></script>
+		<script src="adama-toolkit/jhipster/components/interceptor/auth.interceptor.js"></script>
+		<script src="adama-toolkit/jhipster/components/interceptor/errorhandler.interceptor.js"></script>
+		<script src="adama-toolkit/jhipster/components/interceptor/notification.interceptor.js"></script>
+		<script src="adama-toolkit/jhipster/components/user/user.service.js"></script>
+		<script src="adama-toolkit/jhipster/components/util/base64.service.js"></script>
+		<script src="adama-toolkit/jhipster/components/util/parse-links.service.js"></script>
+		<script src="adama-toolkit/services/appGlobal.service.js"></script>
+		<script src="adama-toolkit/services/language.provider.js"></script>
+		<script src="adama-toolkit/user/app.js"></script>
+	</body>
+</html>
