@@ -94,8 +94,7 @@ gulp.task('css', function() {
 	.pipe(gulp.dest(config.targetPath)) //
 	.pipe(browserSync.stream()); //
 	if (gutil.env.type === 'production') {
-		cssPipe
-		.pipe(sourcemaps.init()) //
+		cssPipe.pipe(sourcemaps.init()) //
 		.pipe(cssnano()) //
 		.pipe(rename({
 			suffix : '.min'
