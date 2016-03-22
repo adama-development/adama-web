@@ -13,15 +13,26 @@
 @media (max-width:767px) {
 	.crud-content-header {
 		display: flex;
-		flex-direction: column-reverse;
+		flex-wrap: wrap;
 		width: 100%;
 
-		> * + * {
-			margin-bottom: 10px !important;
+		form {
+			margin-right: 0;
 		}
 
-		.pull-right {
-			float: none !important;
+		crud-search-field {
+			order: 1;
+			width: 100%;
+		}
+
+		btn-create {
+			margin-bottom: 10px;
+		}
+
+		h1 {
+			order: -1;
+			flex: 1;
+			margin-bottom: 10px;
 		}
 	}
 }

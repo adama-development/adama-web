@@ -109,7 +109,7 @@ gulp.task('css', function() {
 gulp.task('serve', [ 'js', 'css' ], function() {
 	browserSync.init({
 		server : {
-			baseDir : [ 'demo', './' ],
+			baseDir : [ 'demo' ],
 			routes : {
 				'/adama-web' : config.mainPath + 'js/',
 				'/dist' : 'dist',
