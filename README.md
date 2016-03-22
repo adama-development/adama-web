@@ -21,7 +21,7 @@ Then, you'll need to trigger the development workflow :
 
 	gulp serve  
 
-Application is available on http://localhost:9000.
+Application is available on http://localhost:3000.
 
 
 
