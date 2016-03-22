@@ -120,7 +120,8 @@ gulp.task('serve', [ 'js', 'css' ], function() {
 		open : false
 	});
 
-	gulp.watch("demo/**").on('change', browserSync.reload);
+	gulp.watch('demo/**').on('change', browserSync.reload);
+	gulp.watch(config.mainPath + 'js/**/*.html').on('change', browserSync.reload);
 	gulp.watch([ config.mainPath + 'js/**/*.js' ], [ 'js' ]);
 	gulp.watch([ config.mainPath + 'less/**/*.less' ], [ 'css' ]);
 });
