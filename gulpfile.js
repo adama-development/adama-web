@@ -50,19 +50,20 @@ gulp.task('js', function() {
 	.pipe(jshint.reporter('jshint-stylish')) //
 	.pipe(jscs()) //
 	.pipe(jscs.reporter()) //
-	.pipe(prettify()) //
-	.pipe(gulp.dest(config.mainPath + 'js')) //
 	.pipe(browserSync.stream()); //
 	if (gutil.env.type === 'production') {
-		jsPipe = jsPipe.pipe(ngAnnotate());
+		jsPipe = jsPipe //
+		// prettify code
+		.pipe(prettify()) //
+		.pipe(gulp.dest(config.mainPath + 'js')) //
+		// angular annotation
+		.pipe(ngAnnotate()) //
 		// Concat version
-		jsPipe //
 		.pipe(sourcemaps.init()) //
 		.pipe(concat('adama-web.js')) //
 		.pipe(sourcemaps.write('./')) //
-		.pipe(gulp.dest(config.targetPath));
+		.pipe(gulp.dest(config.targetPath)) //
 		// Concat and minified version
-		jsPipe //
 		.pipe(sourcemaps.init()) //
 		.pipe(concat('adama-web-min.js')) //
 		.pipe(uglify()) //
@@ -121,6 +122,7 @@ gulp.task('serve', [ 'js', 'css' ], function() {
 	});
 
 	gulp.watch('demo/**').on('change', browserSync.reload);
+	gulp.watch('mock/**').on('change', browserSync.reload);
 	gulp.watch(config.mainPath + 'js/**/*.html').on('change', browserSync.reload);
 	gulp.watch([ config.mainPath + 'js/**/*.js' ], [ 'js' ]);
 	gulp.watch([ config.mainPath + 'less/**/*.less' ], [ 'css' ]);

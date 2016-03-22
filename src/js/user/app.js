@@ -91,6 +91,10 @@ angular.module('adama-web').config(function($stateProvider) {
 
 angular.module('adama-web').config(function($translateProvider) {
 	$translateProvider.translations('fr', {
+		error: {
+			userexists: 'Login déjà utilisé !',
+			emailexists: 'E-mail déjà utilisé !'
+		},
 		'USER_MENU': 'Utilisateurs',
 		'USER_TITLE_DELETE': 'Suppression d\'un utilisateur',
 		'USER_TITLE_VIEW': 'Détails d\'un utilisateur',
@@ -112,6 +116,10 @@ angular.module('adama-web').config(function($translateProvider) {
 	});
 
 	$translateProvider.translations('en', {
+		error: {
+			userexists: 'Login name already used!',
+			emailexists: 'E-mail is already in use!'
+		},
 		'USER_MENU': 'Users',
 		'USER_TITLE_DELETE': 'User delete',
 		'USER_TITLE_VIEW': 'User details',
