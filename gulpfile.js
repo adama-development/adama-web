@@ -52,23 +52,24 @@ gulp.task('js', function() {
 	.pipe(jscs.reporter()) //
 	.pipe(browserSync.stream()); //
 	if (gutil.env.type === 'production') {
-		jsPipe = jsPipe //
-		// prettify code
-		.pipe(prettify()) //
+		jsPipe.pipe(prettify()) //
 		.pipe(gulp.dest(config.mainPath + 'js')) //
 		// angular annotation
-		.pipe(ngAnnotate()) //
+		.pipe(ngAnnotate());
+
 		// Concat version
-		.pipe(sourcemaps.init()) //
+		jsPipe.pipe(sourcemaps.init()) //
 		.pipe(concat('adama-web.js')) //
 		.pipe(sourcemaps.write('./')) //
-		.pipe(gulp.dest(config.targetPath)) //
+		.pipe(gulp.dest(config.targetPath));
+
 		// Concat and minified version
-		.pipe(sourcemaps.init()) //
+		jsPipe.pipe(sourcemaps.init()) //
 		.pipe(concat('adama-web-min.js')) //
 		.pipe(uglify()) //
 		.pipe(sourcemaps.write('./')) //
 		.pipe(gulp.dest(config.targetPath));
+
 		// export template
 		gulp.src(config.mainPath + 'js/**/*.html') //
 		.pipe(templateCache('adama-web-templates.js', {

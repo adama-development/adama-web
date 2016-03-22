@@ -1,13 +1,13 @@
-	'use strict';
+'use strict';
 
-angular.module('adama-web').config(function($provide) {
+angular.module('adama-web').config(function($provide, mockSettings) {
 	$provide.decorator('$httpBackend', function($delegate) {
 		var proxy = function(method, url, data, callback, headers) {
 			var interceptor = function() {
 				var _this = this, _arguments = arguments;
 				setTimeout(function() {
 					callback.apply(_this, _arguments);
-				}, 700);
+				}, mockSettings.defaultLatencyInMs);
 			};
 			return $delegate.call(this, method, url, data, interceptor, headers);
 		};

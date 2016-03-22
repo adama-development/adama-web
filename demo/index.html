@@ -116,10 +116,16 @@
 		<!--  mocks -->
 		<script src="node_modules/angular-mocks/angular-mocks.js"></script>
 		<script src="mock/app.js"></script>
+		<script src="mock/mock-settings.constant.js"></script>
 		<script src="mock/httpBackend-with-latency.decorator.js"></script>
-		<script src="demo-mock/auth.js"></script>
+		<script src="mock/auth.js"></script>
 		<script src="mock/basic.js"></script>
 		<script src="mock/users.js"></script>
+		<script>
+			angular.module('adama-web').config(function(mockSettings){
+				mockSettings.isLoggedAtStartup = true;
+			});
+		</script>
 
 		<!-- demo application -->
 		<!-- <script src="scripts/app.js"></script> -->

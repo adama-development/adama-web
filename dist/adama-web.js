@@ -14,11 +14,11 @@ angular.module('adama-web', [ //
 	'angular-loading-bar' //
 ]);
 
-angular.module('adama-web').config(["$urlRouterProvider", function($urlRouterProvider) {
+angular.module('adama-web').config(function($urlRouterProvider) {
 	$urlRouterProvider.otherwise('/app/');
-}]);
+});
 
-angular.module('adama-web').run(["$rootScope", function($rootScope) {
+angular.module('adama-web').run(function($rootScope) {
 	// change body class depending on application main state (app or login)
 	$rootScope.additionalBodyClass = 'sidebar-mini';
 
@@ -29,18 +29,18 @@ angular.module('adama-web').run(["$rootScope", function($rootScope) {
 			$rootScope.additionalBodyClass = 'sidebar-mini';
 		}
 	});
-}]);
+});
 
-angular.module('adama-web').run(["$rootScope", "appGlobal", function($rootScope, appGlobal) {
+angular.module('adama-web').run(function($rootScope, appGlobal) {
 	// change page title depending on current page
 	$rootScope.$on('$stateChangeSuccess', function(event, toState) {
 		if (toState && toState.data && toState.data.pageTitle) {
 			appGlobal.setPageTitle(toState.data.pageTitle);
 		}
 	});
-}]);
+});
 
-angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
+angular.module('adama-web').config(function($translateProvider) {
 	$translateProvider.useSanitizeValueStrategy('escapeParameters');
 
 	$translateProvider.useLocalStorage();
@@ -51,9 +51,9 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 	});
 
 	$translateProvider.determinePreferredLanguage();
-}]);
+});
 
-angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
+angular.module('adama-web').config(function($stateProvider) {
 	$stateProvider.state('app', {
 		abstract: true,
 		url: '/app',
@@ -72,14 +72,14 @@ angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 			'</div>' + //
 			'',
 		resolve: {
-			authorize: ["Auth", function(Auth) {
+			authorize: function(Auth) {
 				return Auth.authorize();
-			}]
+			}
 		}
 	});
-}]);
+});
 
-angular.module('adama-web').run(["ngTableDefaults", function(ngTableDefaults) {
+angular.module('adama-web').run(function(ngTableDefaults) {
 	ngTableDefaults.settings = angular.extend({}, ngTableDefaults.settings, {
 		counts: [10, 20, 50]
 	});
@@ -89,9 +89,9 @@ angular.module('adama-web').run(["ngTableDefaults", function(ngTableDefaults) {
 		// init : count per page
 		count: 20
 	});
-}]);
+});
 
-angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
+angular.module('adama-web').config(function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'MENU_CATEGORY_USERS': 'Utilisateurs',
 		'PAGER_RESULT': '{{ total }} entrées',
@@ -107,17 +107,17 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 		'FLAG_CN': 'Chinese',
 		'FLAG_FR': 'French'
 	});
-}]);
+});
 
 'use strict';
 
-angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
+angular.module('adama-web').config(function($stateProvider) {
 	$stateProvider.state('app.personal', {
 		abstract: true,
 		url: '/personal',
 		template: '<ui-view></ui-view>'
 	});
-}]);
+});
 
 'use strict';
 
@@ -129,7 +129,7 @@ angular.module('adama-web').controller('AccessDeniedCtrl', function() {
 
 'use strict';
 
-angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
+angular.module('adama-web').config(function($stateProvider) {
 	$stateProvider.state('auth', {
 		abstract: true,
 		url: '/auth',
@@ -170,9 +170,9 @@ angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 			authorities: []
 		}
 	});
-}]);
+});
 
-angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
+angular.module('adama-web').config(function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'SIGNIN': 'Identification',
 		'SIGNIN_INTRO': 'Identifiez-vous pour démarrer votre session',
@@ -220,11 +220,11 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 		'ACCESS_DENIED': 'Access denied',
 		'ACCESS_DENIED_INTRO': 'You do not have enough privileges to access this page.'
 	});
-}]);
+});
 
 'use strict';
 
-angular.module('adama-web').controller('RecoverPasswordCtrl', ["Auth", function(Auth) {
+angular.module('adama-web').controller('RecoverPasswordCtrl', function(Auth) {
 	var ctrl = this;
 	ctrl.recover = function(userEmail) {
 		ctrl.recoverSuccess = false;
@@ -243,11 +243,11 @@ angular.module('adama-web').controller('RecoverPasswordCtrl', ["Auth", function(
 			ctrl.loading = false;
 		});
 	};
-}]);
+});
 
 'use strict';
 
-angular.module('adama-web').controller('SigninCtrl', ["$rootScope", "$state", "Auth", function($rootScope, $state, Auth) {
+angular.module('adama-web').controller('SigninCtrl', function($rootScope, $state, Auth) {
 	var ctrl = this;
 	ctrl.signin = function(userName, userPassword) {
 		ctrl.authenticationError = false;
@@ -264,11 +264,11 @@ angular.module('adama-web').controller('SigninCtrl', ["$rootScope", "$state", "A
 			ctrl.authenticationError = true;
 		});
 	};
-}]);
+});
 
 'use strict';
 
-angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
+angular.module('adama-web').config(function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'CRUD_BACK_TO_LIST': 'Retour à la liste',
 		'CRUD_CANCEL': 'Annuler',
@@ -318,7 +318,7 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 		'CRUD_ACTION_EDIT': 'Edit',
 		'CRUD_ACTION_DELETE': 'Delete'
 	});
-}]);
+});
 
 'use strict';
 
@@ -346,7 +346,7 @@ angular.module('adama-web').directive('crudActionDropdown', function() {
 
 'use strict';
 
-angular.module('adama-web').controller('CrudDeleteCtrl', ["$scope", "entity", "AlertService", function($scope, entity, AlertService) {
+angular.module('adama-web').controller('CrudDeleteCtrl', function($scope, entity, AlertService) {
 	var ctrl = this;
 	ctrl.entity = entity;
 	ctrl.dismiss = function() {
@@ -360,11 +360,11 @@ angular.module('adama-web').controller('CrudDeleteCtrl', ["$scope", "entity", "A
 			AlertService.error('CRUD_DELETE_ERROR');
 		});
 	};
-}]);
+});
 
 'use strict';
 
-angular.module('adama-web').controller('CrudEditCtrl', ["$scope", "entity", "EntityGenericResource", "AlertService", function($scope, entity, EntityGenericResource, AlertService) {
+angular.module('adama-web').controller('CrudEditCtrl', function($scope, entity, EntityGenericResource, AlertService) {
 	var ctrl = this;
 	ctrl.isEdition = !!entity;
 	ctrl.entity = entity;
@@ -387,11 +387,11 @@ angular.module('adama-web').controller('CrudEditCtrl', ["$scope", "entity", "Ent
 			$scope.$close(newEntity);
 		});
 	};
-}]);
+});
 
 'use strict';
 
-angular.module('adama-web').controller('CrudListCtrl', ["EntityGenericResource", "NgTableParams", function(EntityGenericResource, NgTableParams) {
+angular.module('adama-web').controller('CrudListCtrl', function(EntityGenericResource, NgTableParams) {
 	// TODO filter search results
 	var ctrl = this;
 
@@ -422,7 +422,7 @@ angular.module('adama-web').controller('CrudListCtrl', ["EntityGenericResource",
 		ctrl.tableParams.page(1);
 		ctrl.tableParams.reload();
 	};
-}]);
+});
 
 'use strict';
 
@@ -435,13 +435,13 @@ angular.module('adama-web').directive('crudSearchField', function() {
 
 'use strict';
 
-angular.module('adama-web').controller('CrudViewCtrl', ["$scope", "entity", function($scope, entity) {
+angular.module('adama-web').controller('CrudViewCtrl', function($scope, entity) {
 	var ctrl = this;
 	ctrl.entity = entity;
 	ctrl.dismiss = function() {
 		$scope.$dismiss();
 	};
-}]);
+});
 
 'use strict';
 
@@ -481,7 +481,7 @@ angular.module('adama-web').directive('modalBtnConfirmEdit', function() {
 
 'use strict';
 
-angular.module('adama-web').directive('dsAuthorities', ["$parse", function($parse) {
+angular.module('adama-web').directive('dsAuthorities', function($parse) {
 	return {
 		scope: false,
 		link: function(scope, element, attrs) {
@@ -489,11 +489,11 @@ angular.module('adama-web').directive('dsAuthorities', ["$parse", function($pars
 			$parse(attrs.data).assign(scope, authorities);
 		}
 	};
-}]);
+});
 
 'use strict';
 
-angular.module('adama-web').directive('dsLanguage', ["$parse", "language", function($parse, language) {
+angular.module('adama-web').directive('dsLanguage', function($parse, language) {
 	return {
 		scope: false,
 		link: function(scope, element, attrs) {
@@ -502,11 +502,11 @@ angular.module('adama-web').directive('dsLanguage', ["$parse", "language", funct
 			});
 		}
 	};
-}]);
+});
 
 'use strict';
 
-angular.module('adama-web').directive('dsPrincipalIdentity', ["$parse", "Principal", function($parse, Principal) {
+angular.module('adama-web').directive('dsPrincipalIdentity', function($parse, Principal) {
 	return {
 		scope: false,
 		link: function(scope, element, attrs) {
@@ -515,11 +515,11 @@ angular.module('adama-web').directive('dsPrincipalIdentity', ["$parse", "Princip
 			});
 		}
 	};
-}]);
+});
 
 'use strict';
 
-angular.module('adama-web').directive('layoutFix', ["$rootScope", function($rootScope) {
+angular.module('adama-web').directive('layoutFix', function($rootScope) {
 	return {
 		scope: {
 			addEvent: '='
@@ -534,11 +534,11 @@ angular.module('adama-web').directive('layoutFix', ["$rootScope", function($root
 			$.AdminLTE.layout.fix();
 		}
 	};
-}]);
+});
 
 'use strict';
 
-angular.module('adama-web').directive('lazyControl', ["$rootScope", "$filter", function($rootScope, $filter) {
+angular.module('adama-web').directive('lazyControl', function($rootScope, $filter) {
 	var translateFilter = $filter('translate');
 	return {
 		link: function postLink(scope, element, attrs) {
@@ -566,11 +566,11 @@ angular.module('adama-web').directive('lazyControl', ["$rootScope", "$filter", f
 			});
 		}
 	};
-}]);
+});
 
 'use strict';
 
-angular.module('adama-web').run(["$rootScope", "$state", "Principal", "Auth", function($rootScope, $state, Principal, Auth) {
+angular.module('adama-web').run(function($rootScope, $state, Principal, Auth) {
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams) {
 		$rootScope.toState = toState;
 		$rootScope.toStateParams = toStateParams;
@@ -598,14 +598,14 @@ angular.module('adama-web').run(["$rootScope", "$state", "Principal", "Auth", fu
 			$state.go($rootScope.previousStateName, $rootScope.previousStateParams);
 		}
 	};
-}]);
+});
 
-angular.module('adama-web').config(["$httpProvider", function($httpProvider) {
+angular.module('adama-web').config(function($httpProvider) {
 	$httpProvider.interceptors.push('errorHandlerInterceptor');
 	$httpProvider.interceptors.push('authExpiredInterceptor');
 	$httpProvider.interceptors.push('authInterceptor');
 	$httpProvider.interceptors.push('notificationInterceptor');
-}]);
+});
 
 'use strict';
 
@@ -616,7 +616,7 @@ angular.module('adama-web').constant('jHipsterConstant', {
 
 'use strict';
 
-angular.module('adama-web').factory('jHipsterResourceConfig', ["ParseLinks", function(ParseLinks) {
+angular.module('adama-web').factory('jHipsterResourceConfig', function(ParseLinks) {
 	return {
 		'query': {
 			method: 'GET',
@@ -654,11 +654,11 @@ angular.module('adama-web').factory('jHipsterResourceConfig', ["ParseLinks", fun
 			}
 		}
 	};
-}]);
+});
 
 'use strict';
 
-angular.module('adama-web').factory('appGlobal', ["$rootScope", "$translate", function($rootScope, $translate) {
+angular.module('adama-web').factory('appGlobal', function($rootScope, $translate) {
 	var api = {};
 	api.setPageTitle = function(pageTitle) {
 		$translate(pageTitle).then(function(i18nPageTitle) {
@@ -666,7 +666,7 @@ angular.module('adama-web').factory('appGlobal', ["$rootScope", "$translate", fu
 		});
 	};
 	return api;
-}]);
+});
 
 'use strict';
 
@@ -690,7 +690,7 @@ angular.module('adama-web').provider('language', function() {
 		selectorData = newSelectorData;
 	};
 
-	this.$get = ["$q", "$http", "$translate", function($q, $http, $translate) {
+	this.$get = function($q, $http, $translate) {
 		var api = {};
 
 		api.getCurrent = function() {
@@ -710,21 +710,21 @@ angular.module('adama-web').provider('language', function() {
 		};
 
 		return api;
-	}];
+	};
 });
 
 'use strict';
 
-angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
+angular.module('adama-web').config(function($stateProvider) {
 	$stateProvider.state('app.user', {
 		url: '/users',
 		templateUrl: 'adama-web/user/user-list.html',
 		controller: 'CrudListCtrl',
 		controllerAs: 'ctrl',
 		resolve: {
-			EntityGenericResource: ["User", function(User) {
+			EntityGenericResource: function(User) {
 				return User;
-			}]
+			}
 		},
 		data: {
 			pageTitle: 'USER_TITLE_LIST',
@@ -735,19 +735,19 @@ angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 	var openModal = function($state, $uibModal, $stateParams, isEntityResolvable, controllerName, templateName) {
 		var resolveEntity;
 		if (isEntityResolvable) {
-			resolveEntity = /* @ngInject */ ["User", function(User) {
+			resolveEntity = /* @ngInject */ function(User) {
 				return User.get({
 					login: $stateParams.login
 				}).$promise;
-			}];
+			};
 		}
 		$uibModal.open({
 			templateUrl: 'adama-web/user/' + templateName,
 			resolve: {
 				entity: resolveEntity,
-				EntityGenericResource: ["User", function(User) {
+				EntityGenericResource: function(User) {
 					return User;
-				}]
+				}
 			},
 			controller: controllerName + ' as ctrl'
 		}).result.then(function() {
@@ -761,9 +761,9 @@ angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 
 	$stateProvider.state('app.user.edit', {
 		url: '/edit/:login',
-		onEnter: ["$state", "$uibModal", "$stateParams", function($state, $uibModal, $stateParams) {
+		onEnter: function($state, $uibModal, $stateParams) {
 			openModal($state, $uibModal, $stateParams, true, 'CrudEditCtrl', 'user-edit.html');
-		}],
+		},
 		data: {
 			pageTitle: 'USER_TITLE_EDIT',
 			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
@@ -772,9 +772,9 @@ angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 
 	$stateProvider.state('app.user.create', {
 		url: '/new',
-		onEnter: ["$state", "$uibModal", "$stateParams", function($state, $uibModal, $stateParams) {
+		onEnter: function($state, $uibModal, $stateParams) {
 			openModal($state, $uibModal, $stateParams, false, 'CrudEditCtrl', 'user-edit.html');
-		}],
+		},
 		data: {
 			pageTitle: 'USER_TITLE_NEW',
 			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
@@ -783,9 +783,9 @@ angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 
 	$stateProvider.state('app.user.view', {
 		url: '/view/:login',
-		onEnter: ["$state", "$uibModal", "$stateParams", function($state, $uibModal, $stateParams) {
+		onEnter: function($state, $uibModal, $stateParams) {
 			openModal($state, $uibModal, $stateParams, true, 'CrudViewCtrl', 'user-view.html');
-		}],
+		},
 		data: {
 			pageTitle: 'USER_TITLE_VIEW',
 			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
@@ -794,18 +794,22 @@ angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 
 	$stateProvider.state('app.user.delete', {
 		url: '/delete/:login',
-		onEnter: ["$state", "$uibModal", "$stateParams", function($state, $uibModal, $stateParams) {
+		onEnter: function($state, $uibModal, $stateParams) {
 			openModal($state, $uibModal, $stateParams, true, 'CrudDeleteCtrl', 'user-delete.html');
-		}],
+		},
 		data: {
 			pageTitle: 'USER_TITLE_DELETE',
 			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
 		}
 	});
-}]);
+});
 
-angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
+angular.module('adama-web').config(function($translateProvider) {
 	$translateProvider.translations('fr', {
+		error: {
+			userexists: 'Login déjà utilisé !',
+			emailexists: 'E-mail déjà utilisé !'
+		},
 		'USER_MENU': 'Utilisateurs',
 		'USER_TITLE_DELETE': 'Suppression d\'un utilisateur',
 		'USER_TITLE_VIEW': 'Détails d\'un utilisateur',
@@ -827,6 +831,10 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 	});
 
 	$translateProvider.translations('en', {
+		error: {
+			userexists: 'Login name already used!',
+			emailexists: 'E-mail is already in use!'
+		},
 		'USER_MENU': 'Users',
 		'USER_TITLE_DELETE': 'User delete',
 		'USER_TITLE_VIEW': 'User details',
@@ -846,11 +854,11 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 		'USER_LIST_LANGUAGE': 'Language',
 		'USER_LIST_AUTHORITIES': 'Authorities'
 	});
-}]);
+});
 
 'use strict';
 
-angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
+angular.module('adama-web').config(function($stateProvider) {
 	$stateProvider.state('app.personal.password', {
 		url: '/password',
 		templateUrl: 'adama-web/account/password/password.html',
@@ -860,9 +868,9 @@ angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 			pageTitle: 'ACCOUNT_PASSWORD'
 		}
 	});
-}]);
+});
 
-angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
+angular.module('adama-web').config(function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'ACCOUNT_PASSWORD': 'Modifier mon mot de passe',
 		'ACCOUNT_PASSWORD_TITLE': 'Modifier mon mot de passe',
@@ -900,11 +908,11 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 		'ACCOUNT_PASSWORD_SAVE_SUCCESS': 'Password successfully changed.',
 		'ACCOUNT_PASSWORD_SAVE_ERROR': 'Password could not be changed.'
 	});
-}]);
+});
 
 'use strict';
 
-angular.module('adama-web').controller('PasswordCtrl', ["Auth", "Principal", "AlertService", function(Auth, Principal, AlertService) {
+angular.module('adama-web').controller('PasswordCtrl', function(Auth, Principal, AlertService) {
 	var ctrl = this;
 	Principal.identity().then(function(account) {
 		ctrl.account = account;
@@ -916,11 +924,11 @@ angular.module('adama-web').controller('PasswordCtrl', ["Auth", "Principal", "Al
 			AlertService.error('ACCOUNT_PASSWORD_SAVE_ERROR');
 		});
 	};
-}]);
+});
 
 'use strict';
 
-angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
+angular.module('adama-web').config(function($stateProvider) {
 	$stateProvider.state('app.personal.settings', {
 		url: '/settings',
 		templateUrl: 'adama-web/account/settings/settings.html',
@@ -930,9 +938,9 @@ angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 			pageTitle: 'ACCOUNT_SETTINGS'
 		}
 	});
-}]);
+});
 
-angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
+angular.module('adama-web').config(function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'ACCOUNT_SETTINGS': 'Mon profil',
 		'ACCOUNT_SETTINGS_TITLE': 'Mon profil',
@@ -976,11 +984,11 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 		'ACCOUNT_SETTINGS_SAVE_SUCCESS': 'Profile successfully saved.',
 		'ACCOUNT_SETTINGS_SAVE_ERROR': 'Profile could not be saved.'
 	});
-}]);
+});
 
 'use strict';
 
-angular.module('adama-web').controller('SettingsCtrl', ["Principal", "Auth", "language", "AlertService", "$translate", function(Principal, Auth, language, AlertService, $translate) {
+angular.module('adama-web').controller('SettingsCtrl', function(Principal, Auth, language, AlertService, $translate) {
 	var ctrl = this;
 	var copyAccount = function(account) {
 		// Store the "settings account" in a separate variable, and not in the
@@ -1012,7 +1020,7 @@ angular.module('adama-web').controller('SettingsCtrl', ["Principal", "Auth", "la
 			AlertService.error('ACCOUNT_SETTINGS_SAVE_ERROR');
 		});
 	};
-}]);
+});
 
 'use strict';
 
@@ -1026,7 +1034,7 @@ angular.module('adama-web').directive('arkFooter', function() {
 
 'use strict';
 
-angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
+angular.module('adama-web').config(function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'TOGGLE_NAVIGATION': 'Navigation',
 		'USERINFO_PROFILE': 'Profil',
@@ -1040,7 +1048,7 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 		'USERINFO_PASSWORD': 'Password',
 		'USERINFO_SIGNOUT': 'Sign out'
 	});
-}]);
+});
 
 'use strict';
 
@@ -1060,7 +1068,7 @@ angular.module('adama-web').directive('languageSelector', function() {
 		restrict: 'E',
 		scope: {},
 		bindToController: {},
-		controller: ["$rootScope", "$translate", "language", function($rootScope, $translate, language) {
+		controller: function($rootScope, $translate, language) {
 			var ctrl = this;
 			ctrl.changeLanguage = function(key) {
 				$translate.use(key);
@@ -1078,7 +1086,7 @@ angular.module('adama-web').directive('languageSelector', function() {
 			language.getSelectorData().then(function(data) {
 				ctrl.languages = data;
 			});
-		}],
+		},
 		controllerAs: 'ctrl'
 	};
 });
@@ -1093,7 +1101,7 @@ angular.module('adama-web').directive('mainNavigation', function() {
 		restrict: 'E',
 		scope: {},
 		bindToController: {},
-		controller: ["$rootScope", "$filter", "menuService", function($rootScope, $filter, menuService) {
+		controller: function($rootScope, $filter, menuService) {
 			var ctrl = this;
 			var addMenuEntry, addMenuEntries;
 			addMenuEntry = function(input, item) {
@@ -1121,7 +1129,7 @@ angular.module('adama-web').directive('mainNavigation', function() {
 			$rootScope.$on('$translateChangeSuccess', function() {
 				updateMenuEntries();
 			});
-		}],
+		},
 		controllerAs: 'ctrl'
 	};
 });
@@ -1179,7 +1187,7 @@ angular.module('adama-web').directive('userInfo', function() {
 		restrict: 'E',
 		scope: {},
 		bindToController: {},
-		controller: ["$rootScope", "$state", "Auth", function($rootScope, $state, Auth) {
+		controller: function($rootScope, $state, Auth) {
 			var ctrl = this;
 			ctrl.signout = function() {
 				Auth.logout();
@@ -1188,7 +1196,7 @@ angular.module('adama-web').directive('userInfo', function() {
 			$rootScope.$on('auth.updateAccount', function(event, data) {
 				ctrl.account = data.account;
 			});
-		}],
+		},
 		controllerAs: 'ctrl'
 	};
 });
@@ -1214,7 +1222,7 @@ angular.module('adama-web').directive('viewAttribute', function() {
 'use strict';
 
 angular.module('adama-web')
-	.directive('jhAlert', ["AlertService", function(AlertService) {
+	.directive('jhAlert', function(AlertService) {
 		return {
 			restrict: 'E',
 			template: '<div class="content-wrapper" ng-cloak ng-if="alerts && alerts.length">' +
@@ -1234,8 +1242,8 @@ angular.module('adama-web')
 				}
 			]
 		};
-	}])
-	.directive('jhAlertError', ["AlertService", "$rootScope", "$translate", function(AlertService, $rootScope, $translate) {
+	})
+	.directive('jhAlertError', function(AlertService, $rootScope, $translate) {
 		return {
 			restrict: 'E',
 			template: '<div class="alerts" ng-if="alerts && alerts.length">' +
@@ -1319,7 +1327,7 @@ angular.module('adama-web')
 				}
 			]
 		};
-	}]);
+	});
 
 'use strict';
 
@@ -1455,7 +1463,7 @@ angular.module('adama-web')
 'use strict';
 
 angular.module('adama-web')
-	.factory('Auth', ["$rootScope", "$state", "$q", "$translate", "Principal", "AuthServerProvider", "Account", "Password", "PasswordResetInit", "PasswordResetFinish", function Auth($rootScope, $state, $q, $translate, Principal, AuthServerProvider, Account, Password, PasswordResetInit, PasswordResetFinish) {
+	.factory('Auth', function Auth($rootScope, $state, $q, $translate, Principal, AuthServerProvider, Account, Password, PasswordResetInit, PasswordResetFinish) {
 		return {
 			login: function(credentials, callback) {
 				var cb = callback || angular.noop;
@@ -1562,7 +1570,7 @@ angular.module('adama-web')
 				}).$promise;
 			}
 		};
-	}]);
+	});
 
 'use strict';
 
@@ -1644,7 +1652,7 @@ angular.module('adama-web').directive('hasAnyAuthority', ['Principal', function(
 'use strict';
 
 angular.module('adama-web')
-	.factory('Principal', ["$q", "Account", function Principal($q, Account) {
+	.factory('Principal', function Principal($q, Account) {
 		var _identity;
 		var _authenticated = false;
 
@@ -1715,11 +1723,11 @@ angular.module('adama-web')
 				return deferred.promise;
 			}
 		};
-	}]);
+	});
 
 'use strict';
 
-angular.module('adama-web').factory('authInterceptor', ["$rootScope", "$q", "$location", "localStorageService", function($rootScope, $q, $location, localStorageService) {
+angular.module('adama-web').factory('authInterceptor', function($rootScope, $q, $location, localStorageService) {
 	return {
 		// Add authorization token to headers
 		request: function(config) {
@@ -1733,7 +1741,7 @@ angular.module('adama-web').factory('authInterceptor', ["$rootScope", "$q", "$lo
 			return config;
 		}
 	};
-}]).factory('authExpiredInterceptor', ["$rootScope", "$q", "$injector", "localStorageService", function($rootScope, $q, $injector, localStorageService) {
+}).factory('authExpiredInterceptor', function($rootScope, $q, $injector, localStorageService) {
 	return {
 		responseError: function(response) {
 			// token has expired
@@ -1748,11 +1756,11 @@ angular.module('adama-web').factory('authInterceptor', ["$rootScope", "$q", "$lo
 			return $q.reject(response);
 		}
 	};
-}]);
+});
 
 'use strict';
 
-angular.module('adama-web').factory('errorHandlerInterceptor', ["$q", "$rootScope", "jHipsterConstant", function($q, $rootScope, jHipsterConstant) {
+angular.module('adama-web').factory('errorHandlerInterceptor', function($q, $rootScope, jHipsterConstant) {
 	return {
 		'responseError': function(response) {
 			if (!(response.status === 401 && response.data.path.indexOf('/api/account') === 0)) {
@@ -1761,11 +1769,11 @@ angular.module('adama-web').factory('errorHandlerInterceptor', ["$q", "$rootScop
 			return $q.reject(response);
 		}
 	};
-}]);
+});
 
 'use strict';
 
-angular.module('adama-web').factory('notificationInterceptor', ["$q", "AlertService", "jHipsterConstant", function($q, AlertService, jHipsterConstant) {
+angular.module('adama-web').factory('notificationInterceptor', function($q, AlertService, jHipsterConstant) {
 	return {
 		response: function(response) {
 			var alertKey = response.headers('X-' + jHipsterConstant.appModule + '-alert');
@@ -1777,11 +1785,11 @@ angular.module('adama-web').factory('notificationInterceptor', ["$q", "AlertServ
 			return response;
 		}
 	};
-}]);
+});
 
 'use strict';
 
-angular.module('adama-web').factory('User', ["$resource", "jHipsterConstant", "jHipsterResourceConfig", function($resource, jHipsterConstant, jHipsterResourceConfig) {
+angular.module('adama-web').factory('User', function($resource, jHipsterConstant, jHipsterResourceConfig) {
 	var config = angular.extend({}, jHipsterResourceConfig, {
 		'delete': {
 			method: 'DELETE',
@@ -1791,7 +1799,7 @@ angular.module('adama-web').factory('User', ["$resource", "jHipsterConstant", "j
 		}
 	});
 	return $resource(jHipsterConstant.apiBase + 'api/users/:login', {}, config);
-}]);
+});
 
 /*jshint bitwise: false*/
 'use strict';
@@ -1862,7 +1870,7 @@ angular.module('adama-web').service('Base64', function() {
 			enc1 = enc2 = enc3 = enc4 = '';
 		}
 	};
-}).factory('StorageService', ["$window", function($window) {
+}).factory('StorageService', function($window) {
 	return {
 
 		get: function(key) {
@@ -1881,7 +1889,7 @@ angular.module('adama-web').service('Base64', function() {
 			$window.localStorage.clear();
 		}
 	};
-}]);
+});
 
 'use strict';
 
@@ -1923,7 +1931,7 @@ angular.module('adama-web')
 
 'use strict';
 
-angular.module('adama-web').factory('AuthServerProvider', ["$http", "localStorageService", "Base64", "jHipsterConstant", function loginService($http, localStorageService, Base64, jHipsterConstant) {
+angular.module('adama-web').factory('AuthServerProvider', function loginService($http, localStorageService, Base64, jHipsterConstant) {
 	return {
 		login: function(credentials) {
 			var data = 'username=' + encodeURIComponent(credentials.username) + '&password=' + encodeURIComponent(credentials.password);
@@ -1949,12 +1957,12 @@ angular.module('adama-web').factory('AuthServerProvider', ["$http", "localStorag
 			return token && token.expires && token.expires > new Date().getTime();
 		}
 	};
-}]);
+});
 
 'use strict';
 
 angular.module('adama-web')
-	.factory('Account', ["$resource", "jHipsterConstant", function Account($resource, jHipsterConstant) {
+	.factory('Account', function Account($resource, jHipsterConstant) {
 		return $resource(jHipsterConstant.apiBase + 'api/account', {}, {
 			'get': {
 				method: 'GET',
@@ -1968,20 +1976,20 @@ angular.module('adama-web')
 				}
 			}
 		});
-	}]);
+	});
 
 'use strict';
 
-angular.module('adama-web').factory('Password', ["$resource", "jHipsterConstant", function($resource, jHipsterConstant) {
+angular.module('adama-web').factory('Password', function($resource, jHipsterConstant) {
 	return $resource(jHipsterConstant.apiBase + 'api/account/change_password', {}, {});
-}]);
+});
 
-angular.module('adama-web').factory('PasswordResetInit', ["$resource", "jHipsterConstant", function($resource, jHipsterConstant) {
+angular.module('adama-web').factory('PasswordResetInit', function($resource, jHipsterConstant) {
 	return $resource(jHipsterConstant.apiBase + 'api/account/reset_password/init', {}, {});
-}]);
+});
 
-angular.module('adama-web').factory('PasswordResetFinish', ["$resource", "jHipsterConstant", function($resource, jHipsterConstant) {
+angular.module('adama-web').factory('PasswordResetFinish', function($resource, jHipsterConstant) {
 	return $resource(jHipsterConstant.apiBase + 'api/account/reset_password/finish', {}, {});
-}]);
+});
 
 //# sourceMappingURL=adama-web.js.map
