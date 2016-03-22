@@ -81,7 +81,7 @@ gulp.task('js', function() {
 });
 
 gulp.task('css', function() {
-	return gulp.src([ config.mainPath + 'less/adama-web.less' ]) //
+	var cssPipe = gulp.src([ config.mainPath + 'less/adama-web.less' ]) //
 	.pipe(plugins.plumber({
 		errorHandler : onError
 	})) //
@@ -92,16 +92,21 @@ gulp.task('css', function() {
 		browsers : [ 'last 2 versions', 'safari > 5' ]
 	})) //
 	.pipe(gulp.dest(config.targetPath)) //
-	.pipe(sourcemaps.init()) //
-	.pipe(cssnano()) //
-	.pipe(rename({
-		suffix : '.min'
-	})) //
-	.pipe(sourcemaps.write('./')) //
-	.pipe(gulp.dest(config.targetPath));
+	.pipe(browserSync.stream()); //
+	if (gutil.env.type === 'production') {
+		cssPipe
+		.pipe(sourcemaps.init()) //
+		.pipe(cssnano()) //
+		.pipe(rename({
+			suffix : '.min'
+		})) //
+		.pipe(sourcemaps.write('./')) //
+		.pipe(gulp.dest(config.targetPath));
+	}
+	return cssPipe;
 });
 
-gulp.task('serve', [ 'clean', 'js', 'css' ], function() {
+gulp.task('serve', [ 'js', 'css' ], function() {
 	browserSync.init({
 		server : {
 			baseDir : [ 'demo', './' ],
