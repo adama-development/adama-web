@@ -443,7 +443,14 @@ angular.module('adama-web').controller('CrudViewCtrl', ["$scope", "entity", func
 	};
 }]);
 
+'use strict';
 
+angular.module('adama-web').directive('modalBtnBackToList', function() {
+	return {
+		templateUrl: 'adama-web/crud/modal-btn-back-to-list.html',
+		restrict: 'E'
+	};
+});
 
 'use strict';
 
