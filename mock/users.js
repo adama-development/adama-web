@@ -1,26 +1,22 @@
 'use strict';
 
-angular.module('adama-web').run(function($httpBackend, jHipsterConstant, mockSettings) {
+angular.module('adama-web').run(function($httpBackend, $http, jHipsterConstant, mockSettings) {
 	var entities = mockSettings.users;
 
+	$httpBackend.when('GET', '/api/users').respond(function() {
+		console.warn('GET /api/users (PDF mass export)');
+		var request = new XMLHttpRequest();
+		request.open('GET', 'mock/pdf/users.pdf', false);
+		request.send(null);
+		return [ request.status, request.response, {} ];
+	});
+
 	$httpBackend.when('GET', /^\/api\/users\?.*/).respond(function(method, url) {
-		console.warn('GET /api/users', url);
+		console.warn('GET /api/users (JSON list)', url);
 		return [ 200, entities, {
 			'Link' : '</api/users?page=0&size=20>; rel="last",</api/users?page=0&size=20>; rel="first"',
 			'X-Total-Count' : 35
 		} ];
-	});
-
-	$httpBackend.when('GET', '/api/users/xls').respond(function() {
-		console.warn('GET /api/users/xls');
-		console.log('TODO MOCK export-xls');
-		return [ 200 ];
-	});
-
-	$httpBackend.when('POST', '/api/users/xls').respond(function() {
-		console.warn('POST /api/users/xls');
-		console.log('TODO MOCK import-xls');
-		return [ 200 ];
 	});
 
 	var getById = function(id) {
