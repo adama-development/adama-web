@@ -20,15 +20,12 @@ angular.module('adama-web').controller('CrudListCtrl', function(EntityGenericRes
 			EntityGenericResource.query({
 				page: params.page() - 1,
 				size: params.count(),
-				sort: sortValues
+				sort: sortValues,
+				search: params.filter().$
 			}).$promise.then(function(entities) {
 				params.total(entities.$metadata.totalItems);
 				$defer.resolve(entities);
 			});
 		}
 	});
-	ctrl.search = function() {
-		ctrl.tableParams.page(1);
-		ctrl.tableParams.reload();
-	};
 });

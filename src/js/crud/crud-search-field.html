@@ -1,4 +1,8 @@
-<form class="form-inline pull-right crud-search-box" name="searchForm">
+<form
+	class="form-inline pull-right crud-search-box"
+	name="searchForm"
+	ng-submit="$ctrl.search()"
+>
 	<div class="input-group">
 		<label for="fullSearch" class="sr-only" translate>CRUD_FORM_SEARCH</label>
 		<input
@@ -7,6 +11,7 @@
 			id="fullSearch"
 			required
 			placeholder="{{ 'CRUD_FORM_SEARCH' | translate }}"
+			ng-model="$ctrl.searchValue"
 		/>
 		<span class="input-group-btn">
 			<button

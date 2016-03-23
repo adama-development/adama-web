@@ -400,28 +400,25 @@ angular.module('adama-web').controller('CrudListCtrl', function(EntityGenericRes
 		total: 0,
 		getData: function($defer, params) {
 			var sort = params.sorting();
-			var sortValues = ['id,asc'];
+			var sortValues = [];
 			if (!angular.equals({}, sort)) {
 				for (var key in sort) {
 					if (sort.hasOwnProperty(key)) {
-						sortValues.unshift(key + ',' + sort[key]);
+						sortValues.push(key + ',' + sort[key]);
 					}
 				}
 			}
 			EntityGenericResource.query({
 				page: params.page() - 1,
 				size: params.count(),
-				sort: sortValues
+				sort: sortValues,
+				search: params.filter().$
 			}).$promise.then(function(entities) {
 				params.total(entities.$metadata.totalItems);
 				$defer.resolve(entities);
 			});
 		}
 	});
-	ctrl.search = function() {
-		ctrl.tableParams.page(1);
-		ctrl.tableParams.reload();
-	};
 });
 
 'use strict';
@@ -429,7 +426,22 @@ angular.module('adama-web').controller('CrudListCtrl', function(EntityGenericRes
 angular.module('adama-web').directive('crudSearchField', function() {
 	return {
 		templateUrl: 'adama-web/crud/crud-search-field.html',
-		restrict: 'E'
+		restrict: 'E',
+		scope: {},
+		bindToController: {
+			tableParams: '='
+		},
+		controller: function() {
+			var ctrl = this;
+			ctrl.search = function() {
+				ctrl.tableParams.filter({
+					$: ctrl.searchValue
+				});
+				ctrl.tableParams.page(1);
+				ctrl.tableParams.reload();
+			};
+		},
+		controllerAs: '$ctrl'
 	};
 });
 
