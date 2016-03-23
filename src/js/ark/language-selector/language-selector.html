@@ -1,10 +1,10 @@
 <div class="dropdown pull-right dropup">
 	<button type="button" class="btn btn-link btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-		<i class="famfamfam-flags" ng-class="ctrl.currentLanguage"></i>
+		<i class="famfamfam-flags" ng-class="$ctrl.currentLanguage"></i>
 	</button>
 	<ul class="dropdown-menu">
-		<li ng-repeat="language in ctrl.languages">
-			<a ng-click="ctrl.changeLanguage(language.code)">
+		<li ng-repeat="language in $ctrl.languages">
+			<a ng-click="$ctrl.changeLanguage(language.code)">
 				<span class="famfamfam-flags" ng-class="language.cssCLass"></span>
 				<span translate>{{ language.labelKey }}</span></a>
 			</a>

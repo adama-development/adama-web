@@ -1,6 +1,6 @@
 <ul class="sidebar-menu">
 	<li
-		ng-repeat="item in ctrl.menuItems | orderBy:'rank'"
+		ng-repeat="item in $ctrl.menuItems | orderBy:'rank'"
 		ng-class="{'header':item.divider, 'treeview': !item.url && !item.divider}"
 	>
 		<span ng-if="item.divider">{{ item.label }}</span>

@@ -1,13 +1,13 @@
 <div class="navbar-custom-menu">
 	<ul class="nav navbar-nav">
 		<li class="dropdown user user-menu">
-			<ds-principal-identity data="ctrl.account"></ds-principal-identity>
+			<ds-principal-identity data="$ctrl.account"></ds-principal-identity>
 			<a class="dropdown-toggle noajax" data-toggle="dropdown" aria-expanded="false">
 				<img src="img/male-fill-circle-512.png" class="user-image"></img>
 				<span class="hidden-xs">
 					<span>
-						{{ ctrl.account.firstName }}
-						{{ ctrl.account.lastName }}
+						{{ $ctrl.account.firstName }}
+						{{ $ctrl.account.lastName }}
 					</span>
 				</span>
 			</a>
@@ -16,11 +16,11 @@
 					<img src="img/male-fill-circle-512.png" class="img-circle" />
 					<p>
 						<span>
-							{{ ctrl.account.firstName }}
-							{{ ctrl.account.lastName }}
+							{{ $ctrl.account.firstName }}
+							{{ $ctrl.account.lastName }}
 						</span>
 						<small>
-							<span ng-repeat="authority in ctrl.account.authorities"> {{ ::authority | translate }} </span>
+							<span ng-repeat="authority in $ctrl.account.authorities"> {{ ::authority | translate }} </span>
 						</small>
 					</p>
 				</li>
@@ -38,7 +38,7 @@
 						</a>
 					</div>
 					<div class="pull-right">
-						<a class="btn btn-default btn-flat" ng-click="ctrl.signout()">
+						<a class="btn btn-default btn-flat" ng-click="$ctrl.signout()">
 							<i class="glyphicon glyphicon-log-out"></i>
 							<span class="sr-only" translate>USERINFO_SIGNOUT</span>
 						</a>

@@ -5,19 +5,19 @@
 	</button>
 	<ul class="dropdown-menu dropdown-menu-right">
 		<li>
-			<a ui-sref=".view(ctrl.routeMapping)">
+			<a ui-sref=".view($ctrl.routeMapping)">
 				<i class="glyphicon glyphicon-eye-open"></i>
 				<span translate>CRUD_ACTION_VIEW</span>
 			</a>
 		</li>
 		<li>
-			<a ui-sref=".edit(ctrl.routeMapping)">
+			<a ui-sref=".edit($ctrl.routeMapping)">
 				<i class="glyphicon glyphicon-pencil"></i>
 				<span translate>CRUD_ACTION_EDIT</span>
 			</a>
 		</li>
 		<li>
-			<a ui-sref=".delete(ctrl.routeMapping)">
+			<a ui-sref=".delete($ctrl.routeMapping)">
 				<i class="glyphicon glyphicon-trash"></i>
 				<span translate>CRUD_ACTION_DELETE</span>
 			</a>
