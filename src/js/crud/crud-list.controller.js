@@ -9,11 +9,11 @@ angular.module('adama-web').controller('CrudListCtrl', function(EntityGenericRes
 		total: 0,
 		getData: function($defer, params) {
 			var sort = params.sorting();
-			var sortValues = ['id,asc'];
+			var sortValues = [];
 			if (!angular.equals({}, sort)) {
 				for (var key in sort) {
 					if (sort.hasOwnProperty(key)) {
-						sortValues.unshift(key + ',' + sort[key]);
+						sortValues.push(key + ',' + sort[key]);
 					}
 				}
 			}
