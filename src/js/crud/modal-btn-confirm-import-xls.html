@@ -3,5 +3,5 @@
 	type="submit"
 	ng-click="ctrl.confirmImportXls()"
 	translate
-	ng-disabled="ctrl.loading"
+	ng-disabled="!ctrl.file || ctrl.loading"
 >CRUD_CONFIRM_IMPORT</button>

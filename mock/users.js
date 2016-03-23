@@ -73,7 +73,7 @@ angular.module('adama-web').run(function($httpBackend, $http, jHipsterConstant, 
 	});
 
 	$httpBackend.when('POST', '/api/users').respond(function(method, url, data, headers) {
-		console.warn('POST /api/users', url, data);
+		console.warn('POST /api/users (new user)', url, data);
 		var postedData = JSON.parse(data);
 		var id = postedData.login;
 		var entity = getById(id);
@@ -92,5 +92,10 @@ angular.module('adama-web').run(function($httpBackend, $http, jHipsterConstant, 
 		}
 		entities.push(postedData);
 		return [ 200, postedData ];
+	});
+
+	$httpBackend.when('POST', '/api/users?method=import-xls').respond(function(method, url, data) {
+		console.warn('POST /api/users (import-xls)', data);
+		return [ 200 ];
 	});
 });

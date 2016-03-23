@@ -2,18 +2,23 @@
 
 angular.module('adama-web').controller('CrudImportXlsCtrl', function($scope, AlertService, EntityGenericResource) {
 	var ctrl = this;
+
 	ctrl.dismiss = function() {
 		$scope.$dismiss();
 	};
+
 	ctrl.loading = false;
 	ctrl.confirmImportXls = function() {
+		var file = ctrl.file;
 		ctrl.loading = true;
-		EntityGenericResource.massImportXls().$promise.then(function(newEntity) {
+		EntityGenericResource.massImportXls({
+			file: file
+		}).$promise.then(function() {
 			AlertService.success('CRUD_IMPORT_XLS_SUCCESS');
-			$scope.$close(newEntity);
-		}).catch(function() {
+			$scope.$close();
+		}, function() {
 			AlertService.error('CRUD_IMPORT_XLS_ERROR');
-		}).finally(function(){
+		}).finally(function() {
 			ctrl.loading = false;
 		});
 	};

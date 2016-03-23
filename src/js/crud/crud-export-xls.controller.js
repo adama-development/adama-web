@@ -13,7 +13,7 @@ angular.module('adama-web').controller('CrudExportXlsCtrl', function($scope, Ale
 			$scope.$close(newEntity);
 		}).catch(function() {
 			AlertService.error('CRUD_EXPORT_XLS_ERROR');
-		}).finally(function(){
+		}).finally(function() {
 			ctrl.loading = false;
 		});
 	};

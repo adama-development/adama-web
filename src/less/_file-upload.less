@@ -1,0 +1,37 @@
+.file-upload {
+	&--zone {
+		background: rgba(120, 120, 120, 0.5);
+		margin-top: 10px;
+		margin-bottom: 10px;
+		padding: 10px;
+		height: 100px;
+		display: flex;
+		justify-content: center;
+	   	align-items: center;
+		cursor: pointer;
+		text-align: center;
+		input {
+			display: none;
+		}
+	
+		.only-dragover {
+			display: none;
+		}
+
+		&.dragover {
+			background: rgba(0, 120, 0, 0.5);
+
+			span {
+				display: none;
+			}
+
+			.only-dragover {
+				display: block;
+			}
+		}
+	}
+
+	&--dropzone {
+		background: rgba(255, 120, 0, 0.5);
+	}
+}

@@ -1,13 +1,40 @@
-<div>
+<form name="form" novalidate>
 	<div class="modal-header">
 		<h4 translate>USER_TITLE_IMPORT_XLS</h4>
 	</div>
 	<div class="modal-body">
 		<jh-alert-error></jh-alert-error>
 		<span translate>CRUD_IMPORT_XLS_MESSAGE</span>
+		<label
+			class="file-upload--zone file-upload--dropzone"
+			ng-show="!ctrl.file && !ctrl.loading"
+			ngf-drop
+			ng-model="ctrl.file"
+			ngf-drag-over-class="'dragover'"
+			ngf-multiple="false"
+			ngf-pattern="'.xls'"
+		>
+			<span translate>FILEUPLOAD_DROPZONE_LABEL</span>
+			<span class="only-dragover" translate>FILEUPLOAD_DROPZONE_LABEL_DROP</span>
+			<input
+				type="file"
+				name="file"
+				id="fileInput"
+				ng-model="ctrl.file"
+				ngf-select
+				ngf-pattern="'.xls'"
+			/>
+		</label>
+		<div
+			class="file-upload--zone"
+			ng-click="ctrl.file = undefined"
+			ng-show="ctrl.file && !ctrl.loading"
+		>
+			<span translate>FILEUPLOAD_RESET</span>
+		</div>
 	</div>
 	<div class="modal-footer">
 		<modal-btn-cancel></modal-btn-cancel>
 		<modal-btn-confirm-import-xls></modal-btn-confirm-import-xls>
 	</div>
-</div>
+</form>

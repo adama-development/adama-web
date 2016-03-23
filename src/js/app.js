@@ -11,6 +11,7 @@ angular.module('adama-web', [ //
 	'LocalStorageModule', //
 	'ngTable', //
 	'ngFileSaver', //
+	'ngFileUpload', //
 	'angular-loading-bar' //
 ]);
 
@@ -97,7 +98,10 @@ angular.module('adama-web').config(function($translateProvider) {
 		'PAGER_RESULT': '{{ total }} entrées',
 		'FLAG_EN': 'Anglais',
 		'FLAG_CN': 'Chinois',
-		'FLAG_FR': 'Français'
+		'FLAG_FR': 'Français',
+		'FILEUPLOAD_DROPZONE_LABEL': 'Déposez un fichier XLS pour le téléverser ou cliquez sur la zone pour sélectionner un fichier XLS.',
+		'FILEUPLOAD_DROPZONE_LABEL_DROP': 'Vous pouvez déposer le fichier.',
+		'FILEUPLOAD_RESET': 'Retirer le fichier sélectionné et faire une nouvelle sélection.'
 	});
 
 	$translateProvider.translations('en', {
@@ -105,6 +109,9 @@ angular.module('adama-web').config(function($translateProvider) {
 		'PAGER_RESULT': '{{ total }} entries',
 		'FLAG_EN': 'English',
 		'FLAG_CN': 'Chinese',
-		'FLAG_FR': 'French'
+		'FLAG_FR': 'French',
+		'FILEUPLOAD_DROPZONE_LABEL': 'Drop a XLS file on this area to upload it or click the area to select a XLS file.',
+		'FILEUPLOAD_DROPZONE_LABEL_DROP': 'You can now drop the file',
+		'FILEUPLOAD_RESET': 'Remove selected file and start over.'
 	});
 });
