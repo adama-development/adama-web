@@ -9,5 +9,5 @@ angular.module('adama-web').factory('User', function($resource, jHipsterConstant
 			}
 		}
 	});
-	return $resource(jHipsterConstant.apiBase + 'api/users/:login', {}, config);
+	return $resource(jHipsterConstant.apiBase + 'api/users/:login/:subResource', {}, config);
 });

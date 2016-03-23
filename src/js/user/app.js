@@ -17,9 +17,9 @@ angular.module('adama-web').config(function($stateProvider) {
 		}
 	});
 
-	var openModal = function($state, $uibModal, $stateParams, isEntityResolvable, controllerName, templateName) {
+	var openModal = function($state, $uibModal, $stateParams, controllerName, templateName) {
 		var resolveEntity;
-		if (isEntityResolvable) {
+		if ($stateParams) {
 			resolveEntity = /* @ngInject */ function(User) {
 				return User.get({
 					login: $stateParams.login
@@ -47,7 +47,7 @@ angular.module('adama-web').config(function($stateProvider) {
 	$stateProvider.state('app.user.edit', {
 		url: '/edit/:login',
 		onEnter: function($state, $uibModal, $stateParams) {
-			openModal($state, $uibModal, $stateParams, true, 'CrudEditCtrl', 'user-edit.html');
+			openModal($state, $uibModal, $stateParams, 'CrudEditCtrl', 'user-edit.html');
 		},
 		data: {
 			pageTitle: 'USER_TITLE_EDIT',
@@ -57,8 +57,8 @@ angular.module('adama-web').config(function($stateProvider) {
 
 	$stateProvider.state('app.user.create', {
 		url: '/new',
-		onEnter: function($state, $uibModal, $stateParams) {
-			openModal($state, $uibModal, $stateParams, false, 'CrudEditCtrl', 'user-edit.html');
+		onEnter: function($state, $uibModal) {
+			openModal($state, $uibModal, undefined, 'CrudEditCtrl', 'user-edit.html');
 		},
 		data: {
 			pageTitle: 'USER_TITLE_NEW',
@@ -69,7 +69,7 @@ angular.module('adama-web').config(function($stateProvider) {
 	$stateProvider.state('app.user.view', {
 		url: '/view/:login',
 		onEnter: function($state, $uibModal, $stateParams) {
-			openModal($state, $uibModal, $stateParams, true, 'CrudViewCtrl', 'user-view.html');
+			openModal($state, $uibModal, $stateParams, 'CrudViewCtrl', 'user-view.html');
 		},
 		data: {
 			pageTitle: 'USER_TITLE_VIEW',
@@ -80,10 +80,32 @@ angular.module('adama-web').config(function($stateProvider) {
 	$stateProvider.state('app.user.delete', {
 		url: '/delete/:login',
 		onEnter: function($state, $uibModal, $stateParams) {
-			openModal($state, $uibModal, $stateParams, true, 'CrudDeleteCtrl', 'user-delete.html');
+			openModal($state, $uibModal, $stateParams, 'CrudDeleteCtrl', 'user-delete.html');
 		},
 		data: {
 			pageTitle: 'USER_TITLE_DELETE',
+			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
+		}
+	});
+
+	$stateProvider.state('app.user.importXls', {
+		url: '/import-xls',
+		onEnter: function($state, $uibModal) {
+			openModal($state, $uibModal, undefined, 'CrudImportXlsCtrl', 'user-import-xls.html');
+		},
+		data: {
+			pageTitle: 'USER_TITLE_IMPORT_XLS',
+			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
+		}
+	});
+
+	$stateProvider.state('app.user.exportXls', {
+		url: '/export-xls',
+		onEnter: function($state, $uibModal) {
+			openModal($state, $uibModal, undefined, 'CrudExportXlsCtrl', 'user-export-xls.html');
+		},
+		data: {
+			pageTitle: 'USER_TITLE_EXPORT_XLS',
 			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
 		}
 	});
@@ -101,6 +123,8 @@ angular.module('adama-web').config(function($translateProvider) {
 		'USER_TITLE_LIST': 'Liste des utilisateurs',
 		'USER_TITLE_EDIT': 'Editer un utilisateur',
 		'USER_TITLE_NEW': 'Créer un utilisateur',
+		'USER_TITLE_IMPORT_XLS': 'Importer en masse des utilisateurs',
+		'USER_TITLE_EXPORT_XLS': 'Exporter en masse des utilisateurs',
 
 		'USER_FORM_LOGIN': 'Identifiant',
 		'USER_FORM_FIRSTNAME': 'Prénom',
@@ -126,6 +150,8 @@ angular.module('adama-web').config(function($translateProvider) {
 		'USER_TITLE_LIST': 'User list',
 		'USER_TITLE_EDIT': 'User edition',
 		'USER_TITLE_NEW': 'User creation',
+		'USER_TITLE_IMPORT_XLS': 'Users mass import',
+		'USER_TITLE_EXPORT_XLS': 'Users mass export',
 
 		'USER_FORM_LOGIN': 'Login',
 		'USER_FORM_FIRSTNAME': 'Firstname',

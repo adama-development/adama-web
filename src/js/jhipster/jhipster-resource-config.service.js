@@ -36,6 +36,18 @@ angular.module('adama-web').factory('jHipsterResourceConfig', function(ParseLink
 			params: {
 				id: '@id'
 			}
+		},
+		'massExportXls': {
+			method: 'GET',
+			params: {
+				subResource: 'xls'
+			}
+		},
+		'massImportXls': {
+			method: 'POST',
+			params: {
+				subResource: 'xls'
+			}
 		}
 	};
 });

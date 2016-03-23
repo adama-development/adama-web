@@ -11,6 +11,18 @@ angular.module('adama-web').run(function($httpBackend, jHipsterConstant, mockSet
 		} ];
 	});
 
+	$httpBackend.when('GET', '/api/users/xls').respond(function() {
+		console.warn('GET /api/users/xls');
+		console.log('TODO MOCK export-xls');
+		return [ 200 ];
+	});
+
+	$httpBackend.when('POST', '/api/users/xls').respond(function() {
+		console.warn('POST /api/users/xls');
+		console.log('TODO MOCK import-xls');
+		return [ 200 ];
+	});
+
 	var getById = function(id) {
 		var entity;
 		angular.forEach(entities, function(e) {
@@ -48,7 +60,7 @@ angular.module('adama-web').run(function($httpBackend, jHipsterConstant, mockSet
 		if (entity) {
 			entities = entities.splice(entities.indexOf(entity), 1);
 		}
-		return [ 404 ];
+		return [ 200 ];
 	});
 
 	$httpBackend.when('PUT', '/api/users').respond(function(method, url, data) {
