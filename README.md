@@ -36,3 +36,8 @@ The release process tag the source control and update project version :
 	gulp tag
 
 The project use [gulp-release-tasks](https://www.npmjs.com/package/gulp-release-tasks) for its versionning an tag process.
+
+Don't forget to push the release :
+
+	git push
+	git push --tags
