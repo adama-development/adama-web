@@ -54,7 +54,7 @@ angular.module('adama-web').run(function($httpBackend, $http, jHipsterConstant, 
 		var id = url.substring('/api/users/'.length);
 		var entity = getById(id);
 		if (entity) {
-			entities = entities.splice(entities.indexOf(entity), 1);
+			entities.splice(entities.indexOf(entity), 1);
 		}
 		return [ 200 ];
 	});
