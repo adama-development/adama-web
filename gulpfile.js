@@ -52,7 +52,7 @@ gulp.task('js', function() {
 	.pipe(jscs.reporter()) //
 	.pipe(browserSync.stream()); //
 	if (gutil.env.type === 'production') {
-		jsPipe.pipe(prettify()) //
+		jsPipe = jsPipe.pipe(prettify()) //
 		.pipe(gulp.dest(config.mainPath + 'js')) //
 		// angular annotation
 		.pipe(ngAnnotate());
