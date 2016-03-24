@@ -95,7 +95,7 @@ angular.module('adama-web').run(function(ngTableDefaults) {
 angular.module('adama-web').config(function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'MENU_CATEGORY_USERS': 'Utilisateurs',
-		'PAGER_RESULT': '{{ total }} entrées',
+		'PAGER_RESULT': '{{ firstItemIdx }}-{{ lastItemIdx | min:total }} sur {{ total }} entrées',
 		'FLAG_EN': 'Anglais',
 		'FLAG_CN': 'Chinois',
 		'FLAG_FR': 'Français',
@@ -106,7 +106,7 @@ angular.module('adama-web').config(function($translateProvider) {
 
 	$translateProvider.translations('en', {
 		'MENU_CATEGORY_USERS': 'Users',
-		'PAGER_RESULT': '{{ total }} entries',
+		'PAGER_RESULT': '{{ firstItemIdx }}-{{ lastItemIdx | min:total }} on {{ total }} entries',
 		'FLAG_EN': 'English',
 		'FLAG_CN': 'Chinese',
 		'FLAG_FR': 'French',

@@ -95,7 +95,7 @@ angular.module('adama-web').run(["ngTableDefaults", function(ngTableDefaults) {
 angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'MENU_CATEGORY_USERS': 'Utilisateurs',
-		'PAGER_RESULT': '{{ total }} entrées',
+		'PAGER_RESULT': '{{ firstItemIdx }}-{{ lastItemIdx | min:total }} sur {{ total }} entrées',
 		'FLAG_EN': 'Anglais',
 		'FLAG_CN': 'Chinois',
 		'FLAG_FR': 'Français',
@@ -106,7 +106,7 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 
 	$translateProvider.translations('en', {
 		'MENU_CATEGORY_USERS': 'Users',
-		'PAGER_RESULT': '{{ total }} entries',
+		'PAGER_RESULT': '{{ firstItemIdx }}-{{ lastItemIdx | min:total }} on {{ total }} entries',
 		'FLAG_EN': 'English',
 		'FLAG_CN': 'Chinese',
 		'FLAG_FR': 'French',
@@ -347,10 +347,7 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 
 angular.module('adama-web').component('btnCreate', {
 	templateUrl: 'adama-web/crud/btn-create.html',
-	transclude: true,
-	controller: ["$transclude", function($transclude) {
-		console.log($transclude);
-	}]
+	transclude: true
 });
 
 'use strict';
@@ -656,6 +653,12 @@ angular.module('adama-web').directive('lazyControl', ["$rootScope", "$filter", f
 		}
 	};
 }]);
+
+'use strict';
+
+angular.module('adama-web').filter('min', function() {
+	return Math.min;
+});
 
 'use strict';
 

@@ -4,30 +4,6 @@
 /* ****************************************************************************
  * ADAMA-WEB SPECIFIC
  */
-[ng-message] {
-  background: #fcf8e3;
-  margin-bottom: 5px;
-  padding: 5px 10px;
-}
-.famfamfam-flags {
-  display: inline-block;
-}
-.navbar-nav > .user-menu > .dropdown-menu > li.user-header {
-  height: auto;
-}
-.angular-table-pager {
-  margin: 20px 0;
-}
-.angular-table-pager .pagination {
-  margin: 0;
-}
-.angular-table-pager .pagination a {
-  cursor: pointer;
-  height: 2.5em;
-}
-.angular-table-pager > div + div {
-  text-align: right;
-}
 .crud-search-box input + span .btn {
   -webkit-transition: border-color 0.15s ease-in-out 0s;
   transition: border-color 0.15s ease-in-out 0s;
@@ -97,6 +73,9 @@ btn-create + crud-search-field form {
 .crud-transcluded-actions a > .ion {
   margin-right: 10px;
 }
+.famfamfam-flags {
+  display: inline-block;
+}
 .file-upload--zone {
   background: rgba(120, 120, 120, 0.5);
   margin-top: 10px;
@@ -145,4 +124,54 @@ btn-create + crud-search-field form {
 }
 .modal ~ #loading-bar .bar {
   background: #ecf0f5;
+}
+[ng-message] {
+  background: #fcf8e3;
+  margin-bottom: 5px;
+  padding: 5px 10px;
+}
+.navbar-nav > .user-menu > .dropdown-menu > li.user-header {
+  height: auto;
+}
+.angular-table-pager {
+  margin: 20px 0;
+}
+.angular-table-pager .pagination {
+  margin: 0;
+}
+.angular-table-pager .pagination a {
+  cursor: pointer;
+  height: 2.5em;
+}
+.angular-table-pager > div + div {
+  text-align: center;
+}
+.angular-table-pager > div + div + div {
+  text-align: right;
+}
+@media (max-width: 767px) {
+  .angular-table-pager > div {
+    display: inline;
+  }
+  .angular-table-pager ul {
+    vertical-align: middle;
+  }
+}
+.table-responsive {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+.table-responsive table {
+  -webkit-box-ordinal-group: 2;
+  -webkit-order: 1;
+      -ms-flex-order: 1;
+          order: 1;
+  margin-top: 10px;
 }

@@ -1,10 +1,21 @@
 <div class="angular-table-pager">
+	<div class="col-sm-4">
+		<div ng-if="params.settings().counts.length" class="ng-table-counts btn-group">
+			<button ng-repeat="count in params.settings().counts" type="button" ng-class="{'active':params.count()==count}" ng-click="params.count(count)" class="btn btn-default btn-sm">
+				<span ng-bind="count"></span>
+			</button>
+		</div>
+	</div>
 	<div 
-		class="col-sm-5"
+		class="col-sm-4"
 		translate="PAGER_RESULT"
-		translate-values="{ total: params.total() }"
+		translate-values="{
+			total: params.total(),
+			firstItemIdx: (params.page() - 1) * params.count() + 1,
+			lastItemIdx: params.page() * params.count()
+		}"
 	></div>
-	<div class="col-sm-7">
+	<div class="col-sm-4">
 		<ul class="pagination pagination-sm" ng-show="pages">
 			<li
 				ng-repeat="page in pages"
