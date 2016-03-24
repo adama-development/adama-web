@@ -58,4 +58,12 @@ angular.module('adama-web').run(function($httpBackend, mockSettings) {
 		console.warn('POST /api/account/change_password', url, data);
 		return [ 200 ];
 	});
+
+	$httpBackend.when('POST', '/api/account/reset_password/init').respond(function(method, url, data) {
+		console.warn('POST /api/account/reset_password/init', data);
+		if (data === 'admin@admin'){
+			return [ 200, 'e-mail was sent' ];
+		}
+		return [ 400, 'e-mail address not registered' ];
+	});
 });
