@@ -128,6 +128,8 @@ angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 
 'use strict';
 
+'use strict';
+
 angular.module('adama-web').controller('AccessDeniedCtrl', function() {
 	// nothing to do
 });
@@ -273,8 +275,6 @@ angular.module('adama-web').controller('SigninCtrl', ["$rootScope", "$state", "A
 
 'use strict';
 
-'use strict';
-
 angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
 	$translateProvider.translations('fr', {
 		'CRUD_BACK_TO_LIST': 'Retour à la liste',
@@ -346,7 +346,11 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 'use strict';
 
 angular.module('adama-web').component('btnCreate', {
-	templateUrl: 'adama-web/crud/btn-create.html'
+	templateUrl: 'adama-web/crud/btn-create.html',
+	transclude: true,
+	controller: ["$transclude", function($transclude) {
+		console.log($transclude);
+	}]
 });
 
 'use strict';
