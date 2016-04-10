@@ -32,11 +32,12 @@ angular.module('adama-web').run(function($rootScope) {
 	});
 });
 
-angular.module('adama-web').run(function($rootScope, appGlobal) {
+angular.module('adama-web').run(function($rootScope, $filter) {
 	// change page title depending on current page
+	var translateFn = $filter('translate');
 	$rootScope.$on('$stateChangeSuccess', function(event, toState) {
 		if (toState && toState.data && toState.data.pageTitle) {
-			appGlobal.setPageTitle(toState.data.pageTitle);
+			$rootScope.pageTitle = translateFn(toState.data.pageTitle);
 		}
 	});
 });
