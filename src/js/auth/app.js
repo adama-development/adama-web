@@ -57,7 +57,7 @@ angular.module('adama-web').config(function($translateProvider) {
 		'RECOVER': 'Récupération de mot de passe',
 		'RECOVER_INTRO': 'Saisissez votre email pour récupérer votre mot de passe',
 		'RECOVER_MAIL': 'Email',
-		'RECOVER_MAIL_REQUIRED': 'L\'email est tobligatoire',
+		'RECOVER_MAIL_REQUIRED': 'L\'email est obligatoire',
 		'RECOVER_MAIL_EMAIL': 'L\'email n\'est pas au bon format',
 		'RECOVER_SUBMIT': 'Récupérer mon mot de passe',
 		'RECOVER_BACK_TO_LOGIN': 'Retour à l\'identificaition',
