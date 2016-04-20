@@ -32,11 +32,12 @@ angular.module('adama-web').run(["$rootScope", function($rootScope) {
 	});
 }]);
 
-angular.module('adama-web').run(["$rootScope", "appGlobal", function($rootScope, appGlobal) {
+angular.module('adama-web').run(["$rootScope", "$filter", function($rootScope, $filter) {
 	// change page title depending on current page
+	var translateFn = $filter('translate');
 	$rootScope.$on('$stateChangeSuccess', function(event, toState) {
 		if (toState && toState.data && toState.data.pageTitle) {
-			appGlobal.setPageTitle(toState.data.pageTitle);
+			$rootScope.pageTitle = translateFn(toState.data.pageTitle);
 		}
 	});
 }]);
@@ -193,7 +194,7 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 		'RECOVER': 'Récupération de mot de passe',
 		'RECOVER_INTRO': 'Saisissez votre email pour récupérer votre mot de passe',
 		'RECOVER_MAIL': 'Email',
-		'RECOVER_MAIL_REQUIRED': 'L\'email est tobligatoire',
+		'RECOVER_MAIL_REQUIRED': 'L\'email est obligatoire',
 		'RECOVER_MAIL_EMAIL': 'L\'email n\'est pas au bon format',
 		'RECOVER_SUBMIT': 'Récupérer mon mot de passe',
 		'RECOVER_BACK_TO_LOGIN': 'Retour à l\'identificaition',
@@ -629,6 +630,7 @@ angular.module('adama-web').directive('lazyControl', ["$rootScope", "$filter", f
 	return {
 		link: function postLink(scope, element, attrs) {
 			var id, additionalLabelAttributes, labelScreenOnly, labelContainer;
+			var isPlaceholderForced = false;
 			if (attrs.type === 'checkbox') {
 				element.wrap('<div class="checkbox"><label></label></div>');
 				element.after('<span></span>');
@@ -640,15 +642,25 @@ angular.module('adama-web').directive('lazyControl', ["$rootScope", "$filter", f
 				if (labelScreenOnly) {
 					additionalLabelAttributes += ' class="sr-only"';
 				}
+				if (attrs.placeholder) {
+					isPlaceholderForced = true;
+				}
 				element.attr('id', id);
 				element.addClass('form-control');
 				element.wrap('<div class="form-group"></div>');
 				element.before('<label' + additionalLabelAttributes + '></label>');
 				labelContainer = element.prev().eq(0);
 			}
-			labelContainer.html(translateFilter(attrs.lazyControlLabelKey));
+			var initLabelAndPlaceholder = function() {
+				var label = translateFilter(attrs.lazyControlLabelKey);
+				labelContainer.html(label);
+				if (!isPlaceholderForced) {
+					element.attr('placeholder', label);
+				}
+			};
+			initLabelAndPlaceholder();
 			$rootScope.$on('$translateChangeSuccess', function() {
-				labelContainer.html(translateFilter(attrs.lazyControlLabelKey));
+				initLabelAndPlaceholder();
 			});
 		}
 	};
@@ -783,18 +795,6 @@ angular.module('adama-web').factory('User', ["$resource", "jHipsterConstant", "j
 		}
 	});
 	return $resource(jHipsterConstant.apiBase + 'api/users/:login', {}, config);
-}]);
-
-'use strict';
-
-angular.module('adama-web').factory('appGlobal', ["$rootScope", "$translate", function($rootScope, $translate) {
-	var api = {};
-	api.setPageTitle = function(pageTitle) {
-		$translate(pageTitle).then(function(i18nPageTitle) {
-			$rootScope.pageTitle = i18nPageTitle;
-		});
-	};
-	return api;
 }]);
 
 'use strict';

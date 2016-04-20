@@ -17,7 +17,7 @@ angular.module('adama-web').directive('lazyControl', function($rootScope, $filte
 				if (labelScreenOnly) {
 					additionalLabelAttributes += ' class="sr-only"';
 				}
-				if (attrs.placeholder){
+				if (attrs.placeholder) {
 					isPlaceholderForced = true;
 				}
 				element.attr('id', id);
