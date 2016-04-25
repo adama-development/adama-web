@@ -182,6 +182,7 @@ btn-create + crud-search-field form {
   -webkit-flex-direction: column;
       -ms-flex-direction: column;
           flex-direction: column;
+  padding-bottom: 5em;
 }
 .table-responsive table {
   -webkit-box-ordinal-group: 2;

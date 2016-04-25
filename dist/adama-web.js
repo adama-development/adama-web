@@ -580,6 +580,28 @@ angular.module('adama-web').directive('dsAuthorities', ["$parse", function($pars
 
 'use strict';
 
+angular.module('adama-web').directive('dsBinaryFileUrl', ["$parse", "binaryFileService", function($parse, binaryFileService) {
+	return {
+		scope: false,
+		link: function(scope, element, attrs) {
+			var updateOutput = function(binaryFileList) {
+				binaryFileList = angular.copy(binaryFileList);
+				if (!angular.isArray(binaryFileList)) {
+					binaryFileList = [binaryFileList];
+				}
+				binaryFileService.setUrlForBinaryFiles(binaryFileList);
+				$parse(attrs.output).assign(scope, binaryFileList);
+			};
+			var binaryFileList = $parse(attrs.input)(scope);
+			if (binaryFileList) {
+				updateOutput(binaryFileList);
+			}
+		}
+	};
+}]);
+
+'use strict';
+
 angular.module('adama-web').directive('dsLanguage', ["$parse", "language", function($parse, language) {
 	return {
 		scope: false,
@@ -795,6 +817,34 @@ angular.module('adama-web').factory('User', ["$resource", "jHipsterConstant", "j
 		}
 	});
 	return $resource(jHipsterConstant.apiBase + 'api/users/:login', {}, config);
+}]);
+
+'use strict';
+
+angular.module('adama-web').factory('binaryFileService', ["$http", "jHipsterConstant", function($http, jHipsterConstant) {
+	var api = {};
+
+	api.setUrlForBinaryFiles = function(binaryFileList) {
+		var idList = [];
+		angular.forEach(binaryFileList, function(binaryFile) {
+			idList.push(binaryFile.id);
+		});
+		if (idList.length) {
+			$http({
+				method: 'GET',
+				url: jHipsterConstant.apiBase + 'api/binaryFiles',
+				data: {
+					ids: idList
+				}
+			}).then(function(response) {
+				angular.forEach(binaryFileList, function(binaryFile) {
+					binaryFile.url = response.data[binaryFile.id];
+				});
+			});
+		}
+	};
+
+	return api;
 }]);
 
 'use strict';
