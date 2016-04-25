@@ -17,12 +17,13 @@ angular.module('adama-web').controller('CrudListCtrl', function(EntityGenericRes
 					}
 				}
 			}
-			EntityGenericResource.query({
+			var requestParams = angular.extend({}, {
 				page: params.page() - 1,
 				size: params.count(),
 				sort: sortValues,
 				search: params.filter().$
-			}).$promise.then(function(entities) {
+			}, params.filter().business);
+			EntityGenericResource.query(requestParams).$promise.then(function(entities) {
 				params.total(entities.$metadata.totalItems);
 				$defer.resolve(entities);
 			});
