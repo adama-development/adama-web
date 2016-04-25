@@ -6,6 +6,7 @@ angular.module('adama-web').component('btnCreate', {
 	bindings: {
 		disableCreate: '<',
 		disableMassImport: '<',
-		disableMassExport: '<'
+		disableMassExport: '<',
+		disableAdditionnalAction: '<'
 	}
 });

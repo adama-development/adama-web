@@ -8,7 +8,9 @@
 		<span translate>CRUD_NEW</span>
 	</a>
 
-	<div class="btn-group">
+	<div class="btn-group"
+		ng-if="!$ctrl.disableAdditionnalAction"
+	>
 		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 			<span class="caret"></span>
 		</button>
