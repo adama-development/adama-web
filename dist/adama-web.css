@@ -88,6 +88,12 @@ btn-create + crud-search-field form {
 .crud-transcluded-actions button > .ion {
   margin-right: 10px;
 }
+.crud-image {
+  max-width: 100%;
+}
+table .crud-image {
+  max-height: 10vh;
+}
 .famfamfam-flags {
   display: inline-block;
 }

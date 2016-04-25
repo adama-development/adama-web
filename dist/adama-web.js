@@ -348,16 +348,49 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 
 angular.module('adama-web').component('btnCreate', {
 	templateUrl: 'adama-web/crud/btn-create.html',
-	transclude: true
+	transclude: true,
+	bindings: {
+		disableCreate: '<',
+		disableMassImport: '<',
+		disableMassExport: '<',
+		disableAdditionnalAction: '<'
+	}
 });
 
 'use strict';
 
 angular.module('adama-web').component('crudActionDropdown', {
 	bindings: {
-		routeMapping: '<'
+		routeMapping: '<',
+		disableView: '<',
+		disableEdit: '<',
+		disableDelete: '<'
 	},
 	templateUrl: 'adama-web/crud/crud-action-dropdown.html'
+});
+
+'use strict';
+
+angular.module('adama-web').component('crudCustomFilter', {
+	templateUrl: 'adama-web/crud/crud-custom-filter.html',
+	bindings: {
+		tableParams: '<',
+		searchFieldName: '@',
+		searchFieldValue: '<',
+		labelKey: '@'
+	},
+	controller: function() {
+		var ctrl = this;
+		ctrl.displayFiltered = function() {
+			var businessFilter = {};
+			businessFilter[ctrl.searchFieldName] = ctrl.searchFieldValue;
+			ctrl.tableParams.filter({
+				business: businessFilter
+			});
+			ctrl.tableParams.page(1);
+			ctrl.tableParams.reload();
+		};
+	}
 });
 
 'use strict';
@@ -470,12 +503,13 @@ angular.module('adama-web').controller('CrudListCtrl', ["EntityGenericResource",
 					}
 				}
 			}
-			EntityGenericResource.query({
+			var requestParams = angular.extend({}, {
 				page: params.page() - 1,
 				size: params.count(),
 				sort: sortValues,
 				search: params.filter().$
-			}).$promise.then(function(entities) {
+			}, params.filter().business);
+			EntityGenericResource.query(requestParams).$promise.then(function(entities) {
 				params.total(entities.$metadata.totalItems);
 				$defer.resolve(entities);
 			});
@@ -568,11 +602,11 @@ angular.module('adama-web').directive('modalBtnConfirmImportXls', function() {
 
 'use strict';
 
-angular.module('adama-web').directive('dsAuthorities', ["$parse", function($parse) {
+angular.module('adama-web').directive('dsAuthorities', ["$parse", "jHipsterConstant", function($parse, jHipsterConstant) {
 	return {
 		scope: false,
 		link: function(scope, element, attrs) {
-			var authorities = ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_MANAGER', 'ROLE_WORKSHOP', 'ROLE_CUTTER', 'ROLE_SHIPPING', 'ROLE_OFFICE', 'ROLE_PRESTASHOP'];
+			var authorities = jHipsterConstant.authorities;
 			$parse(attrs.data).assign(scope, authorities);
 		}
 	};
@@ -743,7 +777,8 @@ angular.module('adama-web').config(["$httpProvider", function($httpProvider) {
 
 angular.module('adama-web').constant('jHipsterConstant', {
 	apiBase: 'http://localhost:13337/',
-	appModule: 'mySuperApp'
+	appModule: 'mySuperApp',
+	authorities: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_MANAGER']
 });
 
 'use strict';
@@ -1056,12 +1091,12 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 		'USER_FORM_LASTNAME': 'Nom de famille',
 		'USER_FORM_EMAIL': 'Email',
 		'USER_FORM_LANGUAGE': 'Langue',
-		'USER_FORM_AUTHORITIES': 'Rôles',
+		'USER_FORM_AUTHORITY': 'Rôle',
 
 		'USER_LIST_LOGIN': 'Identifiant',
 		'USER_LIST_MAIL': 'Email',
 		'USER_LIST_LANGUAGE': 'Langue',
-		'USER_LIST_AUTHORITIES': 'Rôle'
+		'USER_LIST_AUTHORITY': 'Rôle'
 	});
 
 	$translateProvider.translations('en', {
@@ -1083,12 +1118,12 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 		'USER_FORM_LASTNAME': 'Lastname',
 		'USER_FORM_EMAIL': 'Email',
 		'USER_FORM_LANGUAGE': 'Language',
-		'USER_FORM_AUTHORITIES': 'Authorities',
+		'USER_FORM_AUTHORITY': 'Authority',
 
 		'USER_LIST_LOGIN': 'Login',
 		'USER_LIST_MAIL': 'Email',
 		'USER_LIST_LANGUAGE': 'Language',
-		'USER_LIST_AUTHORITIES': 'Authorities'
+		'USER_LIST_AUTHORITY': 'Authority'
 	});
 }]);
 
@@ -1869,18 +1904,18 @@ angular.module('adama-web')
 				}
 
 				return this.identity().then(function(_id) {
-					return _id.authorities && _id.authorities.indexOf(authority) !== -1;
+					return _id.authority && _id.authority === authority;
 				}, function() {
 					return false;
 				});
 			},
 			hasAnyAuthority: function(authorities) {
-				if (!_authenticated || !_identity || !_identity.authorities) {
+				if (!_authenticated || !_identity || !_identity.authority) {
 					return false;
 				}
 
 				for (var i = 0; i < authorities.length; i++) {
-					if (_identity.authorities.indexOf(authorities[i]) !== -1) {
+					if (_identity.authority === authorities[i]) {
 						return true;
 					}
 				}
