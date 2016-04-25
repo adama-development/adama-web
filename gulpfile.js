@@ -114,7 +114,7 @@ gulp.task('serve', [ 'js', 'css' ], function() {
 			routes : {
 				'/adama-web' : config.mainPath + 'js/',
 				'/dist' : 'dist',
-				'/mock' : 'mock',
+				'/mocks' : 'mocks',
 				'/node_modules' : 'node_modules',
 				'/vendor-no-npm' : 'vendor-no-npm'
 			}
@@ -123,7 +123,7 @@ gulp.task('serve', [ 'js', 'css' ], function() {
 	});
 
 	gulp.watch('demo/**').on('change', browserSync.reload);
-	gulp.watch('mock/**').on('change', browserSync.reload);
+	gulp.watch('mocks/**').on('change', browserSync.reload);
 	gulp.watch(config.mainPath + 'js/**/*.html').on('change', browserSync.reload);
 	gulp.watch([ config.mainPath + 'js/**/*.js' ], [ 'js' ]);
 	gulp.watch([ config.mainPath + 'less/**/*.less' ], [ 'css' ]);
