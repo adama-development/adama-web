@@ -585,7 +585,6 @@ angular.module('adama-web').directive('dsBinaryFileUrl', ["$parse", "binaryFileS
 		scope: false,
 		link: function(scope, element, attrs) {
 			var updateOutput = function(binaryFileList) {
-				console.log('attrs.output', attrs.output, binaryFileList);
 				if (attrs.output) {
 					binaryFileList = angular.copy(binaryFileList);
 				}
@@ -597,8 +596,7 @@ angular.module('adama-web').directive('dsBinaryFileUrl', ["$parse", "binaryFileS
 					$parse(attrs.output).assign(scope, binaryFileList);
 				}
 			};
-			scope.$watch(attrs.input, function(newValue, oldValue) {
-				console.log(newValue, oldValue);
+			scope.$watch(attrs.input, function() {
 				var binaryFileList = $parse(attrs.input)(scope);
 				if (binaryFileList) {
 					updateOutput(binaryFileList);
