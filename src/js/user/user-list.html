@@ -16,7 +16,7 @@
 						ng-table="ctrl.tableParams"
 						template-pagination="adama-web/ark/ngtable/ngtable-pager.html"
 					>
-						<tr ng-repeat="user in $data">
+						<tr ng-repeat="user in $data track by user.id">
 							<!-- <td -->
 							<!-- 	header="'adama-web/ark/ngtable/ngtable-checkbox.html'" -->
 							<!-- > -->
