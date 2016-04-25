@@ -8,14 +8,7 @@
 		<view-attribute label-key="USER_FORM_LASTNAME" value="ctrl.entity.lastName"></view-attribute>
 		<view-attribute label-key="USER_FORM_EMAIL" value="ctrl.entity.email"></view-attribute>
 		<view-attribute label-key="USER_FORM_LANGUAGE" value="ctrl.entity.langKey"></view-attribute>
-		<view-attribute label-key="USER_FORM_AUTHORITIES">
-			<ul>
-				<li
-					ng-repeat="authority in ctrl.entity.authorities"
-					translate
-				>{{ authority }}</li>
-			</ul>
-		</view-attribute>
+		<view-attribute label-key="USER_FORM_AUTHORITY" value="ctrl.entity.authority"></view-attribute>
 	</div>
 	<div class="modal-footer">
 		<modal-btn-back-to-list></modal-btn-back-to-list>

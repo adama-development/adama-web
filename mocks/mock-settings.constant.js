@@ -11,7 +11,7 @@ angular.module('adama-web').constant('mockSettings', {
 		'email' : 'vincent.delacourt@adama-development.com',
 		'activated' : true,
 		'langKey' : 'en',
-		'authorities' : [ 'ROLE_ADMIN' ]
+		'authority' : 'ROLE_ADMIN'
 	},
 	users : [ {
 		'login' : 'user',
@@ -21,7 +21,7 @@ angular.module('adama-web').constant('mockSettings', {
 		'email' : 'user-no-reply@adama-development.com',
 		'activated' : true,
 		'langKey' : 'cn',
-		'authorities' : [ 'ROLE_USER' ],
+		'authority' : 'ROLE_USER',
 		'id' : 'user-0',
 		'createdDate' : new Date('2016-02-18T07:34:00.997Z'),
 		'lastModifiedBy' : 'admin',
@@ -35,7 +35,7 @@ angular.module('adama-web').constant('mockSettings', {
 		'email' : 'admin-no-reply@adama-development.com',
 		'activated' : true,
 		'langKey' : 'en',
-		'authorities' : [ 'ROLE_ADMIN' ],
+		'authority' : 'ROLE_ADMIN',
 		'id' : '56c573e9224f93a3ad32fb6c',
 		'createdDate' : new Date('2016-02-18T07:34:01.004Z'),
 		'lastModifiedBy' : 'admin',

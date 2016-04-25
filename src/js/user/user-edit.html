@@ -69,12 +69,11 @@
 		></select>
 		<ds-authorities data="authorities"></ds-authorities>
 		<select
-			multiple
 			name="authority"
-			ng-model="ctrl.entity.authorities"
+			ng-model="ctrl.entity.authority"
 			ng-options="authority for authority in authorities"
 			lazy-control
-			lazy-control-label-key="USER_FORM_AUTHORITIES"
+			lazy-control-label-key="USER_FORM_AUTHORITY"
 		></select>
 	</div>
 	<div class="modal-footer">

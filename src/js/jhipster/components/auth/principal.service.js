@@ -18,18 +18,18 @@ angular.module('adama-web')
 				}
 
 				return this.identity().then(function(_id) {
-					return _id.authorities && _id.authorities.indexOf(authority) !== -1;
+					return _id.authority && _id.authority === authority;
 				}, function() {
 					return false;
 				});
 			},
 			hasAnyAuthority: function(authorities) {
-				if (!_authenticated || !_identity || !_identity.authorities) {
+				if (!_authenticated || !_identity || !_identity.authority) {
 					return false;
 				}
 
 				for (var i = 0; i < authorities.length; i++) {
-					if (_identity.authorities.indexOf(authorities[i]) !== -1) {
+					if (_identity.authority === authorities[i]) {
 						return true;
 					}
 				}

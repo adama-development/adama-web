@@ -131,12 +131,12 @@ angular.module('adama-web').config(function($translateProvider) {
 		'USER_FORM_LASTNAME': 'Nom de famille',
 		'USER_FORM_EMAIL': 'Email',
 		'USER_FORM_LANGUAGE': 'Langue',
-		'USER_FORM_AUTHORITIES': 'Rôles',
+		'USER_FORM_AUTHORITY': 'Rôle',
 
 		'USER_LIST_LOGIN': 'Identifiant',
 		'USER_LIST_MAIL': 'Email',
 		'USER_LIST_LANGUAGE': 'Langue',
-		'USER_LIST_AUTHORITIES': 'Rôle'
+		'USER_LIST_AUTHORITY': 'Rôle'
 	});
 
 	$translateProvider.translations('en', {
@@ -158,11 +158,11 @@ angular.module('adama-web').config(function($translateProvider) {
 		'USER_FORM_LASTNAME': 'Lastname',
 		'USER_FORM_EMAIL': 'Email',
 		'USER_FORM_LANGUAGE': 'Language',
-		'USER_FORM_AUTHORITIES': 'Authorities',
+		'USER_FORM_AUTHORITY': 'Authority',
 
 		'USER_LIST_LOGIN': 'Login',
 		'USER_LIST_MAIL': 'Email',
 		'USER_LIST_LANGUAGE': 'Language',
-		'USER_LIST_AUTHORITIES': 'Authorities'
+		'USER_LIST_AUTHORITY': 'Authority'
 	});
 });

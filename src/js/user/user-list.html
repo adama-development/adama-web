@@ -35,11 +35,9 @@
 								sortable="'langKey'"
 						   	>{{user.langKey}}</td>
 							<td
-								data-title="'USER_LIST_AUTHORITIES' | translate"
+								data-title="'USER_LIST_AUTHORITY' | translate"
 							>
-								<div ng-repeat="authority in user.authorities">
-									<span class="label label-info">{{ authority }}</span>
-								</div>
+								<span class="label label-info">{{ user.authority }}</span>
 							</td>
 							<td class="text-right">
 								<crud-action-dropdown route-mapping="{login:user.login}"></crud-action-dropdown>
