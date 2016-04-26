@@ -1,9 +1,9 @@
 'use strict';
 
-angular.module('adama-web').factory('binaryFileService', function($http, jHipsterConstant) {
+angular.module('adama-web').factory('binaryFileService', function($http, $q, jHipsterConstant) {
 	var api = {};
 
-	api.setUrlForBinaryFiles = function(binaryFileList) {
+	api.initUrlForBinaryFiles = function(binaryFileList) {
 		var workingList = [];
 		var idList = [];
 		angular.forEach(binaryFileList, function(binaryFile) {
@@ -13,7 +13,7 @@ angular.module('adama-web').factory('binaryFileService', function($http, jHipste
 			}
 		});
 		if (idList.length) {
-			$http({
+			return $http({
 				method: 'GET',
 				url: jHipsterConstant.apiBase + 'api/binaryFiles',
 				data: {
@@ -25,6 +25,7 @@ angular.module('adama-web').factory('binaryFileService', function($http, jHipste
 				});
 			});
 		}
+		return $q.when();
 	};
 
 	return api;

@@ -622,7 +622,7 @@ angular.module('adama-web').directive('dsBinaryFileUrl', ["$parse", "binaryFileS
 				if (!angular.isArray(binaryFileList)) {
 					binaryFileList = [binaryFileList];
 				}
-				binaryFileService.setUrlForBinaryFiles(binaryFileList);
+				binaryFileService.initUrlForBinaryFiles(binaryFileList);
 				if (attrs.output) {
 					$parse(attrs.output).assign(scope, binaryFileList);
 				}
@@ -859,10 +859,10 @@ angular.module('adama-web').factory('User', ["$resource", "jHipsterConstant", "j
 
 'use strict';
 
-angular.module('adama-web').factory('binaryFileService', ["$http", "jHipsterConstant", function($http, jHipsterConstant) {
+angular.module('adama-web').factory('binaryFileService', ["$http", "$q", "jHipsterConstant", function($http, $q, jHipsterConstant) {
 	var api = {};
 
-	api.setUrlForBinaryFiles = function(binaryFileList) {
+	api.initUrlForBinaryFiles = function(binaryFileList) {
 		var workingList = [];
 		var idList = [];
 		angular.forEach(binaryFileList, function(binaryFile) {
@@ -872,7 +872,7 @@ angular.module('adama-web').factory('binaryFileService', ["$http", "jHipsterCons
 			}
 		});
 		if (idList.length) {
-			$http({
+			return $http({
 				method: 'GET',
 				url: jHipsterConstant.apiBase + 'api/binaryFiles',
 				data: {
@@ -884,6 +884,7 @@ angular.module('adama-web').factory('binaryFileService', ["$http", "jHipsterCons
 				});
 			});
 		}
+		return $q.when();
 	};
 
 	return api;

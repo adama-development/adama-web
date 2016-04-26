@@ -11,7 +11,7 @@ angular.module('adama-web').directive('dsBinaryFileUrl', function($parse, binary
 				if (!angular.isArray(binaryFileList)) {
 					binaryFileList = [binaryFileList];
 				}
-				binaryFileService.setUrlForBinaryFiles(binaryFileList);
+				binaryFileService.initUrlForBinaryFiles(binaryFileList);
 				if (attrs.output) {
 					$parse(attrs.output).assign(scope, binaryFileList);
 				}
