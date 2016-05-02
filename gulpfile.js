@@ -130,3 +130,5 @@ gulp.task('serve', [ 'js', 'css' ], function() {
 });
 
 gulp.task('default', [ 'serve' ]);
+
+gulp.task('build', [ 'js', 'css' ]);
