@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-web').run(function($httpBackend, $http, jHipsterConstant, mockSettings) {
+angular.module('adama-web').run(function($httpBackend, $http, adamaConstant, mockSettings) {
 	var entities = mockSettings.users;
 
 	$httpBackend.when('GET', '/api/binaryFiles').respond(function(method, url, data) {

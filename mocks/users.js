@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-web').run(function($httpBackend, $http, jHipsterConstant, mockSettings) {
+angular.module('adama-web').run(function($httpBackend, $http, adamaConstant, mockSettings) {
 	var entities = mockSettings.users;
 
 	$httpBackend.when('GET', '/api/users').respond(function() {
@@ -79,15 +79,15 @@ angular.module('adama-web').run(function($httpBackend, $http, jHipsterConstant, 
 		var entity = getById(id);
 		if (entity) {
 			console.error('error.userexists');
-			headers['X-' + jHipsterConstant.appModule + '-Error'] = 'error.userexists';
-			headers['X-' + jHipsterConstant.appModule + '-Params'] = 'user-management';
+			headers['X-' + adamaConstant.appModule + '-Error'] = 'error.userexists';
+			headers['X-' + adamaConstant.appModule + '-Params'] = 'user-management';
 			return [ 400, undefined, headers ];
 		}
 		entity = getByEmail(postedData.email);
 		if (entity) {
 			console.error('error.emailexists');
-			headers['X-' + jHipsterConstant.appModule + '-Error'] = 'error.emailexists';
-			headers['X-' + jHipsterConstant.appModule + '-Params'] = 'user-management';
+			headers['X-' + adamaConstant.appModule + '-Error'] = 'error.emailexists';
+			headers['X-' + adamaConstant.appModule + '-Params'] = 'user-management';
 			return [ 400, undefined, headers ];
 		}
 		entities.push(postedData);

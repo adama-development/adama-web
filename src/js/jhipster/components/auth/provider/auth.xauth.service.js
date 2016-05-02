@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('adama-web').factory('AuthServerProvider', function loginService($http, localStorageService, Base64, jHipsterConstant) {
+angular.module('adama-web').factory('AuthServerProvider', function loginService($http, localStorageService, Base64, adamaConstant) {
 	return {
 		login: function(credentials) {
 			var data = 'username=' + encodeURIComponent(credentials.username) + '&password=' + encodeURIComponent(credentials.password);
-			return $http.post(jHipsterConstant.apiBase + 'api/authenticate', data, {
+			return $http.post(adamaConstant.apiBase + 'api/authenticate', data, {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 					'Accept': 'application/json'

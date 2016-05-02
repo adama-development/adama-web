@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-web').factory('binaryFileService', function($http, $q, jHipsterConstant) {
+angular.module('adama-web').factory('binaryFileService', function($http, $q, adamaConstant) {
 	var api = {};
 
 	api.initUrlForBinaryFiles = function(binaryFileList) {
@@ -15,7 +15,7 @@ angular.module('adama-web').factory('binaryFileService', function($http, $q, jHi
 		if (idList.length) {
 			return $http({
 				method: 'GET',
-				url: jHipsterConstant.apiBase + 'api/binaryFiles',
+				url: adamaConstant.apiBase + 'api/binaryFiles',
 				data: {
 					ids: idList
 				}

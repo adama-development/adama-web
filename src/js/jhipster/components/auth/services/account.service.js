@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('adama-web')
-	.factory('Account', function Account($resource, jHipsterConstant) {
-		return $resource(jHipsterConstant.apiBase + 'api/account', {}, {
+	.factory('Account', function Account($resource, adamaConstant) {
+		return $resource(adamaConstant.apiBase + 'api/account', {}, {
 			'get': {
 				method: 'GET',
 				params: {},
