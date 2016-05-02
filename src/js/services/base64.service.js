@@ -70,19 +70,19 @@ angular.module('adama-web').service('Base64', function() {
 }).factory('StorageService', function($window) {
 	return {
 
-		get: function(key) {
+		get : function(key) {
 			return JSON.parse($window.localStorage.getItem(key));
 		},
 
-		save: function(key, data) {
+		save : function(key, data) {
 			$window.localStorage.setItem(key, JSON.stringify(data));
 		},
 
-		remove: function(key) {
+		remove : function(key) {
 			$window.localStorage.removeItem(key);
 		},
 
-		clearAll: function() {
+		clearAll : function() {
 			$window.localStorage.clear();
 		}
 	};

@@ -50,8 +50,10 @@ angular.module('adama-web').run(function($httpBackend, mockSettings) {
 	$httpBackend.when('POST', '/api/account').respond(function(method, url, data) {
 		console.warn('POST /api/account', url, data);
 		var postedData = JSON.parse(data);
+		var authority = connectedUser.authority;
 		connectedUser = postedData;
-		return [ 200, postedData ];
+		connectedUser.authority = authority;
+		return [ 200, connectedUser ];
 	});
 
 	$httpBackend.when('POST', '/api/account/change_password').respond(function(method, url, data) {

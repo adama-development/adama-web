@@ -622,10 +622,11 @@ angular.module('adama-web').directive('dsBinaryFileUrl', ["$parse", "binaryFileS
 				if (!angular.isArray(binaryFileList)) {
 					binaryFileList = [binaryFileList];
 				}
-				binaryFileService.initUrlForBinaryFiles(binaryFileList);
-				if (attrs.output) {
-					$parse(attrs.output).assign(scope, binaryFileList);
-				}
+				binaryFileService.initUrlForBinaryFiles(binaryFileList).then(function() {
+					if (attrs.output) {
+						$parse(attrs.output).assign(scope, binaryFileList);
+					}
+				});
 			};
 			scope.$watch(attrs.input, function() {
 				var binaryFileList = $parse(attrs.input)(scope);

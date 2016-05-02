@@ -8,10 +8,10 @@ angular.module('adama-web').controller('SigninCtrl', function($rootScope, $state
 			username: userName,
 			password: userPassword
 		}).then(function() {
-			if ($rootScope.previousStateName === 'auth.signin') {
+			if ($rootScope.previousStateName === 'auth.signin' || $state.get($rootScope.previousStateName) === null) {
 				$state.go('app.main');
 			} else {
-				$rootScope.back();
+				$state.go($rootScope.previousStateName, $rootScope.previousStateParams);
 			}
 		}).catch(function() {
 			ctrl.authenticationError = true;

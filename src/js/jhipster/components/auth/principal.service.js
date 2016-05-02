@@ -27,7 +27,6 @@ angular.module('adama-web')
 				if (!_authenticated || !_identity || !_identity.authority) {
 					return false;
 				}
-
 				for (var i = 0; i < authorities.length; i++) {
 					if (_identity.authority === authorities[i]) {
 						return true;

@@ -1,7 +1,10 @@
 'use strict';
 
 angular.module('adama-web')
-	.factory('Auth', function Auth($rootScope, $state, $q, $translate, Principal, AuthServerProvider, Account, Password, PasswordResetInit, PasswordResetFinish) {
+	.factory('Auth', function Auth($rootScope, $state, $q, $translate, $resource, Principal, AuthServerProvider, Account, adamaConstant) {
+		var Password = $resource(adamaConstant.apiBase + 'api/account/change_password');
+		var PasswordResetInit = $resource(adamaConstant.apiBase + 'api/account/reset_password/init');
+		var PasswordResetFinish = $resource(adamaConstant.apiBase + 'api/account/reset_password/finish');
 		return {
 			login: function(credentials, callback) {
 				var cb = callback || angular.noop;
@@ -11,7 +14,8 @@ angular.module('adama-web')
 					// retrieve the logged account information
 					Principal.identity(true).then(function(account) {
 						// After the login the language will be changed to
-						// the language selected by the user during his registration
+						// the language selected by the user during his
+						// registration
 						$translate.use(account.langKey);
 						deferred.resolve(data);
 					});
@@ -42,7 +46,8 @@ angular.module('adama-web')
 							$state.go('app.main');
 						}
 						if ((!$rootScope.toState.data || !$rootScope.toState.data.authorities) && !isAuthenticated) {
-							// user is not signed in but desired state nneds an authenticated user
+							// user is not signed in but desired state needs an
+							// authenticated user
 							$state.go('auth.signin');
 						} else if ($rootScope.toState.data && //
 							$rootScope.toState.data.authorities && //
@@ -50,14 +55,18 @@ angular.module('adama-web')
 							!Principal.hasAnyAuthority($rootScope.toState.data.authorities) //
 						) {
 							if (isAuthenticated) {
-								// user is signed in but not authorized for desired state
+								// user is signed in but not authorized for
+								// desired state
 								$state.go('auth.accessDenied');
 							} else {
-								// user is not authenticated. stow the state they wanted before you
-								// send them to the signin state, so you can return them when you're done
+								// user is not authenticated. stow the state
+								// they wanted before you
+								// send them to the signin state, so you can
+								// return them when you're done
 								$rootScope.previousStateName = $rootScope.toState;
 								$rootScope.previousStateNameParams = $rootScope.toStateParams;
-								// now, send them to the signin state so they can log in
+								// now, send them to the signin state so they
+								// can log in
 								$state.go('auth.signin');
 							}
 						}
