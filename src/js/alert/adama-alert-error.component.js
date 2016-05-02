@@ -2,7 +2,7 @@
 
 angular.module('adama-web').component('adamaAlertError', {
 	templateUrl : 'adama-web/alert/adama-alert-error.html',
-	controller : function($rootScope, $scope, $translate, AlertService, adamaConstant) {
+	controller : function($rootScope, $scope, $translate, AlertService) {
 		var ctrl = this;
 		ctrl.alerts = [];
 
@@ -18,7 +18,7 @@ angular.module('adama-web').component('adamaAlertError', {
 			}, ctrl.alerts));
 		};
 
-		var cleanHttpErrorListener = $rootScope.$on(adamaConstant.appModule + '.httpError', function(event, httpResponse) {
+		var cleanHttpErrorListener = $rootScope.$on('Adama.httpError', function(event, httpResponse) {
 			var i;
 			event.stopPropagation();
 			switch (httpResponse.status) {
@@ -28,8 +28,8 @@ angular.module('adama-web').component('adamaAlertError', {
 				break;
 
 			case 400:
-				var errorHeader = httpResponse.headers('X-' + adamaConstant.appModule + '-error');
-				var entityKey = httpResponse.headers('X-' + adamaConstant.appModule + '-params');
+				var errorHeader = httpResponse.headers('X-Adama-error');
+				var entityKey = httpResponse.headers('X-Adama-params');
 				if (errorHeader) {
 					var entityName = $translate.instant('global.menu.entities.' + entityKey);
 					addErrorAlert(errorHeader, errorHeader, {
@@ -42,7 +42,7 @@ angular.module('adama-web').component('adamaAlertError', {
 						// to 'something[].other[].id' so
 						// translations can be written to it
 						var convertedField = fieldError.field.replace(/\[\d*\]/g, '[]');
-						var fieldName = $translate.instant(adamaConstant.appModule + '.' + fieldError.objectName + '.' + convertedField);
+						var fieldName = $translate.instant('Adama.' + fieldError.objectName + '.' + convertedField);
 						addErrorAlert('Field ' + fieldName + ' cannot be empty', 'error.' + fieldError.message, {
 							fieldName : fieldName
 						});

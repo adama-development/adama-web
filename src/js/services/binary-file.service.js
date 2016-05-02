@@ -15,7 +15,7 @@ angular.module('adama-web').factory('binaryFileService', function($http, $q, ada
 		if (idList.length) {
 			return $http({
 				method: 'GET',
-				url: adamaConstant.apiBase + 'api/binaryFiles',
+				url: adamaConstant.apiBase + 'binaryFiles',
 				data: {
 					ids: idList
 				}

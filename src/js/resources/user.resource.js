@@ -9,5 +9,5 @@ angular.module('adama-web').factory('User', function($resource, adamaConstant, a
 			}
 		}
 	});
-	return $resource(adamaConstant.apiBase + 'api/users/:login', {}, config);
+	return $resource(adamaConstant.apiBase + 'users/:login', {}, config);
 });

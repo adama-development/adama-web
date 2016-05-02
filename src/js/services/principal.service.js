@@ -1,10 +1,9 @@
 'use strict';
 
-angular.module('adama-web').factory('Principal', function($q, $rootScope, $resource, $state, adamaConstant) {
-	var Password = $resource(adamaConstant.apiBase + 'api/account/change_password');
-	var PasswordResetInit = $resource(adamaConstant.apiBase + 'api/account/reset_password/init');
-	var PasswordResetFinish = $resource(adamaConstant.apiBase + 'api/account/reset_password/finish');
-	var Account = $resource(adamaConstant.apiBase + 'api/account');
+angular.module('adama-web').factory('Principal', function($http, $q, $rootScope, $resource, $state, adamaConstant, adamaTokenService) {
+	var Password = $resource(adamaConstant.apiBase + 'account/change_password');
+	var PasswordResetInit = $resource(adamaConstant.apiBase + 'account/reset_password/init');
+	var PasswordResetFinish = $resource(adamaConstant.apiBase + 'account/reset_password/finish');
 
 	var _identity;
 	var _authenticated = false;
@@ -66,7 +65,20 @@ angular.module('adama-web').factory('Principal', function($q, $rootScope, $resou
 
 		// retrieve the identity data from the server, update the
 		// identity object, and then resolve.
-		Account.get().$promise.then(function(account) {
+
+		// from jwt token : sub
+		// users/byLogin/:sub
+		adamaTokenService.getUsername().then(function(username) {
+			if (username) {
+				return $http({
+					method : 'GET',
+					url : adamaConstant.apiBase + 'users/byLogin/' + username
+				}).then(function(response) {
+					return response.data;
+				});
+			}
+			return $q.reject('not connected');
+		}).then(function(account) {
 			_identity = account;
 			_authenticated = true;
 			deferred.resolve(_identity);
@@ -75,6 +87,7 @@ angular.module('adama-web').factory('Principal', function($q, $rootScope, $resou
 			_authenticated = false;
 			deferred.resolve(_identity);
 		});
+
 		return deferred.promise;
 	};
 
@@ -114,7 +127,13 @@ angular.module('adama-web').factory('Principal', function($q, $rootScope, $resou
 	};
 
 	api.updateAccount = function(account) {
-		return Account.save(account).$promise.then(function() {
+		return $http({
+			method : 'PUT',
+			url : adamaConstant.apiBase + 'users',
+			data: {
+				user: account
+			}
+		}).then(function() {
 			$rootScope.$emit('auth.updateAccount', {
 				account : account
 			});

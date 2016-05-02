@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('adama-web').factory('notificationInterceptor', function($q, AlertService, adamaConstant) {
+angular.module('adama-web').factory('notificationInterceptor', function($q, AlertService) {
 	return {
 		response: function(response) {
-			var alertKey = response.headers('X-' + adamaConstant.appModule + '-alert');
+			var alertKey = response.headers('X-Adama-alert');
 			if (angular.isString(alertKey)) {
 				AlertService.success(alertKey, {
-					param: response.headers('X-' + adamaConstant.appModule + '-params')
+					param: response.headers('X-Adama-params')
 				});
 			}
 			return response;

@@ -12,5 +12,6 @@ angular.module('adama-web', [ //
 	'ngTable', //
 	'ngFileSaver', //
 	'ngFileUpload', //
+	'angular-jwt', //
 	'angular-loading-bar' //
 ]);

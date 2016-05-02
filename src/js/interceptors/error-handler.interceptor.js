@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('adama-web').factory('errorHandlerInterceptor', function($q, $rootScope, adamaConstant) {
+angular.module('adama-web').factory('errorHandlerInterceptor', function($q, $rootScope) {
 	return {
 		'responseError': function(response) {
-			if (!(response.status === 401 && response.data.path.indexOf('/api/account') === 0)) {
-				$rootScope.$emit(adamaConstant.appModule + '.httpError', response);
+			if (!(response.status === 401 && response.data === 'Bad credentials')) {
+				$rootScope.$emit('Adama.httpError', response);
 			}
 			return $q.reject(response);
 		}

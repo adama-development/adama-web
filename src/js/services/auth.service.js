@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('adama-web').factory('Auth', function Auth($rootScope, $state, $q, $translate, Principal, AuthBackendService) {
+angular.module('adama-web').factory('Auth', function Auth($rootScope, $state, $q, $translate, Principal, authBackendService) {
 	var api = {};
 
 	api.login = function(credentials) {
 		var deferred = $q.defer();
 
-		AuthBackendService.login(credentials).then(function(data) {
+		authBackendService.login(credentials).then(function(data) {
 			// retrieve the logged account information
 			Principal.identity(true).then(function(account) {
 				// After the login the language will be changed to
@@ -24,7 +24,7 @@ angular.module('adama-web').factory('Auth', function Auth($rootScope, $state, $q
 	};
 
 	api.logout = function() {
-		AuthBackendService.logout();
+		authBackendService.logout();
 		Principal.authenticate(null);
 		// Reset state memory
 		$rootScope.previousStateName = undefined;
