@@ -113,47 +113,25 @@ angular.module('adama-web').factory('Principal', function($q, $rootScope, $resou
 		});
 	};
 
-	api.updateAccount = function(account, callback) {
-		var cb = callback || angular.noop;
-
-		return Account.save(account, function() {
+	api.updateAccount = function(account) {
+		return Account.save(account).$promise.then(function() {
 			$rootScope.$emit('auth.updateAccount', {
 				account : account
 			});
-			return cb(account);
-		}, function(err) {
-			return cb(err);
-		}.bind(this)).$promise;
+			return account;
+		});
 	};
 
-	api.changePassword = function(newPassword, callback) {
-		var cb = callback || angular.noop;
-
-		return Password.save(newPassword, function() {
-			return cb();
-		}, function(err) {
-			return cb(err);
-		}).$promise;
+	api.changePassword = function(newPassword) {
+		return Password.save(newPassword).$promise;
 	};
 
-	api.resetPasswordInit = function(mail, callback) {
-		var cb = callback || angular.noop;
-
-		return PasswordResetInit.save(mail, function() {
-			return cb();
-		}, function(err) {
-			return cb(err);
-		}).$promise;
+	api.resetPasswordInit = function(mail) {
+		return PasswordResetInit.save(mail).$promise;
 	};
 
-	api.resetPasswordFinish = function(keyAndPassword, callback) {
-		var cb = callback || angular.noop;
-
-		return PasswordResetFinish.save(keyAndPassword, function() {
-			return cb();
-		}, function(err) {
-			return cb(err);
-		}).$promise;
+	api.resetPasswordFinish = function(keyAndPassword) {
+		return PasswordResetFinish.save(keyAndPassword).$promise;
 	};
 
 	return api;
