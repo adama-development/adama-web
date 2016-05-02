@@ -8,8 +8,7 @@ angular.module('adama-web').factory('authExpiredInterceptor', function($rootScop
 				localStorageService.remove('token');
 				var Principal = $injector.get('Principal');
 				if (Principal.isAuthenticated()) {
-					var Auth = $injector.get('Auth');
-					Auth.authorize(true);
+					Principal.authorize(true);
 				}
 			}
 			return $q.reject(response);

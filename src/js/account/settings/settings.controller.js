@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-web').controller('SettingsCtrl', function(Principal, Auth, language, AlertService, $translate) {
+angular.module('adama-web').controller('SettingsCtrl', function(Principal, language, AlertService, $translate) {
 	var ctrl = this;
 	var copyAccount = function(account) {
 		// Store the "settings account" in a separate variable, and not in the
@@ -18,7 +18,7 @@ angular.module('adama-web').controller('SettingsCtrl', function(Principal, Auth,
 		ctrl.settingsAccount = copyAccount(account);
 	});
 	ctrl.save = function() {
-		Auth.updateAccount(ctrl.settingsAccount).then(function() {
+		Principal.updateAccount(ctrl.settingsAccount).then(function() {
 			return Principal.identity(true).then(function(account) {
 				ctrl.settingsAccount = copyAccount(account);
 				language.getCurrent().then(function(current) {

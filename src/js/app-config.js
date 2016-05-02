@@ -56,8 +56,8 @@ angular.module('adama-web').config(function($stateProvider) {
 			'</div>' + //
 			'',
 		resolve: {
-			authorize: function(Auth) {
-				return Auth.authorize();
+			authorize: function(Principal) {
+				return Principal.authorize();
 			}
 		}
 	});
@@ -99,12 +99,12 @@ angular.module('adama-web').config(function($translateProvider) {
 	});
 });
 
-angular.module('adama-web').run(function($rootScope, $state, Principal, Auth) {
+angular.module('adama-web').run(function($rootScope, $state, Principal) {
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams) {
 		$rootScope.toState = toState;
 		$rootScope.toStateParams = toStateParams;
 		if (Principal.isIdentityResolved()) {
-			Auth.authorize();
+			Principal.authorize();
 		}
 	});
 
