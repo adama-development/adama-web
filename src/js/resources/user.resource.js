@@ -2,12 +2,7 @@
 
 angular.module('adama-web').factory('User', function($resource, adamaConstant, adamaResourceConfig) {
 	var config = angular.extend({}, adamaResourceConfig, {
-		'delete': {
-			method: 'DELETE',
-			params: {
-				login: '@login'
-			}
-		}
+		// set specific resource config
 	});
-	return $resource(adamaConstant.apiBase + 'users/:login', {}, config);
+	return $resource(adamaConstant.apiBase + 'users/:id', {}, config);
 });

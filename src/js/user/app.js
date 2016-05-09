@@ -1,6 +1,8 @@
 'use strict';
 
 angular.module('adama-web').config(function($stateProvider, adamaConstant) {
+	console.log('(adama-web).config', adamaConstant);
+	console.log('(adama-web).config', adamaConstant.userAuthorities);
 	$stateProvider.state('app.user', {
 		url: '/users',
 		templateUrl: 'adama-web/user/user-list.html',
@@ -22,7 +24,7 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 		if ($stateParams) {
 			resolveEntity = /* @ngInject */ function(User) {
 				return User.get({
-					login: $stateParams.login
+					id: $stateParams.id
 				}).$promise;
 			};
 		}
@@ -45,7 +47,7 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 	};
 
 	$stateProvider.state('app.user.edit', {
-		url: '/edit/:login',
+		url: '/edit/:id',
 		onEnter: function($state, $uibModal, $stateParams) {
 			openModal($state, $uibModal, $stateParams, 'CrudEditCtrl', 'user-edit.html');
 		},
@@ -67,7 +69,7 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 	});
 
 	$stateProvider.state('app.user.view', {
-		url: '/view/:login',
+		url: '/view/:id',
 		onEnter: function($state, $uibModal, $stateParams) {
 			openModal($state, $uibModal, $stateParams, 'CrudViewCtrl', 'user-view.html');
 		},
@@ -78,7 +80,7 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 	});
 
 	$stateProvider.state('app.user.delete', {
-		url: '/delete/:login',
+		url: '/delete/:id',
 		onEnter: function($state, $uibModal, $stateParams) {
 			openModal($state, $uibModal, $stateParams, 'CrudDeleteCtrl', 'user-delete.html');
 		},
