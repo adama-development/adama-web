@@ -10,7 +10,7 @@ angular.module('adama-web').factory('adamaResourceConfig', function(ParseLinks, 
 				if (status === 200) {
 					data.$metadata = {
 						links: ParseLinks.parse(headers('link')),
-						totalItems: headers('X-Total-Count')
+						totalItems: parseInt(headers('X-Total-Count'), 10)
 					};
 				}
 				return data;
