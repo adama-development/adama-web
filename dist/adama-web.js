@@ -157,363 +157,70 @@ angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 
 'use strict';
 
-angular.module('adama-web').component('adamaAlertError', {
-	templateUrl: 'adama-web/alert/adama-alert-error.html',
-	controller: ["$rootScope", "$scope", "$translate", "AlertService", function($rootScope, $scope, $translate, AlertService) {
-		var ctrl = this;
-		ctrl.alerts = [];
-
-		var addErrorAlert = function(message, key, data) {
-			key = key && key !== null ? key : message;
-			ctrl.alerts.push(AlertService.add({
-				type: 'danger',
-				msg: key,
-				params: data,
-				timeout: 5000,
-				toast: AlertService.isToast(),
-				scoped: true
-			}, ctrl.alerts));
-		};
-
-		var cleanHttpErrorListener = $rootScope.$on('Adama.httpError', function(event, httpResponse) {
-			var i;
-			event.stopPropagation();
-			switch (httpResponse.status) {
-				// connection refused, server not reachable
-				case 0:
-					addErrorAlert('Server not reachable', 'error.server.not.reachable');
-					break;
-
-				case 400:
-					var errorHeader = httpResponse.headers('X-Adama-error');
-					var entityKey = httpResponse.headers('X-Adama-params');
-					if (errorHeader) {
-						var entityName = $translate.instant('global.menu.entities.' + entityKey);
-						addErrorAlert(errorHeader, errorHeader, {
-							entityName: entityName
-						});
-					} else if (httpResponse.data && httpResponse.data.fieldErrors) {
-						for (i = 0; i < httpResponse.data.fieldErrors.length; i++) {
-							var fieldError = httpResponse.data.fieldErrors[i];
-							// convert 'something[14].other[4].id'
-							// to 'something[].other[].id' so
-							// translations can be written to it
-							var convertedField = fieldError.field.replace(/\[\d*\]/g, '[]');
-							var fieldName = $translate.instant('Adama.' + fieldError.objectName + '.' + convertedField);
-							addErrorAlert('Field ' + fieldName + ' cannot be empty', 'error.' + fieldError.message, {
-								fieldName: fieldName
-							});
-						}
-					} else if (httpResponse.data && httpResponse.data.message) {
-						addErrorAlert(httpResponse.data.message, httpResponse.data.message, httpResponse.data);
-					} else {
-						addErrorAlert(httpResponse.data);
-					}
-					break;
-
-				default:
-					if (httpResponse.data && httpResponse.data.message) {
-						addErrorAlert(httpResponse.data.message);
-					} else {
-						addErrorAlert(JSON.stringify(httpResponse));
-					}
-			}
-		});
-
-		$scope.$on('$destroy', function() {
-			if (!!cleanHttpErrorListener) {
-				cleanHttpErrorListener();
-				ctrl.alerts = [];
-			}
-		});
-	}]
-});
-
 'use strict';
 
-angular.module('adama-web').component('adamaAlert', {
-	templateUrl: 'adama-web/alert/adama-alert.html',
-	controller: ["AlertService", function(AlertService) {
-		var ctrl = this;
-		ctrl.alerts = AlertService.get();
-	}]
-});
-
-'use strict';
-
-angular.module('adama-web')
-	.provider('AlertService', function() {
-		var toast = false;
-
-		this.$get = ['$timeout', '$sce', '$translate', function($timeout, $sce, $translate) {
-
-			var alertId = 0; // unique id for each alert. Starts from 0.
-			var alerts = [];
-			var timeout = 5000; // default timeout
-
-			var isToast = function() {
-				return toast;
-			};
-
-			var clear = function() {
-				alerts = [];
-			};
-
-			var get = function() {
-				return alerts;
-			};
-
-			var closeAlertByIndex = function(index, thisAlerts) {
-				return thisAlerts.splice(index, 1);
-			};
-
-			var closeAlert = function(id, extAlerts) {
-				var thisAlerts = extAlerts ? extAlerts : alerts;
-				return closeAlertByIndex(thisAlerts.map(function(e) {
-					return e.id;
-				}).indexOf(id), thisAlerts);
-			};
-
-			var factory = function(alertOptions) {
-				var alert = {
-					type: alertOptions.type,
-					msg: $sce.trustAsHtml(alertOptions.msg),
-					id: alertOptions.alertId,
-					timeout: alertOptions.timeout,
-					toast: alertOptions.toast,
-					position: alertOptions.position ? alertOptions.position : 'top right',
-					scoped: alertOptions.scoped,
-					close: function(alerts) {
-						return closeAlert(this.id, alerts);
-					}
-				};
-				if (!alert.scoped) {
-					alerts.push(alert);
-				}
-				return alert;
-			};
-
-			var addAlert = function(alertOptions, extAlerts) {
-				alertOptions.alertId = alertId++;
-				alertOptions.msg = $translate.instant(alertOptions.msg, alertOptions.params);
-				var alert = factory(alertOptions);
-				if (alertOptions.timeout && alertOptions.timeout > 0) {
-					$timeout(function() {
-						closeAlert(alertOptions.alertId, extAlerts);
-					}, alertOptions.timeout);
-				}
-				return alert;
-			};
-
-			var success = function(msg, params, position) {
-				return addAlert({
-					type: 'success',
-					msg: msg,
-					params: params,
-					timeout: timeout,
-					toast: toast,
-					position: position
-				});
-			};
-
-			var error = function(msg, params, position) {
-				return addAlert({
-					type: 'danger',
-					msg: msg,
-					params: params,
-					timeout: timeout,
-					toast: toast,
-					position: position
-				});
-			};
-
-			var warning = function(msg, params, position) {
-				return addAlert({
-					type: 'warning',
-					msg: msg,
-					params: params,
-					timeout: timeout,
-					toast: toast,
-					position: position
-				});
-			};
-
-			var info = function(msg, params, position) {
-				return addAlert({
-					type: 'info',
-					msg: msg,
-					params: params,
-					timeout: timeout,
-					toast: toast,
-					position: position
-				});
-			};
-
-			return {
-				factory: factory,
-				isToast: isToast,
-				add: addAlert,
-				closeAlert: closeAlert,
-				closeAlertByIndex: closeAlertByIndex,
-				clear: clear,
-				get: get,
-				success: success,
-				error: error,
-				info: info,
-				warning: warning
-			};
-		}];
-
-		this.showAsToast = function(isToast) {
-			toast = isToast;
-		};
-
-	});
-
-'use strict';
-
-'use strict';
-
-angular.module('adama-web').controller('AccessDeniedCtrl', function() {
-	// nothing to do
-});
-
-'use strict';
-
-angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
-	$stateProvider.state('auth', {
-		abstract: true,
-		url: '/auth',
-		template: '' + //
-			'<ui-view></ui-view>' + //
-			''
-	});
-
-	$stateProvider.state('auth.signin', {
-		url: '/',
-		templateUrl: 'adama-web/auth/signin.html',
-		controller: 'SigninCtrl',
-		controllerAs: 'ctrl',
-		data: {
-			pageTitle: 'SIGNIN',
-			authorities: []
+angular.module('adama-web').directive('dsAuthorities', ["$parse", "adamaConstant", function($parse, adamaConstant) {
+	return {
+		scope: false,
+		link: function(scope, element, attrs) {
+			var authorities = adamaConstant.authorities;
+			$parse(attrs.data).assign(scope, authorities);
 		}
-	});
-
-	$stateProvider.state('auth.recoverPassword', {
-		url: '/recoverPassword',
-		templateUrl: 'adama-web/auth/recoverPassword.html',
-		controller: 'RecoverPasswordCtrl',
-		controllerAs: 'ctrl',
-		data: {
-			pageTitle: 'RECOVER',
-			authorities: []
-		}
-	});
-
-	$stateProvider.state('auth.accessDenied', {
-		url: '/accessDenied',
-		templateUrl: 'adama-web/auth/accessDenied.html',
-		controller: 'AccessDeniedCtrl',
-		controllerAs: 'ctrl',
-		data: {
-			pageTitle: 'ACCESS_DENIED',
-			authorities: []
-		}
-	});
-}]);
-
-angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
-	$translateProvider.translations('fr', {
-		'SIGNIN': 'Identification',
-		'SIGNIN_INTRO': 'Identifiez-vous pour démarrer votre session',
-		'SIGNIN_FORGET_PASSWORD': 'J\'ai oublié mon mot de passe ...',
-		'SIGNIN_USERNAME': 'Identifiant',
-		'SIGNIN_USERNAME_REQUIRED': 'L\'identifiant est obligatoire',
-		'SIGNIN_PASSWORD': 'Mot de passe',
-		'SIGNIN_PASSWORD_REQUIRED': 'Le mot de passe est obligatoire',
-		'SIGNIN_SUBMIT': 'Démarrer la session',
-		'SIGNIN_ERROR': 'Erreur d\'authentification : identifiant ou mot de passe incorrect.',
-		'RECOVER': 'Récupération de mot de passe',
-		'RECOVER_INTRO': 'Saisissez votre email pour récupérer votre mot de passe',
-		'RECOVER_MAIL': 'Email',
-		'RECOVER_MAIL_REQUIRED': 'L\'email est obligatoire',
-		'RECOVER_MAIL_EMAIL': 'L\'email n\'est pas au bon format',
-		'RECOVER_SUBMIT': 'Récupérer mon mot de passe',
-		'RECOVER_BACK_TO_LOGIN': 'Retour à l\'identificaition',
-		'RECOVER_SUCCESS': 'Consultez votre email pour connaître comment réinitialiser votre mot de passe.',
-		'RECOVER_ERROR': 'Erreur lors de la récupération du mot de passe.',
-		'RECOVER_ERROR_EMAIL_NOT_EXIST': 'L\'email n\'existe pas',
-		'ACCESS_DENIED': 'Accès interdit',
-		'ACCESS_DENIED_INTRO': 'Vous n\'avez pas suffisamment de droits d\'accéder à cette page.'
-	});
-
-	$translateProvider.translations('en', {
-		'SIGNIN': 'Signin',
-		'SIGNIN_INTRO': 'Sign in to start your session',
-		'SIGNIN_FORGET_PASSWORD': 'I forgot my password ...',
-		'SIGNIN_USERNAME': 'Username',
-		'SIGNIN_USERNAME_REQUIRED': 'Username is required',
-		'SIGNIN_PASSWORD': 'Password',
-		'SIGNIN_PASSWORD_REQUIRED': 'Password is required',
-		'SIGNIN_SUBMIT': 'Start session',
-		'SIGNIN_ERROR': 'Authentication error : Username or password are incorrect.',
-		'RECOVER': 'Recover password',
-		'RECOVER_INTRO': 'Set your email to recover your password',
-		'RECOVER_MAIL': 'Email',
-		'RECOVER_MAIL_REQUIRED': 'Email is required',
-		'RECOVER_MAIL_EMAIL': 'Email does not respect the right format',
-		'RECOVER_SUBMIT': 'Retrieve my password',
-		'RECOVER_BACK_TO_LOGIN': 'Back to signin',
-		'RECOVER_SUCCESS': 'Check your e-mails for details on how to reset your password.',
-		'RECOVER_ERROR': 'Recovering error.',
-		'RECOVER_ERROR_EMAIL_NOT_EXIST': 'E-Mail address isn\'t registered! Please check and try again',
-		'ACCESS_DENIED': 'Access denied',
-		'ACCESS_DENIED_INTRO': 'You do not have enough privileges to access this page.'
-	});
-}]);
-
-'use strict';
-
-angular.module('adama-web').controller('RecoverPasswordCtrl', ["Principal", function(Principal) {
-	var ctrl = this;
-	ctrl.recover = function(userEmail) {
-		ctrl.recoverSuccess = false;
-		ctrl.recoverError = false;
-		ctrl.errorEmailNotExists = false;
-		ctrl.loading = true;
-		Principal.resetPasswordInit(userEmail).then(function() {
-			ctrl.recoverSuccess = true;
-		}).catch(function(response) {
-			if (response.status === 400 && response.data === 'e-mail address not registered') {
-				ctrl.errorEmailNotExists = true;
-			} else {
-				ctrl.recoverError = true;
-			}
-		}).finally(function() {
-			ctrl.loading = false;
-		});
 	};
 }]);
 
 'use strict';
 
-angular.module('adama-web').controller('SigninCtrl', ["$rootScope", "$state", "Auth", function($rootScope, $state, Auth) {
-	var ctrl = this;
-	ctrl.signin = function(userName, userPassword) {
-		ctrl.authenticationError = false;
-		Auth.login({
-			username: userName,
-			password: userPassword
-		}).then(function() {
-			if ($rootScope.previousStateName === 'auth.signin' || $state.get($rootScope.previousStateName) === null) {
-				$state.go('app.main');
-			} else {
-				$state.go($rootScope.previousStateName, $rootScope.previousStateParams);
-			}
-		}).catch(function() {
-			ctrl.authenticationError = true;
-		});
+angular.module('adama-web').directive('dsBinaryFileUrl', ["$parse", "binaryFileService", function($parse, binaryFileService) {
+	return {
+		scope: false,
+		link: function(scope, element, attrs) {
+			var updateOutput = function(binaryFileList) {
+				if (attrs.output) {
+					binaryFileList = angular.copy(binaryFileList);
+				}
+				if (!angular.isArray(binaryFileList)) {
+					binaryFileList = [binaryFileList];
+				}
+				binaryFileService.initUrlForBinaryFiles(binaryFileList).then(function() {
+					if (attrs.output) {
+						$parse(attrs.output).assign(scope, binaryFileList);
+					}
+				});
+			};
+			scope.$watch(attrs.input, function() {
+				var binaryFileList = $parse(attrs.input)(scope);
+				if (binaryFileList) {
+					updateOutput(binaryFileList);
+				}
+			});
+		}
+	};
+}]);
+
+'use strict';
+
+angular.module('adama-web').directive('dsLanguage', ["$parse", "language", function($parse, language) {
+	return {
+		scope: false,
+		link: function(scope, element, attrs) {
+			language.getAll().then(function(languages) {
+				$parse(attrs.data).assign(scope, languages);
+			});
+		}
+	};
+}]);
+
+'use strict';
+
+angular.module('adama-web').directive('dsPrincipalIdentity', ["$parse", "Principal", function($parse, Principal) {
+	return {
+		scope: false,
+		link: function(scope, element, attrs) {
+			Principal.identity().then(function(account) {
+				$parse(attrs.data).assign(scope, account);
+			});
+		}
 	};
 }]);
 
@@ -842,70 +549,218 @@ angular.module('adama-web').directive('modalBtnConfirmImportXls', function() {
 
 'use strict';
 
-angular.module('adama-web').directive('dsAuthorities', ["$parse", "adamaConstant", function($parse, adamaConstant) {
-	return {
-		scope: false,
-		link: function(scope, element, attrs) {
-			var authorities = adamaConstant.authorities;
-			$parse(attrs.data).assign(scope, authorities);
-		}
-	};
-}]);
+angular.module('adama-web').component('adamaAlertError', {
+	templateUrl: 'adama-web/alert/adama-alert-error.html',
+	controller: ["$rootScope", "$scope", "$translate", "AlertService", function($rootScope, $scope, $translate, AlertService) {
+		var ctrl = this;
+		ctrl.alerts = [];
+
+		var addErrorAlert = function(message, key, data) {
+			key = key && key !== null ? key : message;
+			ctrl.alerts.push(AlertService.add({
+				type: 'danger',
+				msg: key,
+				params: data,
+				timeout: 5000,
+				toast: AlertService.isToast(),
+				scoped: true
+			}, ctrl.alerts));
+		};
+
+		var cleanHttpErrorListener = $rootScope.$on('Adama.httpError', function(event, httpResponse) {
+			var i;
+			event.stopPropagation();
+			switch (httpResponse.status) {
+				// connection refused, server not reachable
+				case 0:
+					addErrorAlert('Server not reachable', 'error.server.not.reachable');
+					break;
+
+				case 400:
+					var errorHeader = httpResponse.headers('X-Adama-error');
+					var entityKey = httpResponse.headers('X-Adama-params');
+					if (errorHeader) {
+						var entityName = $translate.instant('global.menu.entities.' + entityKey);
+						addErrorAlert(errorHeader, errorHeader, {
+							entityName: entityName
+						});
+					} else if (httpResponse.data && httpResponse.data.fieldErrors) {
+						for (i = 0; i < httpResponse.data.fieldErrors.length; i++) {
+							var fieldError = httpResponse.data.fieldErrors[i];
+							// convert 'something[14].other[4].id'
+							// to 'something[].other[].id' so
+							// translations can be written to it
+							var convertedField = fieldError.field.replace(/\[\d*\]/g, '[]');
+							var fieldName = $translate.instant('Adama.' + fieldError.objectName + '.' + convertedField);
+							addErrorAlert('Field ' + fieldName + ' cannot be empty', 'error.' + fieldError.message, {
+								fieldName: fieldName
+							});
+						}
+					} else if (httpResponse.data && httpResponse.data.message) {
+						addErrorAlert(httpResponse.data.message, httpResponse.data.message, httpResponse.data);
+					} else {
+						addErrorAlert(httpResponse.data);
+					}
+					break;
+
+				default:
+					if (httpResponse.data && httpResponse.data.message) {
+						addErrorAlert(httpResponse.data.message);
+					} else {
+						addErrorAlert(JSON.stringify(httpResponse));
+					}
+			}
+		});
+
+		$scope.$on('$destroy', function() {
+			if (!!cleanHttpErrorListener) {
+				cleanHttpErrorListener();
+				ctrl.alerts = [];
+			}
+		});
+	}]
+});
 
 'use strict';
 
-angular.module('adama-web').directive('dsBinaryFileUrl', ["$parse", "binaryFileService", function($parse, binaryFileService) {
-	return {
-		scope: false,
-		link: function(scope, element, attrs) {
-			var updateOutput = function(binaryFileList) {
-				if (attrs.output) {
-					binaryFileList = angular.copy(binaryFileList);
-				}
-				if (!angular.isArray(binaryFileList)) {
-					binaryFileList = [binaryFileList];
-				}
-				binaryFileService.initUrlForBinaryFiles(binaryFileList).then(function() {
-					if (attrs.output) {
-						$parse(attrs.output).assign(scope, binaryFileList);
+angular.module('adama-web').component('adamaAlert', {
+	templateUrl: 'adama-web/alert/adama-alert.html',
+	controller: ["AlertService", function(AlertService) {
+		var ctrl = this;
+		ctrl.alerts = AlertService.get();
+	}]
+});
+
+'use strict';
+
+angular.module('adama-web')
+	.provider('AlertService', function() {
+		var toast = false;
+
+		this.$get = ['$timeout', '$sce', '$translate', function($timeout, $sce, $translate) {
+
+			var alertId = 0; // unique id for each alert. Starts from 0.
+			var alerts = [];
+			var timeout = 5000; // default timeout
+
+			var isToast = function() {
+				return toast;
+			};
+
+			var clear = function() {
+				alerts = [];
+			};
+
+			var get = function() {
+				return alerts;
+			};
+
+			var closeAlertByIndex = function(index, thisAlerts) {
+				return thisAlerts.splice(index, 1);
+			};
+
+			var closeAlert = function(id, extAlerts) {
+				var thisAlerts = extAlerts ? extAlerts : alerts;
+				return closeAlertByIndex(thisAlerts.map(function(e) {
+					return e.id;
+				}).indexOf(id), thisAlerts);
+			};
+
+			var factory = function(alertOptions) {
+				var alert = {
+					type: alertOptions.type,
+					msg: $sce.trustAsHtml(alertOptions.msg),
+					id: alertOptions.alertId,
+					timeout: alertOptions.timeout,
+					toast: alertOptions.toast,
+					position: alertOptions.position ? alertOptions.position : 'top right',
+					scoped: alertOptions.scoped,
+					close: function(alerts) {
+						return closeAlert(this.id, alerts);
 					}
+				};
+				if (!alert.scoped) {
+					alerts.push(alert);
+				}
+				return alert;
+			};
+
+			var addAlert = function(alertOptions, extAlerts) {
+				alertOptions.alertId = alertId++;
+				alertOptions.msg = $translate.instant(alertOptions.msg, alertOptions.params);
+				var alert = factory(alertOptions);
+				if (alertOptions.timeout && alertOptions.timeout > 0) {
+					$timeout(function() {
+						closeAlert(alertOptions.alertId, extAlerts);
+					}, alertOptions.timeout);
+				}
+				return alert;
+			};
+
+			var success = function(msg, params, position) {
+				return addAlert({
+					type: 'success',
+					msg: msg,
+					params: params,
+					timeout: timeout,
+					toast: toast,
+					position: position
 				});
 			};
-			scope.$watch(attrs.input, function() {
-				var binaryFileList = $parse(attrs.input)(scope);
-				if (binaryFileList) {
-					updateOutput(binaryFileList);
-				}
-			});
-		}
-	};
-}]);
 
-'use strict';
+			var error = function(msg, params, position) {
+				return addAlert({
+					type: 'danger',
+					msg: msg,
+					params: params,
+					timeout: timeout,
+					toast: toast,
+					position: position
+				});
+			};
 
-angular.module('adama-web').directive('dsLanguage', ["$parse", "language", function($parse, language) {
-	return {
-		scope: false,
-		link: function(scope, element, attrs) {
-			language.getAll().then(function(languages) {
-				$parse(attrs.data).assign(scope, languages);
-			});
-		}
-	};
-}]);
+			var warning = function(msg, params, position) {
+				return addAlert({
+					type: 'warning',
+					msg: msg,
+					params: params,
+					timeout: timeout,
+					toast: toast,
+					position: position
+				});
+			};
 
-'use strict';
+			var info = function(msg, params, position) {
+				return addAlert({
+					type: 'info',
+					msg: msg,
+					params: params,
+					timeout: timeout,
+					toast: toast,
+					position: position
+				});
+			};
 
-angular.module('adama-web').directive('dsPrincipalIdentity', ["$parse", "Principal", function($parse, Principal) {
-	return {
-		scope: false,
-		link: function(scope, element, attrs) {
-			Principal.identity().then(function(account) {
-				$parse(attrs.data).assign(scope, account);
-			});
-		}
-	};
-}]);
+			return {
+				factory: factory,
+				isToast: isToast,
+				add: addAlert,
+				closeAlert: closeAlert,
+				closeAlertByIndex: closeAlertByIndex,
+				clear: clear,
+				get: get,
+				success: success,
+				error: error,
+				info: info,
+				warning: warning
+			};
+		}];
+
+		this.showAsToast = function(isToast) {
+			toast = isToast;
+		};
+
+	});
 
 'use strict';
 
@@ -971,90 +826,218 @@ angular.module('adama-web').directive('lazyControl', ["$rootScope", "$filter", f
 
 'use strict';
 
-angular.module('adama-web').filter('min', function() {
-	return Math.min;
+angular.module('adama-web').controller('AccessDeniedCtrl', function() {
+	// nothing to do
 });
 
 'use strict';
 
-angular.module('adama-web').directive('hasAnyAuthority', ["Principal", function(Principal) {
-	return {
-		restrict: 'A',
-		link: function(scope, element, attrs) {
-			var setVisible = function() {
-				element.removeClass('hidden');
-			};
-			var setHidden = function() {
-				element.addClass('hidden');
-			};
-			var authorities = attrs.hasAnyAuthority.replace(/\s+/g, '').split(',');
-			var defineVisibility = function(reset) {
-				var result;
-				if (reset) {
-					setVisible();
-				}
+angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
+	$stateProvider.state('auth', {
+		abstract: true,
+		url: '/auth',
+		template: '' + //
+			'<ui-view></ui-view>' + //
+			''
+	});
 
-				result = Principal.hasAnyAuthority(authorities);
-				if (result) {
-					setVisible();
-				} else {
-					setHidden();
-				}
-			};
-
-			if (authorities.length > 0) {
-				defineVisibility(true);
-
-				scope.$watch(function() {
-					return Principal.isAuthenticated();
-				}, function() {
-					defineVisibility(true);
-				});
-			}
+	$stateProvider.state('auth.signin', {
+		url: '/',
+		templateUrl: 'adama-web/auth/signin.html',
+		controller: 'SigninCtrl',
+		controllerAs: 'ctrl',
+		data: {
+			pageTitle: 'SIGNIN',
+			authorities: []
 		}
+	});
+
+	$stateProvider.state('auth.recoverPassword', {
+		url: '/recoverPassword',
+		templateUrl: 'adama-web/auth/recoverPassword.html',
+		controller: 'RecoverPasswordCtrl',
+		controllerAs: 'ctrl',
+		data: {
+			pageTitle: 'RECOVER',
+			authorities: []
+		}
+	});
+
+	$stateProvider.state('auth.accessDenied', {
+		url: '/accessDenied',
+		templateUrl: 'adama-web/auth/accessDenied.html',
+		controller: 'AccessDeniedCtrl',
+		controllerAs: 'ctrl',
+		data: {
+			pageTitle: 'ACCESS_DENIED',
+			authorities: []
+		}
+	});
+
+	$stateProvider.state('auth.resetPassword', {
+		url: '/resetPassword',
+		templateUrl: 'adama-web/auth/resetPassword.html',
+		controller: 'ResetPasswordCtrl',
+		controllerAs: 'ctrl',
+		data: {
+			pageTitle: 'RESET_PASSWORD',
+			authorities: []
+		}
+	});
+}]);
+
+angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
+	$translateProvider.translations('fr', {
+		'SIGNIN': 'Identification',
+		'SIGNIN_INTRO': 'Identifiez-vous pour démarrer votre session',
+		'SIGNIN_FORGET_PASSWORD': 'J\'ai oublié mon mot de passe ...',
+		'SIGNIN_USERNAME': 'Identifiant',
+		'SIGNIN_USERNAME_REQUIRED': 'L\'identifiant est obligatoire',
+		'SIGNIN_PASSWORD': 'Mot de passe',
+		'SIGNIN_PASSWORD_REQUIRED': 'Le mot de passe est obligatoire',
+		'SIGNIN_SUBMIT': 'Démarrer la session',
+		'SIGNIN_ERROR': 'Erreur d\'authentification : identifiant ou mot de passe incorrect.',
+		'RECOVER': 'Récupération de mot de passe',
+		'RECOVER_INTRO': 'Saisissez votre email pour récupérer votre mot de passe',
+		'RECOVER_MAIL': 'Email',
+		'RECOVER_MAIL_REQUIRED': 'L\'email est obligatoire',
+		'RECOVER_MAIL_EMAIL': 'L\'email n\'est pas au bon format',
+		'RECOVER_SUBMIT': 'Récupérer mon mot de passe',
+		'RECOVER_BACK_TO_LOGIN': 'Retour à l\'identificaition',
+		'RECOVER_SUCCESS': 'Consultez votre email pour connaître comment réinitialiser votre mot de passe.',
+		'RECOVER_ERROR': 'Erreur lors de la récupération du mot de passe.',
+		'RECOVER_ERROR_EMAIL_NOT_EXIST': 'L\'email n\'existe pas',
+		'ACCESS_DENIED': 'Accès interdit',
+		'ACCESS_DENIED_INTRO': 'Vous n\'avez pas suffisamment de droits d\'accéder à cette page.',
+		'ACCESS_DENIED_BACK_TO_LOGIN': 'Retour à l\'identificaition',
+		'RESET_PASSWORD': 'Initialisation du mot de passe',
+		'RESET_PASSWORD_INTRO': 'Saisissez et confirmez votre mot de passe',
+		'RESET_PASSWORD_SUBMIT': 'Modifier mon mot de passe',
+		'RESET_PASSWORD_PASSWORD': 'Mot de passe',
+		'RESET_PASSWORD_PASSWORD_REQUIRED': 'Le mot de passe est obligatoire',
+		'RESET_PASSWORD_PASSWORD_MINLENGTH': 'Minimum 6 caractères',
+		'RESET_PASSWORD_PASSWORD_MAXLENGTH': 'Maximum 100 caractères',
+		'RESET_PASSWORD_PASSWORD_CONFIRM': 'Confirmation du mot de passe',
+		'RESET_PASSWORD_PASSWORD_CONFIRM_REQUIRED': 'La confirmation est obligatoire',
+		'RESET_PASSWORD_PASSWORD_CONFIRM_MATCH': 'La confirmation ne correspond pas',
+		'RESET_PASSWORD_ERROR': 'Une erreur est intervenur, contactez un administrateur',
+		'RESET_PASSWORD_MESSAGE_FOR_MOBILE_USER': 'Vous pouvez vous authentifier dans l\'application mobile'
+	});
+
+	$translateProvider.translations('en', {
+		'SIGNIN': 'Signin',
+		'SIGNIN_INTRO': 'Sign in to start your session',
+		'SIGNIN_FORGET_PASSWORD': 'I forgot my password ...',
+		'SIGNIN_USERNAME': 'Username',
+		'SIGNIN_USERNAME_REQUIRED': 'Username is required',
+		'SIGNIN_PASSWORD': 'Password',
+		'SIGNIN_PASSWORD_REQUIRED': 'Password is required',
+		'SIGNIN_SUBMIT': 'Start session',
+		'SIGNIN_ERROR': 'Authentication error : Username or password are incorrect.',
+		'RECOVER': 'Recover password',
+		'RECOVER_INTRO': 'Set your email to recover your password',
+		'RECOVER_MAIL': 'Email',
+		'RECOVER_MAIL_REQUIRED': 'Email is required',
+		'RECOVER_MAIL_EMAIL': 'Email does not respect the right format',
+		'RECOVER_SUBMIT': 'Retrieve my password',
+		'RECOVER_BACK_TO_LOGIN': 'Back to signin',
+		'RECOVER_SUCCESS': 'Check your e-mails for details on how to reset your password.',
+		'RECOVER_ERROR': 'Recovering error.',
+		'RECOVER_ERROR_EMAIL_NOT_EXIST': 'E-Mail address isn\'t registered! Please check and try again',
+		'ACCESS_DENIED': 'Access denied',
+		'ACCESS_DENIED_INTRO': 'You do not have enough privileges to access this page.',
+		'ACCESS_DENIED_BACK_TO_LOGIN': 'Back to signin',
+		'RESET_PASSWORD': 'New password',
+		'RESET_PASSWORD_INTRO': 'Set and confirm new password',
+		'RESET_PASSWORD_SUBMIT': 'Change my password',
+		'RESET_PASSWORD_PASSWORD': 'Password',
+		'RESET_PASSWORD_PASSWORD_REQUIRED': 'Password is required',
+		'RESET_PASSWORD_PASSWORD_MINLENGTH': '6 chars minimum',
+		'RESET_PASSWORD_PASSWORD_MAXLENGTH': '100 chars maximum',
+		'RESET_PASSWORD_PASSWORD_CONFIRM': 'Password confirmation',
+		'RESET_PASSWORD_PASSWORD_CONFIRM_REQUIRED': 'Confirmation is required',
+		'RESET_PASSWORD_PASSWORD_CONFIRM_MATCH': 'Confirmation does not match',
+		'RESET_PASSWORD_ERROR': 'There was an error, please contact adminstrator',
+		'RESET_PASSWORD_MESSAGE_FOR_MOBILE_USER': 'You can now signin into the mobile application'
+	});
+}]);
+
+'use strict';
+
+angular.module('adama-web').controller('RecoverPasswordCtrl', ["Principal", function(Principal) {
+	var ctrl = this;
+	ctrl.recover = function(userEmail) {
+		ctrl.recoverSuccess = false;
+		ctrl.recoverError = false;
+		ctrl.errorEmailNotExists = false;
+		ctrl.loading = true;
+		Principal.resetPasswordInit(userEmail).then(function() {
+			ctrl.recoverSuccess = true;
+		}).catch(function(response) {
+			if (response.status === 400 && response.data === 'e-mail address not registered') {
+				ctrl.errorEmailNotExists = true;
+			} else {
+				ctrl.recoverError = true;
+			}
+		}).finally(function() {
+			ctrl.loading = false;
+		});
 	};
 }]);
 
 'use strict';
 
-angular.module('adama-web').directive('hasAuthority', ["Principal", function(Principal) {
-	return {
-		restrict: 'A',
-		link: function(scope, element, attrs) {
-			var setVisible = function() {
-				element.removeClass('hidden');
-			};
-			var setHidden = function() {
-				element.addClass('hidden');
-			};
-			var authority = attrs.hasAuthority.replace(/\s+/g, '');
-			var defineVisibility = function(reset) {
-
-				if (reset) {
-					setVisible();
-				}
-
-				Principal.hasAuthority(authority).then(function(result) {
-					if (result) {
-						setVisible();
-					} else {
-						setHidden();
-					}
-				});
-			};
-
-			if (authority.length > 0) {
-				defineVisibility(true);
-
-				scope.$watch(function() {
-					return Principal.isAuthenticated();
-				}, function() {
-					defineVisibility(true);
-				});
+angular.module('adama-web').controller('ResetPasswordCtrl', ["$location", "$state", "Principal", function($location, $state, Principal) {
+	var ctrl = this;
+	ctrl.loading = false;
+	ctrl.resetError = false;
+	ctrl.messageForMobileUser = false;
+	ctrl.resetPassword = function(newPassword) {
+		ctrl.loading = true;
+		Principal.resetPasswordFinish({
+			key: $location.search().key,
+			newPassword: newPassword
+		}).then(function() {
+			console.log('everything is awesome');
+			var origin = $location.search().origin;
+			console.log('origin', origin);
+			if (origin === 'front') {
+				$state.go('^.signin');
+			} else if (origin === 'mobile') {
+				ctrl.messageForMobileUser = true;
 			}
-		}
+		}, function() {
+			ctrl.resetError = true;
+		});
 	};
 }]);
+
+'use strict';
+
+angular.module('adama-web').controller('SigninCtrl', ["$rootScope", "$state", "Auth", function($rootScope, $state, Auth) {
+	var ctrl = this;
+	ctrl.signin = function(userName, userPassword) {
+		ctrl.authenticationError = false;
+		Auth.login({
+			username: userName,
+			password: userPassword
+		}).then(function() {
+			if ($rootScope.previousStateName === 'auth.signin' || $state.get($rootScope.previousStateName) === null) {
+				$state.go('app.main');
+			} else {
+				$state.go($rootScope.previousStateName, $rootScope.previousStateParams);
+			}
+		}).catch(function() {
+			ctrl.authenticationError = true;
+		});
+	};
+}]);
+
+'use strict';
+
+angular.module('adama-web').filter('min', function() {
+	return Math.min;
+});
 
 /*jshint -W069 */
 /*jscs:disable requireDotNotation*/
@@ -1154,20 +1137,6 @@ angular.module('adama-web').factory('notificationInterceptor', ["$q", "AlertServ
 
 'use strict';
 
-angular.module('adama-web').factory('User', ["$resource", "adamaConstant", "adamaResourceConfig", function($resource, adamaConstant, adamaResourceConfig) {
-	var config = angular.extend({}, adamaResourceConfig, {
-		'delete': {
-			method: 'DELETE',
-			params: {
-				login: '@login'
-			}
-		}
-	});
-	return $resource(adamaConstant.apiBase + 'users/:login', {}, config);
-}]);
-
-'use strict';
-
 angular.module('adama-web').factory('adamaResourceConfig', ["ParseLinks", "pdfService", function(ParseLinks, pdfService) {
 	return {
 		'query': {
@@ -1178,7 +1147,7 @@ angular.module('adama-web').factory('adamaResourceConfig', ["ParseLinks", "pdfSe
 				if (status === 200) {
 					data.$metadata = {
 						links: ParseLinks.parse(headers('link')),
-						totalItems: headers('X-Total-Count')
+						totalItems: parseInt(headers('X-Total-Count'), 10)
 					};
 				}
 				return data;
@@ -1312,7 +1281,9 @@ angular.module('adama-web').constant('adamaConstant', {
 	adamaWebToolkitTemplateUrl: {
 		// TODO
 	},
-	authorities: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_MANAGER']
+	authorities: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_MANAGER'],
+	userAuthorities: ['ROLE_MANAGER', 'ROLE_ADMIN'],
+	urlCreatePassword: 'replace/me/with/your/project/specific/url/reset-password.html?origin=front'
 });
 
 /*jshint -W069 */
@@ -1463,14 +1434,12 @@ angular.module('adama-web').factory('binaryFileService', ["$http", "$q", "adamaC
 		});
 		if (idList.length) {
 			return $http({
-				method: 'GET',
-				url: adamaConstant.apiBase + 'binaryFiles',
-				data: {
-					ids: idList
-				}
+				method: 'PUT',
+				url: adamaConstant.apiBase + 'files',
+				data: idList
 			}).then(function(response) {
 				angular.forEach(workingList, function(binaryFile) {
-					binaryFile.url = response.data[binaryFile.id];
+					binaryFile.url = response.data.urlList[binaryFile.id];
 				});
 			});
 		}
@@ -1588,7 +1557,14 @@ angular.module('adama-web').factory('pdfService', ["FileSaver", function(FileSav
 
 angular.module('adama-web').factory('Principal', ["$http", "$q", "$rootScope", "$resource", "$state", "adamaConstant", "adamaTokenService", function($http, $q, $rootScope, $resource, $state, adamaConstant, adamaTokenService) {
 	var Password = $resource(adamaConstant.apiBase + 'account/change_password');
-	var PasswordResetInit = $resource(adamaConstant.apiBase + 'account/reset_password/init');
+	var PasswordResetInit = $resource(adamaConstant.apiBase + 'account/reset_password/init', {}, {
+		save: {
+			method: 'POST',
+			params: {
+				urlResetPassword: adamaConstant.urlCreatePassword
+			}
+		}
+	});
 	var PasswordResetFinish = $resource(adamaConstant.apiBase + 'account/reset_password/finish');
 
 	var _identity;
@@ -1682,12 +1658,16 @@ angular.module('adama-web').factory('Principal', ["$http", "$q", "$rootScope", "
 			var isAuthenticated = api.isAuthenticated();
 			// an authenticated user can't access to login pages
 			if (isAuthenticated && $rootScope.toState.name && $rootScope.toState.name === 'auth.signin') {
-				$state.go('app.main');
+				$state.go('app.main', {}, {
+					location: 'replace'
+				});
 			}
 			if ((!$rootScope.toState.data || !$rootScope.toState.data.authorities) && !isAuthenticated) {
 				// user is not signed in but desired state needs an
 				// authenticated user
-				$state.go('auth.signin');
+				$state.go('auth.signin', {}, {
+					location: 'replace'
+				});
 			} else if ($rootScope.toState.data && //
 				$rootScope.toState.data.authorities && //
 				$rootScope.toState.data.authorities.length > 0 && //
@@ -1696,7 +1676,9 @@ angular.module('adama-web').factory('Principal', ["$http", "$q", "$rootScope", "
 				if (isAuthenticated) {
 					// user is signed in but not authorized for
 					// desired state
-					$state.go('auth.accessDenied');
+					$state.go('auth.accessDenied', {}, {
+						location: 'replace'
+					});
 				} else {
 					// user is not authenticated. stow the state
 					// they wanted before you
@@ -1706,7 +1688,9 @@ angular.module('adama-web').factory('Principal', ["$http", "$q", "$rootScope", "
 					$rootScope.previousStateNameParams = $rootScope.toStateParams;
 					// now, send them to the signin state so they
 					// can log in
-					$state.go('auth.signin');
+					$state.go('auth.signin', {}, {
+						location: 'replace'
+					});
 				}
 			}
 		});
@@ -1744,7 +1728,7 @@ angular.module('adama-web').factory('Principal', ["$http", "$q", "$rootScope", "
 
 'use strict';
 
-angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
+angular.module('adama-web').config(["$stateProvider", "adamaConstant", function($stateProvider, adamaConstant) {
 	$stateProvider.state('app.user', {
 		url: '/users',
 		templateUrl: 'adama-web/user/user-list.html',
@@ -1757,7 +1741,7 @@ angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 		},
 		data: {
 			pageTitle: 'USER_TITLE_LIST',
-			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
+			authorities: adamaConstant.userAuthorities
 		}
 	});
 
@@ -1766,7 +1750,7 @@ angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 		if ($stateParams) {
 			resolveEntity = /* @ngInject */ ["User", function(User) {
 				return User.get({
-					login: $stateParams.login
+					id: $stateParams.id
 				}).$promise;
 			}];
 		}
@@ -1789,13 +1773,13 @@ angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 	};
 
 	$stateProvider.state('app.user.edit', {
-		url: '/edit/:login',
+		url: '/edit/:id',
 		onEnter: ["$state", "$uibModal", "$stateParams", function($state, $uibModal, $stateParams) {
 			openModal($state, $uibModal, $stateParams, 'CrudEditCtrl', 'user-edit.html');
 		}],
 		data: {
 			pageTitle: 'USER_TITLE_EDIT',
-			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
+			authorities: adamaConstant.userAuthorities
 		}
 	});
 
@@ -1806,29 +1790,29 @@ angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 		}],
 		data: {
 			pageTitle: 'USER_TITLE_NEW',
-			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
+			authorities: adamaConstant.userAuthorities
 		}
 	});
 
 	$stateProvider.state('app.user.view', {
-		url: '/view/:login',
+		url: '/view/:id',
 		onEnter: ["$state", "$uibModal", "$stateParams", function($state, $uibModal, $stateParams) {
 			openModal($state, $uibModal, $stateParams, 'CrudViewCtrl', 'user-view.html');
 		}],
 		data: {
 			pageTitle: 'USER_TITLE_VIEW',
-			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
+			authorities: adamaConstant.userAuthorities
 		}
 	});
 
 	$stateProvider.state('app.user.delete', {
-		url: '/delete/:login',
+		url: '/delete/:id',
 		onEnter: ["$state", "$uibModal", "$stateParams", function($state, $uibModal, $stateParams) {
 			openModal($state, $uibModal, $stateParams, 'CrudDeleteCtrl', 'user-delete.html');
 		}],
 		data: {
 			pageTitle: 'USER_TITLE_DELETE',
-			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
+			authorities: adamaConstant.userAuthorities
 		}
 	});
 
@@ -1839,7 +1823,7 @@ angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 		}],
 		data: {
 			pageTitle: 'USER_TITLE_IMPORT_XLS',
-			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
+			authorities: adamaConstant.userAuthorities
 		}
 	});
 
@@ -1850,7 +1834,7 @@ angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 		}],
 		data: {
 			pageTitle: 'USER_TITLE_EXPORT_XLS',
-			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
+			authorities: adamaConstant.userAuthorities
 		}
 	});
 }]);
@@ -1913,72 +1897,97 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 
 'use strict';
 
-angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
-	$stateProvider.state('app.personal.password', {
-		url: '/password',
-		templateUrl: 'adama-web/account/password/password.html',
-		controller: 'PasswordCtrl',
-		controllerAs: 'ctrl',
-		data: {
-			pageTitle: 'ACCOUNT_PASSWORD'
+angular.module('adama-web').directive('hasAnyAuthority', ["Principal", function(Principal) {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			var setVisible = function() {
+				element.removeClass('hidden');
+			};
+			var setHidden = function() {
+				element.addClass('hidden');
+			};
+			var authorities = attrs.hasAnyAuthority.replace(/\s+/g, '').split(',');
+			var defineVisibility = function(reset) {
+				var result;
+				if (reset) {
+					setVisible();
+				}
+
+				result = Principal.hasAnyAuthority(authorities);
+				if (result) {
+					setVisible();
+				} else {
+					setHidden();
+				}
+			};
+
+			if (authorities.length > 0) {
+				defineVisibility(true);
+
+				scope.$watch(function() {
+					return Principal.isAuthenticated();
+				}, function() {
+					defineVisibility(true);
+				});
+			}
 		}
-	});
-}]);
-
-angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
-	$translateProvider.translations('fr', {
-		'ACCOUNT_PASSWORD': 'Modifier mon mot de passe',
-		'ACCOUNT_PASSWORD_TITLE': 'Modifier mon mot de passe',
-		'ACCOUNT_PASSWORD_NEWPASSWORD': 'Mot de passe',
-		'ACCOUNT_PASSWORD_NEWPASSWORD_PLACEHOLDER': 'Mot de passe ?',
-		'ACCOUNT_PASSWORD_NEWPASSWORD_REQUIRED': 'Le mot de passe est obligatoire',
-		'ACCOUNT_PASSWORD_NEWPASSWORD_MINLENGTH': 'Le mot de passe doit être composé d\'au moins 5 caractères.',
-		'ACCOUNT_PASSWORD_NEWPASSWORD_MAXLENGTH': 'Le mot de passe doit être composé d\'au plus 50 caractères.',
-		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD': 'Confirmation du mot de passe',
-		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_PLACEHOLDER': 'Confirmation du mot de passe ?',
-		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_REQUIRED': 'La confirmation du mot de passe est obligatoire',
-		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_MINLENGTH': 'La confirmation du mot de passe doit être composé d\'au moins 5 caractères.',
-		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_MAXLENGTH': 'La confirmation du mot de passe doit être composé d\'au plus 50 caractères.',
-		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_PATTERN': 'Les mots de passe ne sont pas égaux.',
-		'ACCOUNT_PASSWORD_SUBMIT': 'Enregistrer',
-		'ACCOUNT_PASSWORD_SAVE_SUCCESS': 'Le mot de passe a été changé avec succès.',
-		'ACCOUNT_PASSWORD_SAVE_ERROR': 'Le mot de passe n\'a pu être changé.'
-	});
-
-	$translateProvider.translations('en', {
-		'ACCOUNT_PASSWORD': 'Change my password',
-		'ACCOUNT_PASSWORD_TITLE': 'Change my password',
-		'ACCOUNT_PASSWORD_NEWPASSWORD': 'Password',
-		'ACCOUNT_PASSWORD_NEWPASSWORD_PLACEHOLDER': 'Password ?',
-		'ACCOUNT_PASSWORD_NEWPASSWORD_REQUIRED': 'Your password is required.',
-		'ACCOUNT_PASSWORD_NEWPASSWORD_MINLENGTH': 'Your password is required to be at least 5 characters.',
-		'ACCOUNT_PASSWORD_NEWPASSWORD_MAXLENGTH': 'Your password cannot be longer than 50 characters.',
-		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD': 'Password confirmation',
-		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_PLACEHOLDER': 'Password confirmation ?',
-		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_REQUIRED': 'Your confirmation password is required.',
-		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_MINLENGTH': 'Your confirmation password is required to be at least 5 characters.',
-		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_MAXLENGTH': 'Your confirmation password cannot be longer than 50 characters.',
-		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_PATTERN': 'Password and confirmation do not match.',
-		'ACCOUNT_PASSWORD_SUBMIT': 'Save',
-		'ACCOUNT_PASSWORD_SAVE_SUCCESS': 'Password successfully changed.',
-		'ACCOUNT_PASSWORD_SAVE_ERROR': 'Password could not be changed.'
-	});
+	};
 }]);
 
 'use strict';
 
-angular.module('adama-web').controller('PasswordCtrl', ["Principal", "AlertService", function(Principal, AlertService) {
-	var ctrl = this;
-	Principal.identity().then(function(account) {
-		ctrl.account = account;
-	});
-	ctrl.changePassword = function() {
-		Principal.changePassword(ctrl.password).then(function() {
-			AlertService.success('ACCOUNT_PASSWORD_SAVE_SUCCESS');
-		}).catch(function() {
-			AlertService.error('ACCOUNT_PASSWORD_SAVE_ERROR');
-		});
+angular.module('adama-web').directive('hasAuthority', ["Principal", function(Principal) {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			var setVisible = function() {
+				element.removeClass('hidden');
+			};
+			var setHidden = function() {
+				element.addClass('hidden');
+			};
+			var authority = attrs.hasAuthority.replace(/\s+/g, '');
+			var defineVisibility = function(reset) {
+
+				if (reset) {
+					setVisible();
+				}
+
+				Principal.hasAuthority(authority).then(function(result) {
+					if (result) {
+						setVisible();
+					} else {
+						setHidden();
+					}
+				});
+			};
+
+			if (authority.length > 0) {
+				defineVisibility(true);
+
+				scope.$watch(function() {
+					return Principal.isAuthenticated();
+				}, function() {
+					defineVisibility(true);
+				});
+			}
+		}
 	};
+}]);
+
+'use strict';
+
+angular.module('adama-web').factory('User', ["$resource", "adamaConstant", "adamaResourceConfig", function($resource, adamaConstant, adamaResourceConfig) {
+	var config = angular.extend({}, adamaResourceConfig, {
+		save: {
+			method: 'POST',
+			params: {
+				urlCreatePassword: adamaConstant.urlCreatePassword
+			}
+		}
+	});
+	return $resource(adamaConstant.apiBase + 'users/:id', {}, config);
 }]);
 
 'use strict';
@@ -2085,55 +2094,6 @@ angular.module('adama-web').component('arkFooter', {
 
 'use strict';
 
-angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
-	$translateProvider.translations('fr', {
-		'TOGGLE_NAVIGATION': 'Navigation',
-		'USERINFO_PROFILE': 'Profil',
-		'USERINFO_PASSWORD': 'Mot de passe',
-		'USERINFO_SIGNOUT': 'Déconnection'
-	});
-
-	$translateProvider.translations('en', {
-		'TOGGLE_NAVIGATION': 'Toggle navigation',
-		'USERINFO_PROFILE': 'Profile',
-		'USERINFO_PASSWORD': 'Password',
-		'USERINFO_SIGNOUT': 'Sign out'
-	});
-}]);
-
-'use strict';
-
-angular.module('adama-web').component('arkHeader', {
-	templateUrl: 'adama-web/ark/ark-header/ark-header.html'
-});
-
-'use strict';
-
-angular.module('adama-web').component('languageSelector', {
-	templateUrl: 'adama-web/ark/language-selector/language-selector.html',
-	controller: ["$rootScope", "$translate", "language", function($rootScope, $translate, language) {
-		var ctrl = this;
-		ctrl.changeLanguage = function(key) {
-			$translate.use(key);
-		};
-		var updateCurrentLanguage = function() {
-			ctrl.currentLanguage = $translate.use();
-			if (ctrl.currentLanguage.indexOf('en') === 0) {
-				ctrl.currentLanguage = 'us';
-			}
-		};
-		$rootScope.$on('$translateChangeSuccess', function() {
-			updateCurrentLanguage();
-		});
-		updateCurrentLanguage();
-		language.getSelectorData().then(function(data) {
-			ctrl.languages = data;
-		});
-	}]
-});
-
-'use strict';
-
 'use strict';
 
 angular.module('adama-web').component('mainNavigation', {
@@ -2192,6 +2152,100 @@ angular.module('adama-web').provider('menuService', function() {
 
 'use strict';
 
+angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
+	$stateProvider.state('app.personal.password', {
+		url: '/password',
+		templateUrl: 'adama-web/account/password/password.html',
+		controller: 'PasswordCtrl',
+		controllerAs: 'ctrl',
+		data: {
+			pageTitle: 'ACCOUNT_PASSWORD'
+		}
+	});
+}]);
+
+angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
+	$translateProvider.translations('fr', {
+		'ACCOUNT_PASSWORD': 'Modifier mon mot de passe',
+		'ACCOUNT_PASSWORD_TITLE': 'Modifier mon mot de passe',
+		'ACCOUNT_PASSWORD_NEWPASSWORD': 'Mot de passe',
+		'ACCOUNT_PASSWORD_NEWPASSWORD_PLACEHOLDER': 'Mot de passe ?',
+		'ACCOUNT_PASSWORD_NEWPASSWORD_REQUIRED': 'Le mot de passe est obligatoire',
+		'ACCOUNT_PASSWORD_NEWPASSWORD_MINLENGTH': 'Le mot de passe doit être composé d\'au moins 5 caractères.',
+		'ACCOUNT_PASSWORD_NEWPASSWORD_MAXLENGTH': 'Le mot de passe doit être composé d\'au plus 50 caractères.',
+		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD': 'Confirmation du mot de passe',
+		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_PLACEHOLDER': 'Confirmation du mot de passe ?',
+		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_REQUIRED': 'La confirmation du mot de passe est obligatoire',
+		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_MINLENGTH': 'La confirmation du mot de passe doit être composé d\'au moins 5 caractères.',
+		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_MAXLENGTH': 'La confirmation du mot de passe doit être composé d\'au plus 50 caractères.',
+		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_PATTERN': 'Les mots de passe ne sont pas égaux.',
+		'ACCOUNT_PASSWORD_SUBMIT': 'Enregistrer',
+		'ACCOUNT_PASSWORD_SAVE_SUCCESS': 'Le mot de passe a été changé avec succès.',
+		'ACCOUNT_PASSWORD_SAVE_ERROR': 'Le mot de passe n\'a pu être changé.'
+	});
+
+	$translateProvider.translations('en', {
+		'ACCOUNT_PASSWORD': 'Change my password',
+		'ACCOUNT_PASSWORD_TITLE': 'Change my password',
+		'ACCOUNT_PASSWORD_NEWPASSWORD': 'Password',
+		'ACCOUNT_PASSWORD_NEWPASSWORD_PLACEHOLDER': 'Password ?',
+		'ACCOUNT_PASSWORD_NEWPASSWORD_REQUIRED': 'Your password is required.',
+		'ACCOUNT_PASSWORD_NEWPASSWORD_MINLENGTH': 'Your password is required to be at least 5 characters.',
+		'ACCOUNT_PASSWORD_NEWPASSWORD_MAXLENGTH': 'Your password cannot be longer than 50 characters.',
+		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD': 'Password confirmation',
+		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_PLACEHOLDER': 'Password confirmation ?',
+		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_REQUIRED': 'Your confirmation password is required.',
+		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_MINLENGTH': 'Your confirmation password is required to be at least 5 characters.',
+		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_MAXLENGTH': 'Your confirmation password cannot be longer than 50 characters.',
+		'ACCOUNT_PASSWORD_CONFIRM_NEWPASSWORD_PATTERN': 'Password and confirmation do not match.',
+		'ACCOUNT_PASSWORD_SUBMIT': 'Save',
+		'ACCOUNT_PASSWORD_SAVE_SUCCESS': 'Password successfully changed.',
+		'ACCOUNT_PASSWORD_SAVE_ERROR': 'Password could not be changed.'
+	});
+}]);
+
+'use strict';
+
+angular.module('adama-web').controller('PasswordCtrl', ["Principal", "AlertService", function(Principal, AlertService) {
+	var ctrl = this;
+	Principal.identity().then(function(account) {
+		ctrl.account = account;
+	});
+	ctrl.changePassword = function() {
+		Principal.changePassword(ctrl.password).then(function() {
+			AlertService.success('ACCOUNT_PASSWORD_SAVE_SUCCESS');
+		}).catch(function() {
+			AlertService.error('ACCOUNT_PASSWORD_SAVE_ERROR');
+		});
+	};
+}]);
+
+'use strict';
+
+angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
+	$translateProvider.translations('fr', {
+		'TOGGLE_NAVIGATION': 'Navigation',
+		'USERINFO_PROFILE': 'Profil',
+		'USERINFO_PASSWORD': 'Mot de passe',
+		'USERINFO_SIGNOUT': 'Déconnection'
+	});
+
+	$translateProvider.translations('en', {
+		'TOGGLE_NAVIGATION': 'Toggle navigation',
+		'USERINFO_PROFILE': 'Profile',
+		'USERINFO_PASSWORD': 'Password',
+		'USERINFO_SIGNOUT': 'Sign out'
+	});
+}]);
+
+'use strict';
+
+angular.module('adama-web').component('arkHeader', {
+	templateUrl: 'adama-web/ark/ark-header/ark-header.html'
+});
+
+'use strict';
+
 angular.module('adama-web').component('selectAll', {
 	templateUrl: 'adama-web/ark/select-all/select-all.html',
 	bindings: {
@@ -2207,6 +2261,31 @@ angular.module('adama-web').component('selectAll', {
 			});
 		};
 	}
+});
+
+'use strict';
+
+angular.module('adama-web').component('languageSelector', {
+	templateUrl: 'adama-web/ark/language-selector/language-selector.html',
+	controller: ["$rootScope", "$translate", "language", function($rootScope, $translate, language) {
+		var ctrl = this;
+		ctrl.changeLanguage = function(key) {
+			$translate.use(key);
+		};
+		var updateCurrentLanguage = function() {
+			ctrl.currentLanguage = $translate.use();
+			if (ctrl.currentLanguage.indexOf('en') === 0) {
+				ctrl.currentLanguage = 'us';
+			}
+		};
+		$rootScope.$on('$translateChangeSuccess', function() {
+			updateCurrentLanguage();
+		});
+		updateCurrentLanguage();
+		language.getSelectorData().then(function(data) {
+			ctrl.languages = data;
+		});
+	}]
 });
 
 'use strict';
