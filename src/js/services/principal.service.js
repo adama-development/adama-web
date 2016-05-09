@@ -96,12 +96,16 @@ angular.module('adama-web').factory('Principal', function($http, $q, $rootScope,
 			var isAuthenticated = api.isAuthenticated();
 			// an authenticated user can't access to login pages
 			if (isAuthenticated && $rootScope.toState.name && $rootScope.toState.name === 'auth.signin') {
-				$state.go('app.main');
+				$state.go('app.main', {}, {
+					location: 'replace'
+				});
 			}
 			if ((!$rootScope.toState.data || !$rootScope.toState.data.authorities) && !isAuthenticated) {
 				// user is not signed in but desired state needs an
 				// authenticated user
-				$state.go('auth.signin');
+				$state.go('auth.signin', {}, {
+					location: 'replace'
+				});
 			} else if ($rootScope.toState.data && //
 				$rootScope.toState.data.authorities && //
 				$rootScope.toState.data.authorities.length > 0 && //
@@ -110,7 +114,9 @@ angular.module('adama-web').factory('Principal', function($http, $q, $rootScope,
 				if (isAuthenticated) {
 					// user is signed in but not authorized for
 					// desired state
-					$state.go('auth.accessDenied');
+					$state.go('auth.accessDenied', {}, {
+						location: 'replace'
+					});
 				} else {
 					// user is not authenticated. stow the state
 					// they wanted before you
@@ -120,7 +126,9 @@ angular.module('adama-web').factory('Principal', function($http, $q, $rootScope,
 					$rootScope.previousStateNameParams = $rootScope.toStateParams;
 					// now, send them to the signin state so they
 					// can log in
-					$state.go('auth.signin');
+					$state.go('auth.signin', {}, {
+						location: 'replace'
+					});
 				}
 			}
 		});
