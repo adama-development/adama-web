@@ -16,9 +16,7 @@ angular.module('adama-web').factory('binaryFileService', function($http, $q, ada
 			return $http({
 				method: 'PUT',
 				url: adamaConstant.apiBase + 'files',
-				data: {
-					idList: idList
-				}
+				data: idList
 			}).then(function(response) {
 				angular.forEach(workingList, function(binaryFile) {
 					binaryFile.url = response.data.urlList[binaryFile.id];

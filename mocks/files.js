@@ -9,7 +9,7 @@ angular.module('adama-web').run(function($httpBackend, $http, adamaConstant, moc
 		var result = {
 			urlList : {}
 		};
-		angular.forEach(data.idList, function(id) {
+		angular.forEach(data, function(id) {
 			result.urlList[id] = id + '?comingFormMock=true';
 		})
 		return [ 200, result ];
