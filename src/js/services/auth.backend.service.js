@@ -7,8 +7,8 @@ angular.module('adama-web').factory('authBackendService', function loginService(
 
 	api.login = function(credentials) {
 		return $http.post(adamaConstant.apiBase + 'login/authenticate', {
-			username : credentials.username,
-			password : credentials.password
+			username: credentials.username,
+			password: credentials.password
 		}).then(function(response) {
 			var data = response.data;
 			adamaTokenService.setToken(data['access_token']);

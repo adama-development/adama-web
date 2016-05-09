@@ -12,8 +12,11 @@ angular.module('adama-web', [ //
 	'ngTable', //
 	'ngFileSaver', //
 	'ngFileUpload', //
+	'angular-jwt', //
 	'angular-loading-bar' //
 ]);
+
+'use strict';
 
 angular.module('adama-web').config(["$urlRouterProvider", function($urlRouterProvider) {
 	$urlRouterProvider.otherwise('/app/');
@@ -44,14 +47,11 @@ angular.module('adama-web').run(["$rootScope", "$filter", function($rootScope, $
 
 angular.module('adama-web').config(["$translateProvider", function($translateProvider) {
 	$translateProvider.useSanitizeValueStrategy('escapeParameters');
-
 	$translateProvider.useLocalStorage();
-
 	$translateProvider.registerAvailableLanguageKeys(['en', 'fr'], {
 		'en_*': 'en',
 		'fr_*': 'fr'
 	});
-
 	$translateProvider.determinePreferredLanguage();
 }]);
 
@@ -67,15 +67,15 @@ angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 			'			<main-navigation></main-navigation>' + //
 			'		</section>' + //
 			'	</aside>' + //
-			'	<jh-alert></jh-alert>' + //
+			'	<adama-alert></adama-alert>' + //
 			'	<ui-view></ui-view>' + //
 			'	<ark-footer></ark-footer>' + //
 			'	<layout-fix add-event="true"></layout-fix>' + //
 			'</div>' + //
 			'',
 		resolve: {
-			authorize: ["Auth", function(Auth) {
-				return Auth.authorize();
+			authorize: ["Principal", function(Principal) {
+				return Principal.authorize();
 			}]
 		}
 	});
@@ -117,6 +117,34 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 	});
 }]);
 
+angular.module('adama-web').run(["$rootScope", "$state", "Principal", function($rootScope, $state, Principal) {
+	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams) {
+		$rootScope.toState = toState;
+		$rootScope.toStateParams = toStateParams;
+		if (Principal.isIdentityResolved()) {
+			Principal.authorize();
+		}
+	});
+
+	$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+		// Remember previous state unless we've been redirected to login or we've just
+		// reset the state memory after logout. If we're redirected to login, our
+		// previousState is already set in the authExpiredInterceptor. If we're going
+		// to login directly, we don't want to be sent to some previous state anyway
+		if (toState.name !== 'auth.signin' && $rootScope.previousStateName) {
+			$rootScope.previousStateName = fromState.name;
+			$rootScope.previousStateParams = fromParams;
+		}
+	});
+}]);
+
+angular.module('adama-web').config(["$httpProvider", function($httpProvider) {
+	$httpProvider.interceptors.push('errorHandlerInterceptor');
+	$httpProvider.interceptors.push('authExpiredInterceptor');
+	$httpProvider.interceptors.push('authInterceptor');
+	$httpProvider.interceptors.push('notificationInterceptor');
+}]);
+
 'use strict';
 
 angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
@@ -126,6 +154,221 @@ angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
 		template: '<ui-view></ui-view>'
 	});
 }]);
+
+'use strict';
+
+angular.module('adama-web').component('adamaAlertError', {
+	templateUrl: 'adama-web/alert/adama-alert-error.html',
+	controller: ["$rootScope", "$scope", "$translate", "AlertService", function($rootScope, $scope, $translate, AlertService) {
+		var ctrl = this;
+		ctrl.alerts = [];
+
+		var addErrorAlert = function(message, key, data) {
+			key = key && key !== null ? key : message;
+			ctrl.alerts.push(AlertService.add({
+				type: 'danger',
+				msg: key,
+				params: data,
+				timeout: 5000,
+				toast: AlertService.isToast(),
+				scoped: true
+			}, ctrl.alerts));
+		};
+
+		var cleanHttpErrorListener = $rootScope.$on('Adama.httpError', function(event, httpResponse) {
+			var i;
+			event.stopPropagation();
+			switch (httpResponse.status) {
+				// connection refused, server not reachable
+				case 0:
+					addErrorAlert('Server not reachable', 'error.server.not.reachable');
+					break;
+
+				case 400:
+					var errorHeader = httpResponse.headers('X-Adama-error');
+					var entityKey = httpResponse.headers('X-Adama-params');
+					if (errorHeader) {
+						var entityName = $translate.instant('global.menu.entities.' + entityKey);
+						addErrorAlert(errorHeader, errorHeader, {
+							entityName: entityName
+						});
+					} else if (httpResponse.data && httpResponse.data.fieldErrors) {
+						for (i = 0; i < httpResponse.data.fieldErrors.length; i++) {
+							var fieldError = httpResponse.data.fieldErrors[i];
+							// convert 'something[14].other[4].id'
+							// to 'something[].other[].id' so
+							// translations can be written to it
+							var convertedField = fieldError.field.replace(/\[\d*\]/g, '[]');
+							var fieldName = $translate.instant('Adama.' + fieldError.objectName + '.' + convertedField);
+							addErrorAlert('Field ' + fieldName + ' cannot be empty', 'error.' + fieldError.message, {
+								fieldName: fieldName
+							});
+						}
+					} else if (httpResponse.data && httpResponse.data.message) {
+						addErrorAlert(httpResponse.data.message, httpResponse.data.message, httpResponse.data);
+					} else {
+						addErrorAlert(httpResponse.data);
+					}
+					break;
+
+				default:
+					if (httpResponse.data && httpResponse.data.message) {
+						addErrorAlert(httpResponse.data.message);
+					} else {
+						addErrorAlert(JSON.stringify(httpResponse));
+					}
+			}
+		});
+
+		$scope.$on('$destroy', function() {
+			if (!!cleanHttpErrorListener) {
+				cleanHttpErrorListener();
+				ctrl.alerts = [];
+			}
+		});
+	}]
+});
+
+'use strict';
+
+angular.module('adama-web').component('adamaAlert', {
+	templateUrl: 'adama-web/alert/adama-alert.html',
+	controller: ["AlertService", function(AlertService) {
+		var ctrl = this;
+		ctrl.alerts = AlertService.get();
+	}]
+});
+
+'use strict';
+
+angular.module('adama-web')
+	.provider('AlertService', function() {
+		var toast = false;
+
+		this.$get = ['$timeout', '$sce', '$translate', function($timeout, $sce, $translate) {
+
+			var alertId = 0; // unique id for each alert. Starts from 0.
+			var alerts = [];
+			var timeout = 5000; // default timeout
+
+			var isToast = function() {
+				return toast;
+			};
+
+			var clear = function() {
+				alerts = [];
+			};
+
+			var get = function() {
+				return alerts;
+			};
+
+			var closeAlertByIndex = function(index, thisAlerts) {
+				return thisAlerts.splice(index, 1);
+			};
+
+			var closeAlert = function(id, extAlerts) {
+				var thisAlerts = extAlerts ? extAlerts : alerts;
+				return closeAlertByIndex(thisAlerts.map(function(e) {
+					return e.id;
+				}).indexOf(id), thisAlerts);
+			};
+
+			var factory = function(alertOptions) {
+				var alert = {
+					type: alertOptions.type,
+					msg: $sce.trustAsHtml(alertOptions.msg),
+					id: alertOptions.alertId,
+					timeout: alertOptions.timeout,
+					toast: alertOptions.toast,
+					position: alertOptions.position ? alertOptions.position : 'top right',
+					scoped: alertOptions.scoped,
+					close: function(alerts) {
+						return closeAlert(this.id, alerts);
+					}
+				};
+				if (!alert.scoped) {
+					alerts.push(alert);
+				}
+				return alert;
+			};
+
+			var addAlert = function(alertOptions, extAlerts) {
+				alertOptions.alertId = alertId++;
+				alertOptions.msg = $translate.instant(alertOptions.msg, alertOptions.params);
+				var alert = factory(alertOptions);
+				if (alertOptions.timeout && alertOptions.timeout > 0) {
+					$timeout(function() {
+						closeAlert(alertOptions.alertId, extAlerts);
+					}, alertOptions.timeout);
+				}
+				return alert;
+			};
+
+			var success = function(msg, params, position) {
+				return addAlert({
+					type: 'success',
+					msg: msg,
+					params: params,
+					timeout: timeout,
+					toast: toast,
+					position: position
+				});
+			};
+
+			var error = function(msg, params, position) {
+				return addAlert({
+					type: 'danger',
+					msg: msg,
+					params: params,
+					timeout: timeout,
+					toast: toast,
+					position: position
+				});
+			};
+
+			var warning = function(msg, params, position) {
+				return addAlert({
+					type: 'warning',
+					msg: msg,
+					params: params,
+					timeout: timeout,
+					toast: toast,
+					position: position
+				});
+			};
+
+			var info = function(msg, params, position) {
+				return addAlert({
+					type: 'info',
+					msg: msg,
+					params: params,
+					timeout: timeout,
+					toast: toast,
+					position: position
+				});
+			};
+
+			return {
+				factory: factory,
+				isToast: isToast,
+				add: addAlert,
+				closeAlert: closeAlert,
+				closeAlertByIndex: closeAlertByIndex,
+				clear: clear,
+				get: get,
+				success: success,
+				error: error,
+				info: info,
+				warning: warning
+			};
+		}];
+
+		this.showAsToast = function(isToast) {
+			toast = isToast;
+		};
+
+	});
 
 'use strict';
 
@@ -232,14 +475,14 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 
 'use strict';
 
-angular.module('adama-web').controller('RecoverPasswordCtrl', ["Auth", function(Auth) {
+angular.module('adama-web').controller('RecoverPasswordCtrl', ["Principal", function(Principal) {
 	var ctrl = this;
 	ctrl.recover = function(userEmail) {
 		ctrl.recoverSuccess = false;
 		ctrl.recoverError = false;
 		ctrl.errorEmailNotExists = false;
 		ctrl.loading = true;
-		Auth.resetPasswordInit(userEmail).then(function() {
+		Principal.resetPasswordInit(userEmail).then(function() {
 			ctrl.recoverSuccess = true;
 		}).catch(function(response) {
 			if (response.status === 400 && response.data === 'e-mail address not registered') {
@@ -263,10 +506,10 @@ angular.module('adama-web').controller('SigninCtrl', ["$rootScope", "$state", "A
 			username: userName,
 			password: userPassword
 		}).then(function() {
-			if ($rootScope.previousStateName === 'auth.signin') {
+			if ($rootScope.previousStateName === 'auth.signin' || $state.get($rootScope.previousStateName) === null) {
 				$state.go('app.main');
 			} else {
-				$rootScope.back();
+				$state.go($rootScope.previousStateName, $rootScope.previousStateParams);
 			}
 		}).catch(function() {
 			ctrl.authenticationError = true;
@@ -599,11 +842,11 @@ angular.module('adama-web').directive('modalBtnConfirmImportXls', function() {
 
 'use strict';
 
-angular.module('adama-web').directive('dsAuthorities', ["$parse", "jHipsterConstant", function($parse, jHipsterConstant) {
+angular.module('adama-web').directive('dsAuthorities', ["$parse", "adamaConstant", function($parse, adamaConstant) {
 	return {
 		scope: false,
 		link: function(scope, element, attrs) {
-			var authorities = jHipsterConstant.authorities;
+			var authorities = adamaConstant.authorities;
 			$parse(attrs.data).assign(scope, authorities);
 		}
 	};
@@ -734,54 +977,198 @@ angular.module('adama-web').filter('min', function() {
 
 'use strict';
 
-angular.module('adama-web').run(["$rootScope", "$state", "Principal", "Auth", function($rootScope, $state, Principal, Auth) {
-	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams) {
-		$rootScope.toState = toState;
-		$rootScope.toStateParams = toStateParams;
-		if (Principal.isIdentityResolved()) {
-			Auth.authorize();
-		}
-	});
+angular.module('adama-web').directive('hasAnyAuthority', ["Principal", function(Principal) {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			var setVisible = function() {
+				element.removeClass('hidden');
+			};
+			var setHidden = function() {
+				element.addClass('hidden');
+			};
+			var authorities = attrs.hasAnyAuthority.replace(/\s+/g, '').split(',');
+			var defineVisibility = function(reset) {
+				var result;
+				if (reset) {
+					setVisible();
+				}
 
-	$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
-		// Remember previous state unless we've been redirected to login or we've just
-		// reset the state memory after logout. If we're redirected to login, our
-		// previousState is already set in the authExpiredInterceptor. If we're going
-		// to login directly, we don't want to be sent to some previous state anyway
-		if (toState.name !== 'auth.signin' && $rootScope.previousStateName) {
-			$rootScope.previousStateName = fromState.name;
-			$rootScope.previousStateParams = fromParams;
-		}
-	});
+				result = Principal.hasAnyAuthority(authorities);
+				if (result) {
+					setVisible();
+				} else {
+					setHidden();
+				}
+			};
 
-	$rootScope.back = function() {
-		// If previous state is 'activate' or do not exist go to 'home'
-		if ($state.get($rootScope.previousStateName) === null) {
-			$state.go('app.main');
-		} else {
-			$state.go($rootScope.previousStateName, $rootScope.previousStateParams);
+			if (authorities.length > 0) {
+				defineVisibility(true);
+
+				scope.$watch(function() {
+					return Principal.isAuthenticated();
+				}, function() {
+					defineVisibility(true);
+				});
+			}
 		}
 	};
 }]);
 
-angular.module('adama-web').config(["$httpProvider", function($httpProvider) {
-	$httpProvider.interceptors.push('errorHandlerInterceptor');
-	$httpProvider.interceptors.push('authExpiredInterceptor');
-	$httpProvider.interceptors.push('authInterceptor');
-	$httpProvider.interceptors.push('notificationInterceptor');
+'use strict';
+
+angular.module('adama-web').directive('hasAuthority', ["Principal", function(Principal) {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			var setVisible = function() {
+				element.removeClass('hidden');
+			};
+			var setHidden = function() {
+				element.addClass('hidden');
+			};
+			var authority = attrs.hasAuthority.replace(/\s+/g, '');
+			var defineVisibility = function(reset) {
+
+				if (reset) {
+					setVisible();
+				}
+
+				Principal.hasAuthority(authority).then(function(result) {
+					if (result) {
+						setVisible();
+					} else {
+						setHidden();
+					}
+				});
+			};
+
+			if (authority.length > 0) {
+				defineVisibility(true);
+
+				scope.$watch(function() {
+					return Principal.isAuthenticated();
+				}, function() {
+					defineVisibility(true);
+				});
+			}
+		}
+	};
+}]);
+
+/*jshint -W069 */
+/*jscs:disable requireDotNotation*/
+'use strict';
+
+angular.module('adama-web').factory('authExpiredInterceptor', ["$injector", "$q", "adamaConstant", function($injector, $q, adamaConstant) {
+	var getHttpService = (function() {
+		var service;
+		return function() {
+			return service || (service = $injector.get('$http'));
+		};
+	}());
+
+	var getAdamaTokenService = (function() {
+		var service;
+		return function() {
+			return service || (service = $injector.get('adamaTokenService'));
+		};
+	}());
+
+	return {
+		responseError: function(response) {
+			console.log('authExpiredInterceptor');
+			var config = response.config;
+			console.log('config.url', config.url);
+			if (response.status === 401 && config && config.url.indexOf(adamaConstant.apiBase) === 0 && config.url.indexOf(adamaConstant.apiBase + 'login/authenticate') !== 0) {
+				console.log('authExpiredInterceptor error 401, refresh token');
+				return getAdamaTokenService().refreshAndGetToken().then(function() {
+					console.log('authExpiredInterceptor token is refresh, reset Authorization header');
+					config.headers['Authorization'] = undefined;
+					return getHttpService()(config);
+				});
+			}
+			return $q.reject(response);
+		}
+	};
+}]);
+
+/*jshint -W069 */
+/*jscs:disable requireDotNotation*/
+'use strict';
+
+angular.module('adama-web').factory('authInterceptor', ["$injector", "adamaConstant", function($injector, adamaConstant) {
+	var getAdamaTokenService = (function() {
+		var service;
+		return function() {
+			return service || (service = $injector.get('adamaTokenService'));
+		};
+	}());
+
+	return {
+		// Add authorization token to headers
+		request: function(config) {
+			config.headers = config.headers || {};
+			if (!config.headers['Authorization'] && config.url.indexOf(adamaConstant.apiBase) === 0) {
+				console.log('authInterceptor need authorization, getting token');
+				return getAdamaTokenService().getToken().then(function(token) {
+					if (token) {
+						config.headers['Authorization'] = 'Bearer ' + token;
+					}
+					return config;
+				});
+			}
+			return config;
+		}
+	};
 }]);
 
 'use strict';
 
-angular.module('adama-web').constant('jHipsterConstant', {
-	apiBase: 'http://localhost:13337/',
-	appModule: 'mySuperApp',
-	authorities: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_MANAGER']
-});
+angular.module('adama-web').factory('errorHandlerInterceptor', ["$q", "$rootScope", function($q, $rootScope) {
+	return {
+		'responseError': function(response) {
+			if (!(response.status === 401 && response.data === 'Bad credentials')) {
+				$rootScope.$emit('Adama.httpError', response);
+			}
+			return $q.reject(response);
+		}
+	};
+}]);
 
 'use strict';
 
-angular.module('adama-web').factory('jHipsterResourceConfig', ["ParseLinks", "pdfService", function(ParseLinks, pdfService) {
+angular.module('adama-web').factory('notificationInterceptor', ["$q", "AlertService", function($q, AlertService) {
+	return {
+		response: function(response) {
+			var alertKey = response.headers('X-Adama-alert');
+			if (angular.isString(alertKey)) {
+				AlertService.success(alertKey, {
+					param: response.headers('X-Adama-params')
+				});
+			}
+			return response;
+		}
+	};
+}]);
+
+'use strict';
+
+angular.module('adama-web').factory('User', ["$resource", "adamaConstant", "adamaResourceConfig", function($resource, adamaConstant, adamaResourceConfig) {
+	var config = angular.extend({}, adamaResourceConfig, {
+		'delete': {
+			method: 'DELETE',
+			params: {
+				login: '@login'
+			}
+		}
+	});
+	return $resource(adamaConstant.apiBase + 'users/:login', {}, config);
+}]);
+
+'use strict';
+
+angular.module('adama-web').factory('adamaResourceConfig', ["ParseLinks", "pdfService", function(ParseLinks, pdfService) {
 	return {
 		'query': {
 			method: 'GET',
@@ -844,23 +1231,225 @@ angular.module('adama-web').factory('jHipsterResourceConfig', ["ParseLinks", "pd
 	};
 }]);
 
+/*jshint -W069 */
+/*jscs:disable requireDotNotation*/
 'use strict';
 
-angular.module('adama-web').factory('User', ["$resource", "jHipsterConstant", "jHipsterResourceConfig", function($resource, jHipsterConstant, jHipsterResourceConfig) {
-	var config = angular.extend({}, jHipsterResourceConfig, {
-		'delete': {
-			method: 'DELETE',
-			params: {
-				login: '@login'
+angular.module('adama-web').factory('adamaTokenService', ["$rootScope", "$http", "$q", "$state", "jwtHelper", "localStorageService", "adamaConstant", function($rootScope, $http, $q, $state, jwtHelper, localStorageService, adamaConstant) {
+	var api = {};
+
+	var getPayload = function(key) {
+		return api.getToken().then(function(token) {
+			if (token) {
+				var tokenPayload = jwtHelper.decodeToken(token);
+				if (key) {
+					return tokenPayload[key];
+				}
+				return tokenPayload;
 			}
+			return undefined;
+		});
+	};
+
+	api.getUsername = function() {
+		return getPayload('sub');
+	};
+
+	api.setToken = function(token) {
+		localStorageService.set('token', token);
+	};
+
+	api.setRefreshToken = function(token) {
+		localStorageService.set('refresh_token', token);
+	};
+
+	api.getToken = function() {
+		var token = localStorageService.get('token');
+		if (token && jwtHelper.isTokenExpired(token)) {
+			console.log('adamaTokenService.getToken token is expired');
+			return api.refreshAndGetToken();
 		}
-	});
-	return $resource(jHipsterConstant.apiBase + 'api/users/:login', {}, config);
+		return $q.when(token);
+	};
+
+	api.refreshAndGetToken = function() {
+		var token = localStorageService.get('token');
+		if (!token) {
+			console.error('no token, redirect to signin');
+			$state.go('auth.signin');
+			return $q.reject('refreshAndGetToken : no token');
+		}
+		var refreshToken = localStorageService.get('refresh_token');
+		return $http({
+			method: 'POST',
+			url: adamaConstant.apiBase + 'login/refresh',
+			headers: {
+				'Authorization': 'Bearer ' + token
+			},
+			data: {
+				'refresh_token': refreshToken
+			}
+		}).then(function(response) {
+			var data = response.data;
+			var newToken = data['access_token'];
+			api.setToken(newToken);
+			return newToken;
+		}, function(rejection) {
+			console.error('error while refreshing user token, redirect to signin', rejection);
+			$state.go('auth.signin');
+			api.setToken(undefined);
+			return $q.reject(rejection);
+		});
+	};
+
+	return api;
 }]);
 
 'use strict';
 
-angular.module('adama-web').factory('binaryFileService', ["$http", "$q", "jHipsterConstant", function($http, $q, jHipsterConstant) {
+angular.module('adama-web').constant('adamaConstant', {
+	apiBase: 'http://localhost:13337/',
+	adamaWebToolkitTemplateUrl: {
+		// TODO
+	},
+	authorities: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_MANAGER']
+});
+
+/*jshint -W069 */
+/*jscs:disable requireDotNotation*/
+'use strict';
+
+angular.module('adama-web').factory('authBackendService', ["$http", "adamaConstant", "adamaTokenService", function loginService($http, adamaConstant, adamaTokenService) {
+	var api = {};
+
+	api.login = function(credentials) {
+		return $http.post(adamaConstant.apiBase + 'login/authenticate', {
+			username: credentials.username,
+			password: credentials.password
+		}).then(function(response) {
+			var data = response.data;
+			adamaTokenService.setToken(data['access_token']);
+			adamaTokenService.setRefreshToken(data['refresh_token']);
+		});
+	};
+
+	api.logout = function() {
+		adamaTokenService.setToken(undefined);
+	};
+
+	return api;
+}]);
+
+'use strict';
+
+angular.module('adama-web').factory('Auth', ["$rootScope", "$state", "$q", "$translate", "Principal", "authBackendService", function Auth($rootScope, $state, $q, $translate, Principal, authBackendService) {
+	var api = {};
+
+	api.login = function(credentials) {
+		var deferred = $q.defer();
+
+		authBackendService.login(credentials).then(function(data) {
+			// retrieve the logged account information
+			Principal.identity(true).then(function(account) {
+				// After the login the language will be changed to
+				// the language selected by the user during his
+				// registration
+				$translate.use(account.langKey);
+				deferred.resolve(data);
+			});
+		}).catch(function(err) {
+			api.logout();
+			deferred.reject(err);
+		});
+
+		return deferred.promise;
+	};
+
+	api.logout = function() {
+		authBackendService.logout();
+		Principal.authenticate(null);
+		// Reset state memory
+		$rootScope.previousStateName = undefined;
+		$rootScope.previousStateNameParams = undefined;
+	};
+
+	return api;
+}]);
+
+/*jshint bitwise: false*/
+'use strict';
+
+angular.module('adama-web').service('Base64', function() {
+	var keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+	this.encode = function(input) {
+		var output = '';
+		var chr1, chr2, enc1, enc2, enc3;
+		var chr3 = '';
+		var enc4 = '';
+		var i = 0;
+
+		while (i < input.length) {
+			chr1 = input.charCodeAt(i++);
+			chr2 = input.charCodeAt(i++);
+			chr3 = input.charCodeAt(i++);
+
+			enc1 = chr1 >> 2;
+			enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+			enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+			enc4 = chr3 & 63;
+
+			if (isNaN(chr2)) {
+				enc3 = enc4 = 64;
+			} else if (isNaN(chr3)) {
+				enc4 = 64;
+			}
+
+			output = output + keyStr.charAt(enc1) + keyStr.charAt(enc2) + keyStr.charAt(enc3) + keyStr.charAt(enc4);
+			chr1 = chr2 = chr3 = '';
+			enc1 = enc2 = enc3 = enc4 = '';
+		}
+
+		return output;
+	};
+
+	this.decode = function(input) {
+		var output = '';
+		var chr1, chr2, enc1, enc2, enc3;
+		var chr3 = '';
+		var enc4 = '';
+		var i = 0;
+
+		// remove all characters that are not A-Z, a-z, 0-9, +, /, or =
+		input = input.replace(/[^A-Za-z0-9\+\/\=]/g, '');
+
+		while (i < input.length) {
+			enc1 = keyStr.indexOf(input.charAt(i++));
+			enc2 = keyStr.indexOf(input.charAt(i++));
+			enc3 = keyStr.indexOf(input.charAt(i++));
+			enc4 = keyStr.indexOf(input.charAt(i++));
+
+			chr1 = (enc1 << 2) | (enc2 >> 4);
+			chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+			chr3 = ((enc3 & 3) << 6) | enc4;
+
+			output = output + String.fromCharCode(chr1);
+
+			if (enc3 !== 64) {
+				output = output + String.fromCharCode(chr2);
+			}
+			if (enc4 !== 64) {
+				output = output + String.fromCharCode(chr3);
+			}
+
+			chr1 = chr2 = chr3 = '';
+			enc1 = enc2 = enc3 = enc4 = '';
+		}
+	};
+});
+
+'use strict';
+
+angular.module('adama-web').factory('binaryFileService', ["$http", "$q", "adamaConstant", function($http, $q, adamaConstant) {
 	var api = {};
 
 	api.initUrlForBinaryFiles = function(binaryFileList) {
@@ -875,7 +1464,7 @@ angular.module('adama-web').factory('binaryFileService', ["$http", "$q", "jHipst
 		if (idList.length) {
 			return $http({
 				method: 'GET',
-				url: jHipsterConstant.apiBase + 'api/binaryFiles',
+				url: adamaConstant.apiBase + 'binaryFiles',
 				data: {
 					ids: idList
 				}
@@ -938,6 +1527,40 @@ angular.module('adama-web').provider('language', function() {
 
 'use strict';
 
+angular.module('adama-web').service('ParseLinks', function() {
+	this.parse = function(header) {
+		if (header.length === 0) {
+			throw new Error('input must not be of zero length');
+		}
+
+		// Split parts by comma
+		var parts = header.split(',');
+		var links = {};
+		// Parse each part into a named link
+		angular.forEach(parts, function(p) {
+			var section = p.split(';');
+			if (section.length !== 2) {
+				throw new Error('section could not be split on ";"');
+			}
+			var url = section[0].replace(/<(.*)>/, '$1').trim();
+			var queryString = {};
+			url.replace(new RegExp('([^?=&]+)(=([^&]*))?', 'g'), function($0, $1, $2, $3) {
+				queryString[$1] = $3;
+			});
+			var page = queryString.page;
+			if (angular.isString(page)) {
+				page = parseInt(page);
+			}
+			var name = section[1].replace(/rel='(.*)'/, '$1').trim();
+			links[name] = page;
+		});
+
+		return links;
+	};
+});
+
+'use strict';
+
 angular.module('adama-web').factory('pdfService', ["FileSaver", function(FileSaver) {
 	var api = {};
 
@@ -956,6 +1579,164 @@ angular.module('adama-web').factory('pdfService', ["FileSaver", function(FileSav
 			}
 			FileSaver.saveAs(dataBlob, filename);
 		}
+	};
+
+	return api;
+}]);
+
+'use strict';
+
+angular.module('adama-web').factory('Principal', ["$http", "$q", "$rootScope", "$resource", "$state", "adamaConstant", "adamaTokenService", function($http, $q, $rootScope, $resource, $state, adamaConstant, adamaTokenService) {
+	var Password = $resource(adamaConstant.apiBase + 'account/change_password');
+	var PasswordResetInit = $resource(adamaConstant.apiBase + 'account/reset_password/init');
+	var PasswordResetFinish = $resource(adamaConstant.apiBase + 'account/reset_password/finish');
+
+	var _identity;
+	var _authenticated = false;
+
+	var api = {};
+
+	api.isIdentityResolved = function() {
+		return angular.isDefined(_identity);
+	};
+
+	api.isAuthenticated = function() {
+		return _authenticated;
+	};
+
+	api.hasAuthority = function(authority) {
+		if (!_authenticated) {
+			return $q.when(false);
+		}
+		return this.identity().then(function(_id) {
+			return _id.authority && _id.authority === authority;
+		}, function() {
+			return false;
+		});
+	};
+
+	api.hasAnyAuthority = function(authorities) {
+		if (!_authenticated || !_identity || !_identity.authority) {
+			return false;
+		}
+		for (var i = 0; i < authorities.length; i++) {
+			if (_identity.authority === authorities[i]) {
+				return true;
+			}
+		}
+
+		return false;
+	};
+
+	api.authenticate = function(identity) {
+		_identity = identity;
+		_authenticated = identity !== null;
+	};
+
+	api.identity = function(force) {
+		var deferred = $q.defer();
+
+		if (force === true) {
+			_identity = undefined;
+		}
+
+		// check and see if we have retrieved the identity data from the
+		// server.
+		// if we have, reuse it by immediately resolving
+		if (angular.isDefined(_identity)) {
+			deferred.resolve(_identity);
+
+			return deferred.promise;
+		}
+
+		// retrieve the identity data from the server, update the
+		// identity object, and then resolve.
+
+		// from jwt token : sub
+		// users/byLogin/:sub
+		adamaTokenService.getUsername().then(function(username) {
+			if (username) {
+				return $http({
+					method: 'GET',
+					url: adamaConstant.apiBase + 'users/byLogin/' + username
+				}).then(function(response) {
+					return response.data;
+				});
+			}
+			return $q.reject('not connected');
+		}).then(function(account) {
+			_identity = account;
+			_authenticated = true;
+			deferred.resolve(_identity);
+		}, function() {
+			_identity = null;
+			_authenticated = false;
+			deferred.resolve(_identity);
+		});
+
+		return deferred.promise;
+	};
+
+	api.authorize = function(force) {
+		return api.identity(force).then(function() {
+			var isAuthenticated = api.isAuthenticated();
+			// an authenticated user can't access to login pages
+			if (isAuthenticated && $rootScope.toState.name && $rootScope.toState.name === 'auth.signin') {
+				$state.go('app.main');
+			}
+			if ((!$rootScope.toState.data || !$rootScope.toState.data.authorities) && !isAuthenticated) {
+				// user is not signed in but desired state needs an
+				// authenticated user
+				$state.go('auth.signin');
+			} else if ($rootScope.toState.data && //
+				$rootScope.toState.data.authorities && //
+				$rootScope.toState.data.authorities.length > 0 && //
+				!api.hasAnyAuthority($rootScope.toState.data.authorities) //
+			) {
+				if (isAuthenticated) {
+					// user is signed in but not authorized for
+					// desired state
+					$state.go('auth.accessDenied');
+				} else {
+					// user is not authenticated. stow the state
+					// they wanted before you
+					// send them to the signin state, so you can
+					// return them when you're done
+					$rootScope.previousStateName = $rootScope.toState;
+					$rootScope.previousStateNameParams = $rootScope.toStateParams;
+					// now, send them to the signin state so they
+					// can log in
+					$state.go('auth.signin');
+				}
+			}
+		});
+	};
+
+	api.updateAccount = function(account) {
+		return $http({
+			method: 'PUT',
+			url: adamaConstant.apiBase + 'users',
+			data: {
+				user: account
+			}
+		}).then(function() {
+			$rootScope.$emit('auth.updateAccount', {
+				account: account
+			});
+			return account;
+		});
+	};
+
+	api.changePassword = function(newPassword) {
+		return Password.save(newPassword).$promise;
+	};
+
+	api.resetPasswordInit = function(mail) {
+		return PasswordResetInit.save(mail).$promise;
+	};
+
+	api.resetPasswordFinish = function(keyAndPassword) {
+		return PasswordResetFinish.save(keyAndPassword).$promise;
 	};
 
 	return api;
@@ -1186,13 +1967,13 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 
 'use strict';
 
-angular.module('adama-web').controller('PasswordCtrl', ["Auth", "Principal", "AlertService", function(Auth, Principal, AlertService) {
+angular.module('adama-web').controller('PasswordCtrl', ["Principal", "AlertService", function(Principal, AlertService) {
 	var ctrl = this;
 	Principal.identity().then(function(account) {
 		ctrl.account = account;
 	});
 	ctrl.changePassword = function() {
-		Auth.changePassword(ctrl.password).then(function() {
+		Principal.changePassword(ctrl.password).then(function() {
 			AlertService.success('ACCOUNT_PASSWORD_SAVE_SUCCESS');
 		}).catch(function() {
 			AlertService.error('ACCOUNT_PASSWORD_SAVE_ERROR');
@@ -1262,7 +2043,7 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 
 'use strict';
 
-angular.module('adama-web').controller('SettingsCtrl', ["Principal", "Auth", "language", "AlertService", "$translate", function(Principal, Auth, language, AlertService, $translate) {
+angular.module('adama-web').controller('SettingsCtrl', ["Principal", "language", "AlertService", "$translate", function(Principal, language, AlertService, $translate) {
 	var ctrl = this;
 	var copyAccount = function(account) {
 		// Store the "settings account" in a separate variable, and not in the
@@ -1280,7 +2061,7 @@ angular.module('adama-web').controller('SettingsCtrl', ["Principal", "Auth", "la
 		ctrl.settingsAccount = copyAccount(account);
 	});
 	ctrl.save = function() {
-		Auth.updateAccount(ctrl.settingsAccount).then(function() {
+		Principal.updateAccount(ctrl.settingsAccount).then(function() {
 			return Principal.identity(true).then(function(account) {
 				ctrl.settingsAccount = copyAccount(account);
 				language.getCurrent().then(function(current) {
@@ -1456,764 +2237,5 @@ angular.module('adama-web').component('viewAttribute', {
 	},
 	controller: function() {}
 });
-
-'use strict';
-
-angular.module('adama-web')
-	.directive('jhAlert', ["AlertService", function(AlertService) {
-		return {
-			restrict: 'E',
-			template: '<div class="content-wrapper" ng-cloak ng-if="alerts && alerts.length">' +
-				'<div class="box-body">' +
-				'<div ng-repeat="alert in alerts" class="alert alert-dismissible" ng-class="\'alert-\' + alert.type">' +
-				'<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>' +
-				'{{ alert.msg }}' +
-				'</div>' +
-				'</div>' +
-				'</div>',
-			controller: ['$scope',
-				function($scope) {
-					$scope.alerts = AlertService.get();
-					$scope.$on('$destroy', function() {
-						$scope.alerts = [];
-					});
-				}
-			]
-		};
-	}])
-	.directive('jhAlertError', ["AlertService", "$rootScope", "$translate", function(AlertService, $rootScope, $translate) {
-		return {
-			restrict: 'E',
-			template: '<div class="alerts" ng-if="alerts && alerts.length">' +
-				'<div ng-repeat="alert in alerts" class="alert alert-dismissible" ng-class="\'alert-\' + alert.type">' +
-				'<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>' +
-				'{{ alert.msg }}' +
-				'</div>' +
-				'</div>',
-			controller: ['$scope', 'jHipsterConstant',
-				function($scope, jHipsterConstant) {
-
-					$scope.alerts = [];
-
-					var addErrorAlert = function(message, key, data) {
-						key = key && key !== null ? key : message;
-						$scope.alerts.push(
-							AlertService.add({
-									type: 'danger',
-									msg: key,
-									params: data,
-									timeout: 5000,
-									toast: AlertService.isToast(),
-									scoped: true
-								},
-								$scope.alerts
-							)
-						);
-					};
-
-					var cleanHttpErrorListener = $rootScope.$on(jHipsterConstant.appModule + '.httpError', function(event, httpResponse) {
-						var i;
-						event.stopPropagation();
-						switch (httpResponse.status) {
-							// connection refused, server not reachable
-							case 0:
-								addErrorAlert('Server not reachable', 'error.server.not.reachable');
-								break;
-
-							case 400:
-								var errorHeader = httpResponse.headers('X-' + jHipsterConstant.appModule + '-error');
-								var entityKey = httpResponse.headers('X-' + jHipsterConstant.appModule + '-params');
-								if (errorHeader) {
-									var entityName = $translate.instant('global.menu.entities.' + entityKey);
-									addErrorAlert(errorHeader, errorHeader, {
-										entityName: entityName
-									});
-								} else if (httpResponse.data && httpResponse.data.fieldErrors) {
-									for (i = 0; i < httpResponse.data.fieldErrors.length; i++) {
-										var fieldError = httpResponse.data.fieldErrors[i];
-										// convert 'something[14].other[4].id'
-										// to 'something[].other[].id' so
-										// translations can be written to it
-										var convertedField = fieldError.field.replace(/\[\d*\]/g, '[]');
-										var fieldName = $translate.instant(jHipsterConstant.appModule + '.' + fieldError.objectName + '.' + convertedField);
-										addErrorAlert('Field ' + fieldName + ' cannot be empty', 'error.' + fieldError.message, {
-											fieldName: fieldName
-										});
-									}
-								} else if (httpResponse.data && httpResponse.data.message) {
-									addErrorAlert(httpResponse.data.message, httpResponse.data.message, httpResponse.data);
-								} else {
-									addErrorAlert(httpResponse.data);
-								}
-								break;
-
-							default:
-								if (httpResponse.data && httpResponse.data.message) {
-									addErrorAlert(httpResponse.data.message);
-								} else {
-									addErrorAlert(JSON.stringify(httpResponse));
-								}
-						}
-					});
-
-					$scope.$on('$destroy', function() {
-						if (cleanHttpErrorListener !== undefined && cleanHttpErrorListener !== null) {
-							cleanHttpErrorListener();
-							$scope.alerts = [];
-						}
-					});
-				}
-			]
-		};
-	}]);
-
-'use strict';
-
-angular.module('adama-web')
-	.provider('AlertService', function() {
-		var toast = false;
-
-		this.$get = ['$timeout', '$sce', '$translate', function($timeout, $sce, $translate) {
-
-			var alertId = 0; // unique id for each alert. Starts from 0.
-			var alerts = [];
-			var timeout = 5000; // default timeout
-
-			var isToast = function() {
-				return toast;
-			};
-
-			var clear = function() {
-				alerts = [];
-			};
-
-			var get = function() {
-				return alerts;
-			};
-
-			var closeAlertByIndex = function(index, thisAlerts) {
-				return thisAlerts.splice(index, 1);
-			};
-
-			var closeAlert = function(id, extAlerts) {
-				var thisAlerts = extAlerts ? extAlerts : alerts;
-				return closeAlertByIndex(thisAlerts.map(function(e) {
-					return e.id;
-				}).indexOf(id), thisAlerts);
-			};
-
-			var factory = function(alertOptions) {
-				var alert = {
-					type: alertOptions.type,
-					msg: $sce.trustAsHtml(alertOptions.msg),
-					id: alertOptions.alertId,
-					timeout: alertOptions.timeout,
-					toast: alertOptions.toast,
-					position: alertOptions.position ? alertOptions.position : 'top right',
-					scoped: alertOptions.scoped,
-					close: function(alerts) {
-						return closeAlert(this.id, alerts);
-					}
-				};
-				if (!alert.scoped) {
-					alerts.push(alert);
-				}
-				return alert;
-			};
-
-			var addAlert = function(alertOptions, extAlerts) {
-				alertOptions.alertId = alertId++;
-				alertOptions.msg = $translate.instant(alertOptions.msg, alertOptions.params);
-				var alert = factory(alertOptions);
-				if (alertOptions.timeout && alertOptions.timeout > 0) {
-					$timeout(function() {
-						closeAlert(alertOptions.alertId, extAlerts);
-					}, alertOptions.timeout);
-				}
-				return alert;
-			};
-
-			var success = function(msg, params, position) {
-				return addAlert({
-					type: 'success',
-					msg: msg,
-					params: params,
-					timeout: timeout,
-					toast: toast,
-					position: position
-				});
-			};
-
-			var error = function(msg, params, position) {
-				return addAlert({
-					type: 'danger',
-					msg: msg,
-					params: params,
-					timeout: timeout,
-					toast: toast,
-					position: position
-				});
-			};
-
-			var warning = function(msg, params, position) {
-				return addAlert({
-					type: 'warning',
-					msg: msg,
-					params: params,
-					timeout: timeout,
-					toast: toast,
-					position: position
-				});
-			};
-
-			var info = function(msg, params, position) {
-				return addAlert({
-					type: 'info',
-					msg: msg,
-					params: params,
-					timeout: timeout,
-					toast: toast,
-					position: position
-				});
-			};
-
-			return {
-				factory: factory,
-				isToast: isToast,
-				add: addAlert,
-				closeAlert: closeAlert,
-				closeAlertByIndex: closeAlertByIndex,
-				clear: clear,
-				get: get,
-				success: success,
-				error: error,
-				info: info,
-				warning: warning
-			};
-		}];
-
-		this.showAsToast = function(isToast) {
-			toast = isToast;
-		};
-
-	});
-
-'use strict';
-
-angular.module('adama-web')
-	.factory('Auth', ["$rootScope", "$state", "$q", "$translate", "Principal", "AuthServerProvider", "Account", "Password", "PasswordResetInit", "PasswordResetFinish", function Auth($rootScope, $state, $q, $translate, Principal, AuthServerProvider, Account, Password, PasswordResetInit, PasswordResetFinish) {
-		return {
-			login: function(credentials, callback) {
-				var cb = callback || angular.noop;
-				var deferred = $q.defer();
-
-				AuthServerProvider.login(credentials).then(function(data) {
-					// retrieve the logged account information
-					Principal.identity(true).then(function(account) {
-						// After the login the language will be changed to
-						// the language selected by the user during his registration
-						$translate.use(account.langKey);
-						deferred.resolve(data);
-					});
-					return cb();
-				}).catch(function(err) {
-					this.logout();
-					deferred.reject(err);
-					return cb(err);
-				}.bind(this));
-
-				return deferred.promise;
-			},
-
-			logout: function() {
-				AuthServerProvider.logout();
-				Principal.authenticate(null);
-				// Reset state memory
-				$rootScope.previousStateName = undefined;
-				$rootScope.previousStateNameParams = undefined;
-			},
-
-			authorize: function(force) {
-				return Principal.identity(force)
-					.then(function() {
-						var isAuthenticated = Principal.isAuthenticated();
-						// an authenticated user can't access to login pages
-						if (isAuthenticated && $rootScope.toState.name && $rootScope.toState.name === 'auth.signin') {
-							$state.go('app.main');
-						}
-						if ((!$rootScope.toState.data || !$rootScope.toState.data.authorities) && !isAuthenticated) {
-							// user is not signed in but desired state nneds an authenticated user
-							$state.go('auth.signin');
-						} else if ($rootScope.toState.data && //
-							$rootScope.toState.data.authorities && //
-							$rootScope.toState.data.authorities.length > 0 && //
-							!Principal.hasAnyAuthority($rootScope.toState.data.authorities) //
-						) {
-							if (isAuthenticated) {
-								// user is signed in but not authorized for desired state
-								$state.go('auth.accessDenied');
-							} else {
-								// user is not authenticated. stow the state they wanted before you
-								// send them to the signin state, so you can return them when you're done
-								$rootScope.previousStateName = $rootScope.toState;
-								$rootScope.previousStateNameParams = $rootScope.toStateParams;
-								// now, send them to the signin state so they can log in
-								$state.go('auth.signin');
-							}
-						}
-					});
-			},
-			updateAccount: function(account, callback) {
-				var cb = callback || angular.noop;
-
-				return Account.save(account,
-					function() {
-						$rootScope.$emit('auth.updateAccount', {
-							account: account
-						});
-						return cb(account);
-					},
-					function(err) {
-						return cb(err);
-					}.bind(this)).$promise;
-			},
-
-			changePassword: function(newPassword, callback) {
-				var cb = callback || angular.noop;
-
-				return Password.save(newPassword, function() {
-					return cb();
-				}, function(err) {
-					return cb(err);
-				}).$promise;
-			},
-
-			resetPasswordInit: function(mail, callback) {
-				var cb = callback || angular.noop;
-
-				return PasswordResetInit.save(mail, function() {
-					return cb();
-				}, function(err) {
-					return cb(err);
-				}).$promise;
-			},
-
-			resetPasswordFinish: function(keyAndPassword, callback) {
-				var cb = callback || angular.noop;
-
-				return PasswordResetFinish.save(keyAndPassword, function() {
-					return cb();
-				}, function(err) {
-					return cb(err);
-				}).$promise;
-			}
-		};
-	}]);
-
-'use strict';
-
-angular.module('adama-web').directive('hasAnyAuthority', ['Principal', function(Principal) {
-	return {
-		restrict: 'A',
-		link: function(scope, element, attrs) {
-			var setVisible = function() {
-				element.removeClass('hidden');
-			};
-			var setHidden = function() {
-				element.addClass('hidden');
-			};
-			var authorities = attrs.hasAnyAuthority.replace(/\s+/g, '').split(',');
-			var defineVisibility = function(reset) {
-				var result;
-				if (reset) {
-					setVisible();
-				}
-
-				result = Principal.hasAnyAuthority(authorities);
-				if (result) {
-					setVisible();
-				} else {
-					setHidden();
-				}
-			};
-
-			if (authorities.length > 0) {
-				defineVisibility(true);
-
-				scope.$watch(function() {
-					return Principal.isAuthenticated();
-				}, function() {
-					defineVisibility(true);
-				});
-			}
-		}
-	};
-}]).directive('hasAuthority', ['Principal', function(Principal) {
-	return {
-		restrict: 'A',
-		link: function(scope, element, attrs) {
-			var setVisible = function() {
-				element.removeClass('hidden');
-			};
-			var setHidden = function() {
-				element.addClass('hidden');
-			};
-			var authority = attrs.hasAuthority.replace(/\s+/g, '');
-			var defineVisibility = function(reset) {
-
-				if (reset) {
-					setVisible();
-				}
-
-				Principal.hasAuthority(authority).then(function(result) {
-					if (result) {
-						setVisible();
-					} else {
-						setHidden();
-					}
-				});
-			};
-
-			if (authority.length > 0) {
-				defineVisibility(true);
-
-				scope.$watch(function() {
-					return Principal.isAuthenticated();
-				}, function() {
-					defineVisibility(true);
-				});
-			}
-		}
-	};
-}]);
-
-'use strict';
-
-angular.module('adama-web')
-	.factory('Principal', ["$q", "Account", function Principal($q, Account) {
-		var _identity;
-		var _authenticated = false;
-
-		return {
-			isIdentityResolved: function() {
-				return angular.isDefined(_identity);
-			},
-			isAuthenticated: function() {
-				return _authenticated;
-			},
-			hasAuthority: function(authority) {
-				if (!_authenticated) {
-					return $q.when(false);
-				}
-
-				return this.identity().then(function(_id) {
-					return _id.authority && _id.authority === authority;
-				}, function() {
-					return false;
-				});
-			},
-			hasAnyAuthority: function(authorities) {
-				if (!_authenticated || !_identity || !_identity.authority) {
-					return false;
-				}
-
-				for (var i = 0; i < authorities.length; i++) {
-					if (_identity.authority === authorities[i]) {
-						return true;
-					}
-				}
-
-				return false;
-			},
-			authenticate: function(identity) {
-				_identity = identity;
-				_authenticated = identity !== null;
-			},
-			identity: function(force) {
-				var deferred = $q.defer();
-
-				if (force === true) {
-					_identity = undefined;
-				}
-
-				// check and see if we have retrieved the identity data from the
-				// server.
-				// if we have, reuse it by immediately resolving
-				if (angular.isDefined(_identity)) {
-					deferred.resolve(_identity);
-
-					return deferred.promise;
-				}
-
-				// retrieve the identity data from the server, update the
-				// identity object, and then resolve.
-				Account.get().$promise
-					.then(function(account) {
-						_identity = account.data;
-						_authenticated = true;
-						deferred.resolve(_identity);
-					})
-					.catch(function() {
-						_identity = null;
-						_authenticated = false;
-						deferred.resolve(_identity);
-					});
-				return deferred.promise;
-			}
-		};
-	}]);
-
-'use strict';
-
-angular.module('adama-web').factory('authInterceptor', ["$rootScope", "$q", "$location", "localStorageService", function($rootScope, $q, $location, localStorageService) {
-	return {
-		// Add authorization token to headers
-		request: function(config) {
-			config.headers = config.headers || {};
-			var token = localStorageService.get('token');
-
-			if (token && token.expires && token.expires > new Date().getTime()) {
-				config.headers['x-auth-token'] = token.token;
-			}
-
-			return config;
-		}
-	};
-}]).factory('authExpiredInterceptor', ["$rootScope", "$q", "$injector", "localStorageService", function($rootScope, $q, $injector, localStorageService) {
-	return {
-		responseError: function(response) {
-			// token has expired
-			if (response.status === 401 && (response.data.error === 'invalid_token' || response.data.error === 'Unauthorized')) {
-				localStorageService.remove('token');
-				var Principal = $injector.get('Principal');
-				if (Principal.isAuthenticated()) {
-					var Auth = $injector.get('Auth');
-					Auth.authorize(true);
-				}
-			}
-			return $q.reject(response);
-		}
-	};
-}]);
-
-'use strict';
-
-angular.module('adama-web').factory('errorHandlerInterceptor', ["$q", "$rootScope", "jHipsterConstant", function($q, $rootScope, jHipsterConstant) {
-	return {
-		'responseError': function(response) {
-			if (!(response.status === 401 && response.data.path.indexOf('/api/account') === 0)) {
-				$rootScope.$emit(jHipsterConstant.appModule + '.httpError', response);
-			}
-			return $q.reject(response);
-		}
-	};
-}]);
-
-'use strict';
-
-angular.module('adama-web').factory('notificationInterceptor', ["$q", "AlertService", "jHipsterConstant", function($q, AlertService, jHipsterConstant) {
-	return {
-		response: function(response) {
-			var alertKey = response.headers('X-' + jHipsterConstant.appModule + '-alert');
-			if (angular.isString(alertKey)) {
-				AlertService.success(alertKey, {
-					param: response.headers('X-' + jHipsterConstant.appModule + '-params')
-				});
-			}
-			return response;
-		}
-	};
-}]);
-
-/*jshint bitwise: false*/
-'use strict';
-
-angular.module('adama-web').service('Base64', function() {
-	var keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-	this.encode = function(input) {
-		var output = '';
-		var chr1, chr2, enc1, enc2, enc3;
-		var chr3 = '';
-		var enc4 = '';
-		var i = 0;
-
-		while (i < input.length) {
-			chr1 = input.charCodeAt(i++);
-			chr2 = input.charCodeAt(i++);
-			chr3 = input.charCodeAt(i++);
-
-			enc1 = chr1 >> 2;
-			enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-			enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-			enc4 = chr3 & 63;
-
-			if (isNaN(chr2)) {
-				enc3 = enc4 = 64;
-			} else if (isNaN(chr3)) {
-				enc4 = 64;
-			}
-
-			output = output + keyStr.charAt(enc1) + keyStr.charAt(enc2) + keyStr.charAt(enc3) + keyStr.charAt(enc4);
-			chr1 = chr2 = chr3 = '';
-			enc1 = enc2 = enc3 = enc4 = '';
-		}
-
-		return output;
-	};
-
-	this.decode = function(input) {
-		var output = '';
-		var chr1, chr2, enc1, enc2, enc3;
-		var chr3 = '';
-		var enc4 = '';
-		var i = 0;
-
-		// remove all characters that are not A-Z, a-z, 0-9, +, /, or =
-		input = input.replace(/[^A-Za-z0-9\+\/\=]/g, '');
-
-		while (i < input.length) {
-			enc1 = keyStr.indexOf(input.charAt(i++));
-			enc2 = keyStr.indexOf(input.charAt(i++));
-			enc3 = keyStr.indexOf(input.charAt(i++));
-			enc4 = keyStr.indexOf(input.charAt(i++));
-
-			chr1 = (enc1 << 2) | (enc2 >> 4);
-			chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-			chr3 = ((enc3 & 3) << 6) | enc4;
-
-			output = output + String.fromCharCode(chr1);
-
-			if (enc3 !== 64) {
-				output = output + String.fromCharCode(chr2);
-			}
-			if (enc4 !== 64) {
-				output = output + String.fromCharCode(chr3);
-			}
-
-			chr1 = chr2 = chr3 = '';
-			enc1 = enc2 = enc3 = enc4 = '';
-		}
-	};
-}).factory('StorageService', ["$window", function($window) {
-	return {
-
-		get: function(key) {
-			return JSON.parse($window.localStorage.getItem(key));
-		},
-
-		save: function(key, data) {
-			$window.localStorage.setItem(key, JSON.stringify(data));
-		},
-
-		remove: function(key) {
-			$window.localStorage.removeItem(key);
-		},
-
-		clearAll: function() {
-			$window.localStorage.clear();
-		}
-	};
-}]);
-
-'use strict';
-
-angular.module('adama-web')
-	.service('ParseLinks', function() {
-		this.parse = function(header) {
-			if (header.length === 0) {
-				throw new Error('input must not be of zero length');
-			}
-
-			// Split parts by comma
-			var parts = header.split(',');
-			var links = {};
-			// Parse each part into a named link
-			angular.forEach(parts, function(p) {
-				var section = p.split(';');
-				if (section.length !== 2) {
-					throw new Error('section could not be split on ";"');
-				}
-				var url = section[0].replace(/<(.*)>/, '$1').trim();
-				var queryString = {};
-				url.replace(
-					new RegExp('([^?=&]+)(=([^&]*))?', 'g'),
-					function($0, $1, $2, $3) {
-						queryString[$1] = $3;
-					}
-				);
-				var page = queryString.page;
-				if (angular.isString(page)) {
-					page = parseInt(page);
-				}
-				var name = section[1].replace(/rel='(.*)'/, '$1').trim();
-				links[name] = page;
-			});
-
-			return links;
-		};
-	});
-
-'use strict';
-
-angular.module('adama-web').factory('AuthServerProvider', ["$http", "localStorageService", "Base64", "jHipsterConstant", function loginService($http, localStorageService, Base64, jHipsterConstant) {
-	return {
-		login: function(credentials) {
-			var data = 'username=' + encodeURIComponent(credentials.username) + '&password=' + encodeURIComponent(credentials.password);
-			return $http.post(jHipsterConstant.apiBase + 'api/authenticate', data, {
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
-					'Accept': 'application/json'
-				}
-			}).success(function(response) {
-				localStorageService.set('token', response);
-				return response;
-			});
-		},
-		logout: function() {
-			// Stateless API : No server logout
-			localStorageService.clearAll();
-		},
-		getToken: function() {
-			return localStorageService.get('token');
-		},
-		hasValidToken: function() {
-			var token = this.getToken();
-			return token && token.expires && token.expires > new Date().getTime();
-		}
-	};
-}]);
-
-'use strict';
-
-angular.module('adama-web')
-	.factory('Account', ["$resource", "jHipsterConstant", function Account($resource, jHipsterConstant) {
-		return $resource(jHipsterConstant.apiBase + 'api/account', {}, {
-			'get': {
-				method: 'GET',
-				params: {},
-				isArray: false,
-				interceptor: {
-					response: function(response) {
-						// expose response
-						return response;
-					}
-				}
-			}
-		});
-	}]);
-
-'use strict';
-
-angular.module('adama-web').factory('Password', ["$resource", "jHipsterConstant", function($resource, jHipsterConstant) {
-	return $resource(jHipsterConstant.apiBase + 'api/account/change_password', {}, {});
-}]);
-
-angular.module('adama-web').factory('PasswordResetInit', ["$resource", "jHipsterConstant", function($resource, jHipsterConstant) {
-	return $resource(jHipsterConstant.apiBase + 'api/account/reset_password/init', {}, {});
-}]);
-
-angular.module('adama-web').factory('PasswordResetFinish', ["$resource", "jHipsterConstant", function($resource, jHipsterConstant) {
-	return $resource(jHipsterConstant.apiBase + 'api/account/reset_password/finish', {}, {});
-}]);
 
 //# sourceMappingURL=adama-web.js.map

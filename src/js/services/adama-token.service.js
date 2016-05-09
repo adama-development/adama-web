@@ -5,11 +5,11 @@
 angular.module('adama-web').factory('adamaTokenService', function($rootScope, $http, $q, $state, jwtHelper, localStorageService, adamaConstant) {
 	var api = {};
 
-	var getPayload = function(key){
-		return api.getToken().then(function(token){
-			if (token){
+	var getPayload = function(key) {
+		return api.getToken().then(function(token) {
+			if (token) {
 				var tokenPayload = jwtHelper.decodeToken(token);
-				if (key){
+				if (key) {
 					return tokenPayload[key];
 				}
 				return tokenPayload;
@@ -17,8 +17,8 @@ angular.module('adama-web').factory('adamaTokenService', function($rootScope, $h
 			return undefined;
 		});
 	};
-	
-	api.getUsername = function(){
+
+	api.getUsername = function() {
 		return getPayload('sub');
 	};
 
@@ -48,13 +48,13 @@ angular.module('adama-web').factory('adamaTokenService', function($rootScope, $h
 		}
 		var refreshToken = localStorageService.get('refresh_token');
 		return $http({
-			method : 'POST',
-			url : adamaConstant.apiBase + 'login/refresh',
-			headers : {
-				'Authorization' : 'Bearer ' + token
+			method: 'POST',
+			url: adamaConstant.apiBase + 'login/refresh',
+			headers: {
+				'Authorization': 'Bearer ' + token
 			},
-			data : {
-				'refresh_token' : refreshToken
+			data: {
+				'refresh_token': refreshToken
 			}
 		}).then(function(response) {
 			var data = response.data;

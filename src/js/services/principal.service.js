@@ -71,8 +71,8 @@ angular.module('adama-web').factory('Principal', function($http, $q, $rootScope,
 		adamaTokenService.getUsername().then(function(username) {
 			if (username) {
 				return $http({
-					method : 'GET',
-					url : adamaConstant.apiBase + 'users/byLogin/' + username
+					method: 'GET',
+					url: adamaConstant.apiBase + 'users/byLogin/' + username
 				}).then(function(response) {
 					return response.data;
 				});
@@ -103,9 +103,9 @@ angular.module('adama-web').factory('Principal', function($http, $q, $rootScope,
 				// authenticated user
 				$state.go('auth.signin');
 			} else if ($rootScope.toState.data && //
-			$rootScope.toState.data.authorities && //
-			$rootScope.toState.data.authorities.length > 0 && //
-			!api.hasAnyAuthority($rootScope.toState.data.authorities) //
+				$rootScope.toState.data.authorities && //
+				$rootScope.toState.data.authorities.length > 0 && //
+				!api.hasAnyAuthority($rootScope.toState.data.authorities) //
 			) {
 				if (isAuthenticated) {
 					// user is signed in but not authorized for
@@ -128,14 +128,14 @@ angular.module('adama-web').factory('Principal', function($http, $q, $rootScope,
 
 	api.updateAccount = function(account) {
 		return $http({
-			method : 'PUT',
-			url : adamaConstant.apiBase + 'users',
+			method: 'PUT',
+			url: adamaConstant.apiBase + 'users',
 			data: {
 				user: account
 			}
 		}).then(function() {
 			$rootScope.$emit('auth.updateAccount', {
-				account : account
+				account: account
 			});
 			return account;
 		});

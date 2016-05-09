@@ -2,8 +2,8 @@
 
 angular.module('adama-web').directive('hasAnyAuthority', function(Principal) {
 	return {
-		restrict : 'A',
-		link : function(scope, element, attrs) {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
 			var setVisible = function() {
 				element.removeClass('hidden');
 			};
