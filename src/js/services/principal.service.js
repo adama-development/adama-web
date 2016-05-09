@@ -2,7 +2,14 @@
 
 angular.module('adama-web').factory('Principal', function($http, $q, $rootScope, $resource, $state, adamaConstant, adamaTokenService) {
 	var Password = $resource(adamaConstant.apiBase + 'account/change_password');
-	var PasswordResetInit = $resource(adamaConstant.apiBase + 'account/reset_password/init');
+	var PasswordResetInit = $resource(adamaConstant.apiBase + 'account/reset_password/init', {}, {
+		save: {
+			method: 'POST',
+			params: {
+				urlResetPassword: adamaConstant.urlCreatePassword
+			}
+		}
+	});
 	var PasswordResetFinish = $resource(adamaConstant.apiBase + 'account/reset_password/finish');
 
 	var _identity;

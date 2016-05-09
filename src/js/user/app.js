@@ -1,8 +1,6 @@
 'use strict';
 
 angular.module('adama-web').config(function($stateProvider, adamaConstant) {
-	console.log('(adama-web).config', adamaConstant);
-	console.log('(adama-web).config', adamaConstant.userAuthorities);
 	$stateProvider.state('app.user', {
 		url: '/users',
 		templateUrl: 'adama-web/user/user-list.html',

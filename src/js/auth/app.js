@@ -41,6 +41,17 @@ angular.module('adama-web').config(function($stateProvider) {
 			authorities: []
 		}
 	});
+
+	$stateProvider.state('auth.resetPassword', {
+		url: '/resetPassword',
+		templateUrl: 'adama-web/auth/resetPassword.html',
+		controller: 'ResetPasswordCtrl',
+		controllerAs: 'ctrl',
+		data: {
+			pageTitle: 'RESET_PASSWORD',
+			authorities: []
+		}
+	});
 });
 
 angular.module('adama-web').config(function($translateProvider) {
@@ -66,7 +77,19 @@ angular.module('adama-web').config(function($translateProvider) {
 		'RECOVER_ERROR_EMAIL_NOT_EXIST': 'L\'email n\'existe pas',
 		'ACCESS_DENIED': 'Accès interdit',
 		'ACCESS_DENIED_INTRO': 'Vous n\'avez pas suffisamment de droits d\'accéder à cette page.',
-		'ACCESS_DENIED_BACK_TO_LOGIN': 'Retour à l\'identificaition'
+		'ACCESS_DENIED_BACK_TO_LOGIN': 'Retour à l\'identificaition',
+		'RESET_PASSWORD': 'Initialisation du mot de passe',
+		'RESET_PASSWORD_INTRO': 'Saisissez et confirmez votre mot de passe',
+		'RESET_PASSWORD_SUBMIT': 'Modifier mon mot de passe',
+		'RESET_PASSWORD_PASSWORD': 'Mot de passe',
+		'RESET_PASSWORD_PASSWORD_REQUIRED': 'Le mot de passe est obligatoire',
+		'RESET_PASSWORD_PASSWORD_MINLENGTH': 'Minimum 6 caractères',
+		'RESET_PASSWORD_PASSWORD_MAXLENGTH': 'Maximum 100 caractères',
+		'RESET_PASSWORD_PASSWORD_CONFIRM': 'Confirmation du mot de passe',
+		'RESET_PASSWORD_PASSWORD_CONFIRM_REQUIRED': 'La confirmation est obligatoire',
+		'RESET_PASSWORD_PASSWORD_CONFIRM_MATCH': 'La confirmation ne correspond pas',
+		'RESET_PASSWORD_ERROR': 'Une erreur est intervenur, contactez un administrateur',
+		'RESET_PASSWORD_MESSAGE_FOR_MOBILE_USER': 'Vous pouvez vous authentifier dans l\'application mobile'
 	});
 
 	$translateProvider.translations('en', {
@@ -91,6 +114,18 @@ angular.module('adama-web').config(function($translateProvider) {
 		'RECOVER_ERROR_EMAIL_NOT_EXIST': 'E-Mail address isn\'t registered! Please check and try again',
 		'ACCESS_DENIED': 'Access denied',
 		'ACCESS_DENIED_INTRO': 'You do not have enough privileges to access this page.',
-		'ACCESS_DENIED_BACK_TO_LOGIN': 'Back to signin'
+		'ACCESS_DENIED_BACK_TO_LOGIN': 'Back to signin',
+		'RESET_PASSWORD': 'New password',
+		'RESET_PASSWORD_INTRO': 'Set and confirm new password',
+		'RESET_PASSWORD_SUBMIT': 'Change my password',
+		'RESET_PASSWORD_PASSWORD': 'Password',
+		'RESET_PASSWORD_PASSWORD_REQUIRED': 'Password is required',
+		'RESET_PASSWORD_PASSWORD_MINLENGTH': '6 chars minimum',
+		'RESET_PASSWORD_PASSWORD_MAXLENGTH': '100 chars maximum',
+		'RESET_PASSWORD_PASSWORD_CONFIRM': 'Password confirmation',
+		'RESET_PASSWORD_PASSWORD_CONFIRM_REQUIRED': 'Confirmation is required',
+		'RESET_PASSWORD_PASSWORD_CONFIRM_MATCH': 'Confirmation does not match',
+		'RESET_PASSWORD_ERROR': 'There was an error, please contact adminstrator',
+		'RESET_PASSWORD_MESSAGE_FOR_MOBILE_USER': 'You can now signin into the mobile application'
 	});
 });

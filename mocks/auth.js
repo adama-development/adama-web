@@ -98,4 +98,9 @@ angular.module('adama-web').run(function($httpBackend, mockSettings) {
 		}
 		return [ 400, 'e-mail address not registered' ];
 	});
+
+	$httpBackend.when('POST', '/account/reset_password/finish').respond(function(method, url, data) {
+		console.warn('POST /account/reset_password/finish', data);
+		return [ 200, 'OK' ];
+	});
 });

@@ -2,7 +2,12 @@
 
 angular.module('adama-web').factory('User', function($resource, adamaConstant, adamaResourceConfig) {
 	var config = angular.extend({}, adamaResourceConfig, {
-		// set specific resource config
+		save: {
+			method: 'POST',
+			params: {
+				urlCreatePassword: adamaConstant.urlCreatePassword
+			}
+		}
 	});
 	return $resource(adamaConstant.apiBase + 'users/:id', {}, config);
 });
