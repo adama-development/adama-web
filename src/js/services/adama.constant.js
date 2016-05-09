@@ -5,5 +5,6 @@ angular.module('adama-web').constant('adamaConstant', {
 	adamaWebToolkitTemplateUrl: {
 		// TODO
 	},
-	authorities: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_MANAGER']
+	authorities: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_MANAGER'],
+	userAuthorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
 });

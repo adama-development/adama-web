@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-web').config(function($stateProvider) {
+angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 	$stateProvider.state('app.user', {
 		url: '/users',
 		templateUrl: 'adama-web/user/user-list.html',
@@ -13,7 +13,7 @@ angular.module('adama-web').config(function($stateProvider) {
 		},
 		data: {
 			pageTitle: 'USER_TITLE_LIST',
-			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
+			authorities: adamaConstant.userAuthorities
 		}
 	});
 
@@ -51,7 +51,7 @@ angular.module('adama-web').config(function($stateProvider) {
 		},
 		data: {
 			pageTitle: 'USER_TITLE_EDIT',
-			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
+			authorities: adamaConstant.userAuthorities
 		}
 	});
 
@@ -62,7 +62,7 @@ angular.module('adama-web').config(function($stateProvider) {
 		},
 		data: {
 			pageTitle: 'USER_TITLE_NEW',
-			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
+			authorities: adamaConstant.userAuthorities
 		}
 	});
 
@@ -73,7 +73,7 @@ angular.module('adama-web').config(function($stateProvider) {
 		},
 		data: {
 			pageTitle: 'USER_TITLE_VIEW',
-			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
+			authorities: adamaConstant.userAuthorities
 		}
 	});
 
@@ -84,7 +84,7 @@ angular.module('adama-web').config(function($stateProvider) {
 		},
 		data: {
 			pageTitle: 'USER_TITLE_DELETE',
-			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
+			authorities: adamaConstant.userAuthorities
 		}
 	});
 
@@ -95,7 +95,7 @@ angular.module('adama-web').config(function($stateProvider) {
 		},
 		data: {
 			pageTitle: 'USER_TITLE_IMPORT_XLS',
-			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
+			authorities: adamaConstant.userAuthorities
 		}
 	});
 
@@ -106,7 +106,7 @@ angular.module('adama-web').config(function($stateProvider) {
 		},
 		data: {
 			pageTitle: 'USER_TITLE_EXPORT_XLS',
-			authorities: ['ROLE_MANAGER', 'ROLE_ADMIN']
+			authorities: adamaConstant.userAuthorities
 		}
 	});
 });
