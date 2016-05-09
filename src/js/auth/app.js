@@ -65,7 +65,8 @@ angular.module('adama-web').config(function($translateProvider) {
 		'RECOVER_ERROR': 'Erreur lors de la récupération du mot de passe.',
 		'RECOVER_ERROR_EMAIL_NOT_EXIST': 'L\'email n\'existe pas',
 		'ACCESS_DENIED': 'Accès interdit',
-		'ACCESS_DENIED_INTRO': 'Vous n\'avez pas suffisamment de droits d\'accéder à cette page.'
+		'ACCESS_DENIED_INTRO': 'Vous n\'avez pas suffisamment de droits d\'accéder à cette page.',
+		'ACCESS_DENIED_BACK_TO_LOGIN': 'Retour à l\'identificaition'
 	});
 
 	$translateProvider.translations('en', {
@@ -89,6 +90,7 @@ angular.module('adama-web').config(function($translateProvider) {
 		'RECOVER_ERROR': 'Recovering error.',
 		'RECOVER_ERROR_EMAIL_NOT_EXIST': 'E-Mail address isn\'t registered! Please check and try again',
 		'ACCESS_DENIED': 'Access denied',
-		'ACCESS_DENIED_INTRO': 'You do not have enough privileges to access this page.'
+		'ACCESS_DENIED_INTRO': 'You do not have enough privileges to access this page.',
+		'ACCESS_DENIED_BACK_TO_LOGIN': 'Back to signin'
 	});
 });
