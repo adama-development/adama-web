@@ -14,14 +14,14 @@ angular.module('adama-web').factory('binaryFileService', function($http, $q, ada
 		});
 		if (idList.length) {
 			return $http({
-				method: 'GET',
-				url: adamaConstant.apiBase + 'binaryFiles',
+				method: 'PUT',
+				url: adamaConstant.apiBase + 'files',
 				data: {
-					ids: idList
+					idList: idList
 				}
 			}).then(function(response) {
 				angular.forEach(workingList, function(binaryFile) {
-					binaryFile.url = response.data[binaryFile.id];
+					binaryFile.url = response.data.urlList[binaryFile.id];
 				});
 			});
 		}
