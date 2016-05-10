@@ -25,25 +25,21 @@ angular.module('adama-web').run(function($httpBackend, $http, adamaConstant, moc
 		} ];
 	});
 
-	var getById = function(id) {
-		var entity;
-		angular.forEach(entities, function(e) {
-			if (id === e.id) {
-				entity = e;
-			}
-		});
-		return entity;
+	var getByAttribute = function(attribute) {
+		return function(value) {
+			var entity;
+			angular.forEach(entities, function(e) {
+				if (value === e[attribute]) {
+					entity = e;
+				}
+			});
+			return entity;
+		};
 	};
 
-	var getByEmail = function(email) {
-		var entity;
-		angular.forEach(entities, function(e) {
-			if (email === e.email) {
-				entity = e;
-			}
-		});
-		return entity;
-	};
+	var getById = getByAttribute('id');
+	var getByLogin = getByAttribute('login');
+	var getByEmail = getByAttribute('email');
 
 	$httpBackend.when('GET', /^\/users\/.*/).respond(function(method, url) {
 		console.warn('GET /users/xx', url);
@@ -68,7 +64,7 @@ angular.module('adama-web').run(function($httpBackend, $http, adamaConstant, moc
 	$httpBackend.when('PUT', '/users').respond(function(method, url, data) {
 		console.warn('PUT /users', url, data);
 		var postedData = JSON.parse(data);
-		var id = postedData.login;
+		var id = postedData.id;
 		var entity = getById(id);
 		if (entity) {
 			entities[entities.indexOf(entity)] = postedData;
@@ -78,11 +74,11 @@ angular.module('adama-web').run(function($httpBackend, $http, adamaConstant, moc
 		return [ 200, postedData ];
 	});
 
-	$httpBackend.when('POST', '/users').respond(function(method, url, data, headers) {
+	$httpBackend.when('POST', /\/users\?urlCreatePassword=.*/).respond(function(method, url, data, headers) {
 		console.warn('POST /users (new user)', url, data);
 		var postedData = JSON.parse(data);
-		var id = postedData.login;
-		var entity = getById(id);
+		postedData.id = '' + (new Date()).getTime();
+		var entity = getByLogin(postedData.login);
 		if (entity) {
 			console.error('error.userexists');
 			headers['X-Adama-Error'] = 'error.userexists';

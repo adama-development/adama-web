@@ -73,7 +73,11 @@
 			ng-options="authority for authority in authorities"
 			lazy-control
 			lazy-control-label-key="USER_FORM_AUTHORITY"
+			required
 		></select>
+		<div ng-messages="form.authority.$error" ng-if="form.authority.$touched">
+			<div ng-message="required" translate>CRUD_FORM_ERROR_REQUIRED</div>
+		</div>
 	</div>
 	<div class="modal-footer">
 		<modal-btn-cancel></modal-btn-cancel>
