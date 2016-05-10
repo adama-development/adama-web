@@ -1,9 +1,11 @@
 'use strict';
 
-angular.module('adama-web').config(function($stateProvider) {
+angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 	$stateProvider.state('app.personal.settings', {
 		url: '/settings',
-		templateUrl: 'adama-web/account/settings/settings.html',
+		templateUrl: function() {
+			return adamaConstant.adamaWebToolkitTemplateUrl.settings;
+		},
 		controller: 'SettingsCtrl',
 		controllerAs: 'ctrl',
 		data: {

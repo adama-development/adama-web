@@ -1,8 +1,10 @@
 'use strict';
 
-angular.module('adama-web').directive('modalBtnCancel', function() {
+angular.module('adama-web').directive('modalBtnCancel', function(adamaConstant) {
 	return {
-		templateUrl: 'adama-web/crud/modal-btn-cancel.html',
+		templateUrl: function() {
+			return adamaConstant.adamaWebToolkitTemplateUrl.modalBtnCancel;
+		},
 		restrict: 'E'
 	};
 });

@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('adama-web').component('crudCustomFilter', {
-	templateUrl: 'adama-web/crud/crud-custom-filter.html',
+	templateUrl: /* @ngInject */ function(adamaConstant) {
+		return adamaConstant.adamaWebToolkitTemplateUrl.crudCustomFilter;
+	},
 	bindings: {
 		tableParams: '<',
 		searchValue: '<',

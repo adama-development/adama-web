@@ -1,9 +1,11 @@
 'use strict';
 
-angular.module('adama-web').config(function($stateProvider) {
+angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 	$stateProvider.state('app.personal.password', {
 		url: '/password',
-		templateUrl: 'adama-web/account/password/password.html',
+		templateUrl: function() {
+			return adamaConstant.adamaWebToolkitTemplateUrl.password;
+		},
 		controller: 'PasswordCtrl',
 		controllerAs: 'ctrl',
 		data: {

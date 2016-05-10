@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('adama-web').component('selectAll', {
-	templateUrl: 'adama-web/ark/select-all/select-all.html',
+	templateUrl: /* @ngInject */ function(adamaConstant) {
+		return adamaConstant.adamaWebToolkitTemplateUrl.selectAll;
+	},
 	bindings: {
 		entityList: '<'
 	},

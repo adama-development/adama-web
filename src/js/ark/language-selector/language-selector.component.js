@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('adama-web').component('languageSelector', {
-	templateUrl: 'adama-web/ark/language-selector/language-selector.html',
+	templateUrl: /* @ngInject */ function(adamaConstant) {
+		return adamaConstant.adamaWebToolkitTemplateUrl.languageSelector;
+	},
 	controller: function($rootScope, $translate, language) {
 		var ctrl = this;
 		ctrl.changeLanguage = function(key) {

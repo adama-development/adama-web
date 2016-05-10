@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('adama-web').component('viewAttribute', {
-	templateUrl: 'adama-web/ark/view-attribute/view-attribute.html',
+	templateUrl: /* @ngInject */ function(adamaConstant) {
+		return adamaConstant.adamaWebToolkitTemplateUrl.viewAttribute;
+	},
 	transclude: true,
 	bindings: {
 		labelKey: '@',

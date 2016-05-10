@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('adama-web').component('mainNavigation', {
-	templateUrl: 'adama-web/ark/menu/main-navigation.html',
+	templateUrl: /* @ngInject */ function(adamaConstant) {
+		return adamaConstant.adamaWebToolkitTemplateUrl.mainNavigation;
+	},
 	controller: function($rootScope, $filter, menuService) {
 		var ctrl = this;
 		var addMenuEntry, addMenuEntries;

@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('adama-web').component('crudSearchField', {
-	templateUrl: 'adama-web/crud/crud-search-field.html',
+	templateUrl: /* @ngInject */ function(adamaConstant) {
+		return adamaConstant.adamaWebToolkitTemplateUrl.crudSearchField;
+	},
 	bindings: {
 		tableParams: '<'
 	},

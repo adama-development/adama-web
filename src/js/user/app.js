@@ -3,7 +3,9 @@
 angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 	$stateProvider.state('app.user', {
 		url: '/users',
-		templateUrl: 'adama-web/user/user-list.html',
+		templateUrl: function() {
+			return adamaConstant.adamaWebToolkitTemplateUrl.users;
+		},
 		controller: 'CrudListCtrl',
 		controllerAs: 'ctrl',
 		resolve: {
@@ -17,7 +19,7 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 		}
 	});
 
-	var openModal = function($state, $uibModal, $stateParams, controllerName, templateName) {
+	var openModal = function($state, $uibModal, $stateParams, controllerName, templateUrl) {
 		var resolveEntity;
 		if ($stateParams) {
 			resolveEntity = /* @ngInject */ function(User) {
@@ -27,7 +29,7 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 			};
 		}
 		$uibModal.open({
-			templateUrl: 'adama-web/user/' + templateName,
+			templateUrl: templateUrl,
 			resolve: {
 				entity: resolveEntity,
 				EntityGenericResource: function(User) {
@@ -46,8 +48,8 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 
 	$stateProvider.state('app.user.edit', {
 		url: '/edit/:id',
-		onEnter: function($state, $uibModal, $stateParams) {
-			openModal($state, $uibModal, $stateParams, 'CrudEditCtrl', 'user-edit.html');
+		onEnter: function($state, $uibModal, $stateParams, adamaConstant) {
+			openModal($state, $uibModal, $stateParams, 'CrudEditCtrl', adamaConstant.adamaWebToolkitTemplateUrl.userEdit);
 		},
 		data: {
 			pageTitle: 'USER_TITLE_EDIT',
@@ -57,8 +59,8 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 
 	$stateProvider.state('app.user.create', {
 		url: '/new',
-		onEnter: function($state, $uibModal) {
-			openModal($state, $uibModal, undefined, 'CrudEditCtrl', 'user-edit.html');
+		onEnter: function($state, $uibModal, adamaConstant) {
+			openModal($state, $uibModal, undefined, 'CrudEditCtrl', adamaConstant.adamaWebToolkitTemplateUrl.userCreate);
 		},
 		data: {
 			pageTitle: 'USER_TITLE_NEW',
@@ -68,8 +70,8 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 
 	$stateProvider.state('app.user.view', {
 		url: '/view/:id',
-		onEnter: function($state, $uibModal, $stateParams) {
-			openModal($state, $uibModal, $stateParams, 'CrudViewCtrl', 'user-view.html');
+		onEnter: function($state, $uibModal, $stateParams, adamaConstant) {
+			openModal($state, $uibModal, $stateParams, 'CrudViewCtrl', adamaConstant.adamaWebToolkitTemplateUrl.userView);
 		},
 		data: {
 			pageTitle: 'USER_TITLE_VIEW',
@@ -79,8 +81,8 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 
 	$stateProvider.state('app.user.delete', {
 		url: '/delete/:id',
-		onEnter: function($state, $uibModal, $stateParams) {
-			openModal($state, $uibModal, $stateParams, 'CrudDeleteCtrl', 'user-delete.html');
+		onEnter: function($state, $uibModal, $stateParams, adamaConstant) {
+			openModal($state, $uibModal, $stateParams, 'CrudDeleteCtrl', adamaConstant.adamaWebToolkitTemplateUrl.userDelete);
 		},
 		data: {
 			pageTitle: 'USER_TITLE_DELETE',
@@ -90,8 +92,8 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 
 	$stateProvider.state('app.user.importXls', {
 		url: '/import-xls',
-		onEnter: function($state, $uibModal) {
-			openModal($state, $uibModal, undefined, 'CrudImportXlsCtrl', 'user-import-xls.html');
+		onEnter: function($state, $uibModal, adamaConstant) {
+			openModal($state, $uibModal, undefined, 'CrudImportXlsCtrl', adamaConstant.adamaWebToolkitTemplateUrl.usersImportXls);
 		},
 		data: {
 			pageTitle: 'USER_TITLE_IMPORT_XLS',
@@ -101,8 +103,8 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 
 	$stateProvider.state('app.user.exportXls', {
 		url: '/export-xls',
-		onEnter: function($state, $uibModal) {
-			openModal($state, $uibModal, undefined, 'CrudExportXlsCtrl', 'user-export-xls.html');
+		onEnter: function($state, $uibModal, adamaConstant) {
+			openModal($state, $uibModal, undefined, 'CrudExportXlsCtrl', adamaConstant.adamaWebToolkitTemplateUrl.usersExportXls);
 		},
 		data: {
 			pageTitle: 'USER_TITLE_EXPORT_XLS',

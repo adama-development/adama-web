@@ -1,8 +1,10 @@
 'use strict';
 
-angular.module('adama-web').directive('modalBtnConfirmExportXls', function() {
+angular.module('adama-web').directive('modalBtnConfirmExportXls', function(adamaConstant) {
 	return {
-		templateUrl: 'adama-web/crud/modal-btn-confirm-export-xls.html',
+		templateUrl: function() {
+			return adamaConstant.adamaWebToolkitTemplateUrl.modalBtnConfirmExportXls;
+		},
 		restrict: 'E'
 	};
 });

@@ -17,6 +17,7 @@ angular.module('adama-web').factory('authInterceptor', function($injector, adama
 			if (!config.headers['Authorization'] && config.url.indexOf(adamaConstant.apiBase) === 0) {
 				console.log('authInterceptor need authorization, getting token');
 				return getAdamaTokenService().getToken().then(function(token) {
+					console.log('add token to http config');
 					if (token) {
 						config.headers['Authorization'] = 'Bearer ' + token;
 					}

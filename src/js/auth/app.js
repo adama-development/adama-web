@@ -1,17 +1,17 @@
 'use strict';
 
-angular.module('adama-web').config(function($stateProvider) {
+angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 	$stateProvider.state('auth', {
 		abstract: true,
 		url: '/auth',
-		template: '' + //
-			'<ui-view></ui-view>' + //
-			''
+		template: '<ui-view></ui-view>'
 	});
 
 	$stateProvider.state('auth.signin', {
 		url: '/',
-		templateUrl: 'adama-web/auth/signin.html',
+		templateUrl: function() {
+			return adamaConstant.adamaWebToolkitTemplateUrl.signin;
+		},
 		controller: 'SigninCtrl',
 		controllerAs: 'ctrl',
 		data: {
@@ -22,7 +22,9 @@ angular.module('adama-web').config(function($stateProvider) {
 
 	$stateProvider.state('auth.recoverPassword', {
 		url: '/recoverPassword',
-		templateUrl: 'adama-web/auth/recoverPassword.html',
+		templateUrl: function() {
+			return adamaConstant.adamaWebToolkitTemplateUrl.recoverPassword;
+		},
 		controller: 'RecoverPasswordCtrl',
 		controllerAs: 'ctrl',
 		data: {
@@ -33,7 +35,9 @@ angular.module('adama-web').config(function($stateProvider) {
 
 	$stateProvider.state('auth.accessDenied', {
 		url: '/accessDenied',
-		templateUrl: 'adama-web/auth/accessDenied.html',
+		templateUrl: function() {
+			return adamaConstant.adamaWebToolkitTemplateUrl.accessDenied;
+		},
 		controller: 'AccessDeniedCtrl',
 		controllerAs: 'ctrl',
 		data: {
@@ -44,7 +48,9 @@ angular.module('adama-web').config(function($stateProvider) {
 
 	$stateProvider.state('auth.resetPassword', {
 		url: '/resetPassword',
-		templateUrl: 'adama-web/auth/resetPassword.html',
+		templateUrl: function() {
+			return adamaConstant.adamaWebToolkitTemplateUrl.resetPassword;
+		},
 		controller: 'ResetPasswordCtrl',
 		controllerAs: 'ctrl',
 		data: {

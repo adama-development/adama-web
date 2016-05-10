@@ -103,17 +103,20 @@ angular.module('adama-web').factory('Principal', function($http, $q, $rootScope,
 			var isAuthenticated = api.isAuthenticated();
 			// an authenticated user can't access to login pages
 			if (isAuthenticated && $rootScope.toState.name && $rootScope.toState.name === 'auth.signin') {
-				$state.go('app.main', {}, {
+				console.log('redirect to main as user is authenticated and is trying to access signin');
+				return $state.go('app.main', {}, {
 					location: 'replace'
 				});
 			}
 			if ((!$rootScope.toState.data || !$rootScope.toState.data.authorities) && !isAuthenticated) {
 				// user is not signed in but desired state needs an
 				// authenticated user
-				$state.go('auth.signin', {}, {
+				console.log('redirect to signin as user is not authenticated and page is restricted (default conf with no authorities on state)');
+				return $state.go('auth.signin', {}, {
 					location: 'replace'
 				});
-			} else if ($rootScope.toState.data && //
+			}
+			if ($rootScope.toState.data && //
 				$rootScope.toState.data.authorities && //
 				$rootScope.toState.data.authorities.length > 0 && //
 				!api.hasAnyAuthority($rootScope.toState.data.authorities) //
@@ -121,22 +124,23 @@ angular.module('adama-web').factory('Principal', function($http, $q, $rootScope,
 				if (isAuthenticated) {
 					// user is signed in but not authorized for
 					// desired state
-					$state.go('auth.accessDenied', {}, {
-						location: 'replace'
-					});
-				} else {
-					// user is not authenticated. stow the state
-					// they wanted before you
-					// send them to the signin state, so you can
-					// return them when you're done
-					$rootScope.previousStateName = $rootScope.toState;
-					$rootScope.previousStateNameParams = $rootScope.toStateParams;
-					// now, send them to the signin state so they
-					// can log in
-					$state.go('auth.signin', {}, {
+					console.log('redirect to accessDenied as user is authenticated and does not have right privileges');
+					return $state.go('auth.accessDenied', {}, {
 						location: 'replace'
 					});
 				}
+				// user is not authenticated. stow the state
+				// they wanted before you
+				// send them to the signin state, so you can
+				// return them when you're done
+				$rootScope.previousStateName = $rootScope.toState;
+				$rootScope.previousStateNameParams = $rootScope.toStateParams;
+				// now, send them to the signin state so they
+				// can log in
+				console.log('redirect to signin as user is not authenticated and page is restricted (conf with explicit authorities on state)');
+				return $state.go('auth.signin', {}, {
+					location: 'replace'
+				});
 			}
 		});
 	};

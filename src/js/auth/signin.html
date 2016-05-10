@@ -27,8 +27,8 @@
 					ng-model="userPassword"
 					placeholder="{{ 'SIGNIN_PASSWORD' | translate }}"
 					required
-					min="6"
-					min="100"
+					minlength="6"
+					minlength="100"
 				/>
 				<span class="glyphicon glyphicon-lock form-control-feedback"></span>
 				<div ng-messages="signinForm.userPassword.$error" ng-if="signinForm.userPassword.$touched" class="text-danger">

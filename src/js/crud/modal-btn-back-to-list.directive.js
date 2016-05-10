@@ -1,8 +1,10 @@
 'use strict';
 
-angular.module('adama-web').directive('modalBtnBackToList', function() {
+angular.module('adama-web').directive('modalBtnBackToList', function(adamaConstant) {
 	return {
-		templateUrl: 'adama-web/crud/modal-btn-back-to-list.html',
+		templateUrl: function() {
+			return adamaConstant.adamaWebToolkitTemplateUrl.modalBtnBackToList;
+		},
 		restrict: 'E'
 	};
 });

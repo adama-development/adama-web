@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('adama-web').component('userInfo', {
-	templateUrl: 'adama-web/ark/user-info/user-info.html',
+	templateUrl: /* @ngInject */ function(adamaConstant) {
+		return adamaConstant.adamaWebToolkitTemplateUrl.userInfo;
+	},
 	controller: function($rootScope, $state, Auth) {
 		var ctrl = this;
 		ctrl.signout = function() {

@@ -28,7 +28,7 @@ angular.module('adama-web').run(function($httpBackend, $http, adamaConstant, moc
 	var getById = function(id) {
 		var entity;
 		angular.forEach(entities, function(e) {
-			if (id === e.login) {
+			if (id === e.id) {
 				entity = e;
 			}
 		});

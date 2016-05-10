@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('adama-web').component('btnCreate', {
-	templateUrl: 'adama-web/crud/btn-create.html',
+	templateUrl: /* @ngInject */ function(adamaConstant) {
+		return adamaConstant.adamaWebToolkitTemplateUrl.btnCreate;
+	},
 	transclude: true,
 	bindings: {
 		disableCreate: '<',

@@ -1,8 +1,10 @@
 'use strict';
 
-angular.module('adama-web').directive('modalBtnConfirmEdit', function() {
+angular.module('adama-web').directive('modalBtnConfirmEdit', function(adamaConstant) {
 	return {
-		templateUrl: 'adama-web/crud/modal-btn-confirm-edit.html',
+		templateUrl: function() {
+			return adamaConstant.adamaWebToolkitTemplateUrl.modalBtnConfirmEdit;
+		},
 		restrict: 'E'
 	};
 });

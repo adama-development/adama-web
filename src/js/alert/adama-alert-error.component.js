@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('adama-web').component('adamaAlertError', {
-	templateUrl: 'adama-web/alert/adama-alert-error.html',
+	templateUrl: /* @ngInject */ function(adamaConstant) {
+		return adamaConstant.adamaWebToolkitTemplateUrl.adamaAlertError;
+	},
 	controller: function($rootScope, $scope, $translate, AlertService) {
 		var ctrl = this;
 		ctrl.alerts = [];
