@@ -136,6 +136,21 @@ table .crud-image {
 .file-upload--dropzone {
   background: rgba(255, 120, 0, 0.5);
 }
+binary-file-definition .file-upload--label {
+  font-weight: bold;
+}
+binary-file-definition .file-upload--zone {
+  margin-top: 0;
+}
+binary-file-definition .file-upload--zone img {
+  max-height: 100%;
+}
+binary-file-definition .file-upload--zone span {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
 #loading-bar .bar,
 #loading-bar .peg {
   height: 5px;
