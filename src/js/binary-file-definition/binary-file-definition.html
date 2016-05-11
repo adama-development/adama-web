@@ -1,0 +1,45 @@
+<span class="file-upload--label" translate>{{ $ctrl.labelKey }}</span>
+<label
+	class="file-upload--zone file-upload--dropzone"
+	ng-show="!$ctrl.ngModel.$modelValue.id && !$ctrl.ongoingUpload"
+	ngf-drag-over-class="'dragover'"
+	ngf-multiple="false"
+	ngf-pattern="$ctrl.pattern"
+	ngf-accept="$ctrl.pattern"
+	ngf-drop="$ctrl.upload($files)"
+>
+	<span translate>FILEUPLOAD_DROPZONE_LABEL</span>
+	<span class="only-dragover" translate>FILEUPLOAD_DROPZONE_LABEL_DROP</span>
+	<input
+		type="file"
+		name="file"
+		id="fileInput"
+		ng-model="$ctrl.file"
+		ngf-select="$ctrl.upload($ctrl.file)"
+		ngf-pattern="$ctrl.pattern"
+		ngf-accept="$ctrl.pattern"
+	/>
+</label>
+<div
+	ng-show="$ctrl.ongoingUpload"
+>
+	<i class="fa fa-spinner fa-spin" />
+	<span translate>FILEUPLOAD_UPLOADING</span>
+</div>
+<div ng-show="$ctrl.error">
+	<span translate>FILEUPLOAD_ERROR</span>
+</div>
+<div
+	class="file-upload--zone"
+	ng-click="$ctrl.resetFile()"
+	ng-show="$ctrl.ngModel.$modelValue.id && !$ctrl.ongoingUpload"
+>
+	<ds-binary-file-url
+		input="$ctrl.ngModel.$modelValue"
+	></ds-binary-file-url>
+	<img
+		ng-src="{{ $ctrl.ngModel.$modelValue.url }}"
+		ng-if="$ctrl.isPicture"
+	>
+	<span translate>FILEUPLOAD_RESET</span>
+</div>

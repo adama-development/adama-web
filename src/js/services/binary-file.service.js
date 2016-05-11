@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-web').factory('binaryFileService', function($http, $q, adamaConstant) {
+angular.module('adama-web').factory('binaryFileService', function($http, $q, Upload, adamaConstant) {
 	var api = {};
 
 	api.initUrlForBinaryFiles = function(binaryFileList) {
@@ -24,6 +24,16 @@ angular.module('adama-web').factory('binaryFileService', function($http, $q, ada
 			});
 		}
 		return $q.when();
+	};
+
+	api.uploadFile = function(file, isPicture) {
+		return Upload.upload({
+			url: adamaConstant.apiBase + 'files?isPicture=' + isPicture,
+			data: {
+				file: file
+			},
+			disableProgress: true
+		});
 	};
 
 	return api;
