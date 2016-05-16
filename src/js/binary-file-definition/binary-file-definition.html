@@ -41,5 +41,9 @@
 		ng-src="{{ $ctrl.ngModel.$modelValue.url }}"
 		ng-if="$ctrl.isPicture"
 	>
-	<span translate>FILEUPLOAD_RESET</span>
+	<div>
+		<span translate>FILEUPLOAD_RESET</span>
+		<br />
+		<span>"{{ $ctrl.ngModel.$modelValue.fileName }}"</span>
+	</div>
 </div>
