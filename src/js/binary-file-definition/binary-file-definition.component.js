@@ -5,7 +5,8 @@ angular.module('adama-web').component('binaryFileDefinition', {
 		return adamaConstant.adamaWebToolkitTemplateUrl.binaryFileDefinition;
 	},
 	bindings: {
-		isPicture: '<',
+		afterUploadCallback: '&',
+		pattern: '@',
 		labelKey: '@'
 	},
 	require: {
@@ -13,10 +14,7 @@ angular.module('adama-web').component('binaryFileDefinition', {
 	},
 	controller: function(binaryFileService) {
 		var ctrl = this;
-		ctrl.isPicture = !!ctrl.isPicture;
-		if (ctrl.isPicture) {
-			ctrl.pattern = 'image/*';
-		}
+		ctrl.isPicture = ctrl.pattern === 'image/*';
 		ctrl.ongoingUpload = undefined;
 		ctrl.error = false;
 		ctrl.upload = function(file) {
@@ -27,7 +25,15 @@ angular.module('adama-web').component('binaryFileDefinition', {
 			ctrl.error = false;
 			ctrl.ongoingUpload = binaryFileService.uploadFile(file, ctrl.isPicture);
 			ctrl.ongoingUpload.then(function(resp) {
-				ctrl.ngModel.$setViewValue(resp.data);
+				var newFile = resp.data;
+				if (ctrl.afterUploadCallback) {
+					return ctrl.afterUploadCallback({
+						newFile: newFile
+					});
+				}
+				return newFile;
+			}).then(function(newFile) {
+				ctrl.ngModel.$setViewValue(newFile);
 			}, function() {
 				ctrl.error = true;
 				ctrl.ngModel.$setViewValue(undefined);
