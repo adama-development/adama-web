@@ -11,7 +11,17 @@ angular.module('adama-web').run(function($httpBackend, $http, adamaConstant, moc
 		};
 		angular.forEach(data, function(id) {
 			result.urlList[id] = id + '?comingFormMock=true';
-		})
+		});
+		return [ 200, result ];
+	});
+
+	$httpBackend.when('POST', /\/files\?isPicture=.*/).respond(function(method, url, data, headers, params) {
+		console.warn('POST /files?isPicture=xxx', method, url, params);
+		var result = {
+			id : '' + (new Date()).getTime(),
+			isPicture: params.isPicture,
+			fileName: 'File #' + (new Date()).getTime()
+		};
 		return [ 200, result ];
 	});
 });

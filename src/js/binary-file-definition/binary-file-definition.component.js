@@ -5,7 +5,7 @@ angular.module('adama-web').component('binaryFileDefinition', {
 		return adamaConstant.adamaWebToolkitTemplateUrl.binaryFileDefinition;
 	},
 	bindings: {
-		afterUploadCallback: '&',
+		afterUploadCallback: '&?',
 		pattern: '@',
 		labelKey: '@'
 	},
@@ -38,8 +38,8 @@ angular.module('adama-web').component('binaryFileDefinition', {
 				ctrl.error = true;
 				ctrl.ngModel.$setViewValue(undefined);
 			}).finally(function() {
-				ctrl.ongoingUpload = undefined;
 				ctrl.ngModel.$setValidity('loading', true);
+				ctrl.ongoingUpload = undefined;
 			});
 		};
 		ctrl.resetFile = function() {

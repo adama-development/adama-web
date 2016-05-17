@@ -4,8 +4,8 @@
 	ng-show="!$ctrl.ngModel.$modelValue.id && !$ctrl.ongoingUpload"
 	ngf-drag-over-class="'dragover'"
 	ngf-multiple="false"
-	ngf-pattern="$ctrl.pattern"
-	ngf-accept="$ctrl.pattern"
+	ngf-pattern="$ctrl.filePattern"
+	ngf-accept="$ctrl.filePattern"
 	ngf-drop="$ctrl.upload($files)"
 >
 	<span translate>FILEUPLOAD_DROPZONE_LABEL</span>
@@ -16,8 +16,8 @@
 		id="fileInput"
 		ng-model="$ctrl.file"
 		ngf-select="$ctrl.upload($ctrl.file)"
-		ngf-pattern="$ctrl.pattern"
-		ngf-accept="$ctrl.pattern"
+		ngf-pattern="$ctrl.filePattern"
+		ngf-accept="$ctrl.filePattern"
 	/>
 </label>
 <div
