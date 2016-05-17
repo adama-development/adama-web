@@ -91,8 +91,8 @@ angular.module('adama-web').run(function($httpBackend, mockSettings) {
 		return [ 200 ];
 	});
 
-	$httpBackend.when('POST', '/account/reset_password/init').respond(function(method, url, data) {
-		console.warn('POST /account/reset_password/init', data);
+	$httpBackend.when('POST', /\/account\/reset_password\/init.*/).respond(function(method, url, data) {
+		console.warn('POST /account/reset_password/init', url, data);
 		if (data === 'admin@admin') {
 			return [ 200, 'e-mail was sent' ];
 		}
