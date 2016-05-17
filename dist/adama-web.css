@@ -136,6 +136,9 @@ table .crud-image {
 .file-upload--dropzone {
   background: rgba(255, 120, 0, 0.5);
 }
+binary-file-definition {
+  display: block;
+}
 binary-file-definition .file-upload--label {
   font-weight: bold;
 }
