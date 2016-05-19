@@ -89,6 +89,7 @@ btn-create + crud-search-field form {
   margin-right: 10px;
 }
 .crud-image {
+  max-height: 10vh;
   max-width: 100%;
 }
 table .crud-image {

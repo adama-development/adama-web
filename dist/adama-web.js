@@ -605,7 +605,7 @@ angular.module('adama-web').component('binaryFileDefinition', {
 	}],
 	bindings: {
 		afterUploadCallback: '&?',
-		pattern: '@',
+		filePattern: '@',
 		labelKey: '@'
 	},
 	require: {
@@ -613,7 +613,7 @@ angular.module('adama-web').component('binaryFileDefinition', {
 	},
 	controller: ["binaryFileService", function(binaryFileService) {
 		var ctrl = this;
-		ctrl.isPicture = ctrl.pattern === 'image/*';
+		ctrl.isPicture = ctrl.filePattern === 'image/*';
 		ctrl.ongoingUpload = undefined;
 		ctrl.error = false;
 		ctrl.upload = function(file) {
@@ -1538,7 +1538,9 @@ angular.module('adama-web').factory('Auth', ["$rootScope", "$state", "$q", "$tra
 				// After the login the language will be changed to
 				// the language selected by the user during his
 				// registration
-				$translate.use(account.langKey);
+				if (account.langKey) {
+					$translate.use(account.langKey);
+				}
 				deferred.resolve(data);
 			});
 		}).catch(function(err) {
