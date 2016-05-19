@@ -6,7 +6,7 @@ angular.module('adama-web').component('binaryFileDefinition', {
 	},
 	bindings: {
 		afterUploadCallback: '&?',
-		pattern: '@',
+		filePattern: '@',
 		labelKey: '@'
 	},
 	require: {
@@ -14,7 +14,7 @@ angular.module('adama-web').component('binaryFileDefinition', {
 	},
 	controller: function(binaryFileService) {
 		var ctrl = this;
-		ctrl.isPicture = ctrl.pattern === 'image/*';
+		ctrl.isPicture = ctrl.filePattern === 'image/*';
 		ctrl.ongoingUpload = undefined;
 		ctrl.error = false;
 		ctrl.upload = function(file) {
