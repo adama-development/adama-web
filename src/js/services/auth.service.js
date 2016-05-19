@@ -12,7 +12,9 @@ angular.module('adama-web').factory('Auth', function Auth($rootScope, $state, $q
 				// After the login the language will be changed to
 				// the language selected by the user during his
 				// registration
-				$translate.use(account.langKey);
+				if (account.langKey) {
+					$translate.use(account.langKey);
+				}
 				deferred.resolve(data);
 			});
 		}).catch(function(err) {
