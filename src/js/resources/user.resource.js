@@ -5,7 +5,7 @@ angular.module('adama-web').factory('User', function($resource, adamaConstant, a
 		save: {
 			method: 'POST',
 			params: {
-				urlCreatePassword: adamaConstant.urlCreatePassword
+				urlCreatePassword: '@urlCreatePassword'
 			}
 		}
 	});
