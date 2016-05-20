@@ -1309,7 +1309,7 @@ angular.module('adama-web').factory('User', ["$resource", "adamaConstant", "adam
 		save: {
 			method: 'POST',
 			params: {
-				urlCreatePassword: adamaConstant.urlCreatePassword
+				urlCreatePassword: '@urlCreatePassword'
 			}
 		}
 	});
