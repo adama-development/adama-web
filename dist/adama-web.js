@@ -1782,14 +1782,7 @@ angular.module('adama-web').factory('pdfService', ["FileSaver", function(FileSav
 
 angular.module('adama-web').factory('Principal', ["$http", "$q", "$rootScope", "$resource", "$state", "adamaConstant", "adamaTokenService", function($http, $q, $rootScope, $resource, $state, adamaConstant, adamaTokenService) {
 	var Password = $resource(adamaConstant.apiBase + 'account/change_password');
-	var PasswordResetInit = $resource(adamaConstant.apiBase + 'account/reset_password/init', {}, {
-		save: {
-			method: 'POST',
-			params: {
-				urlResetPassword: adamaConstant.urlCreatePassword
-			}
-		}
-	});
+	var PasswordResetInit = $resource(adamaConstant.apiBase + 'account/reset_password/init', {}, {});
 	var PasswordResetFinish = $resource(adamaConstant.apiBase + 'account/reset_password/finish');
 
 	var _identity;
@@ -1945,7 +1938,10 @@ angular.module('adama-web').factory('Principal', ["$http", "$q", "$rootScope", "
 	};
 
 	api.resetPasswordInit = function(mail) {
-		return PasswordResetInit.save(mail).$promise;
+		return PasswordResetInit.save({
+			mail: mail,
+			urlResetPassword: adamaConstant.urlCreatePassword
+		}).$promise;
 	};
 
 	api.resetPasswordFinish = function(keyAndPassword) {
