@@ -125,7 +125,11 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 
 angular.module('adama-web').run(["$rootScope", "$state", "Principal", function($rootScope, $state, Principal) {
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams) {
-		if (Principal.isIdentityResolved() && toState.name.indexOf('auth.') === 0 && toState.name !== 'auth.accessDenied') {
+		console.log('toState', toState);
+		if (Principal.isAuthenticated() && toState.name.indexOf('auth.') === 0 && toState.name !== 'auth.accessDenied') {
+			console.log('Principal.isIdentityResolved()', Principal.isIdentityResolved());
+			console.log('toState.name.indexOf(auth.) === 0', toState.name.indexOf('auth.') === 0);
+			console.log('toState.name !== auth.accessDenied', toState.name !== 'auth.accessDenied');
 			event.preventDefault();
 			$state.go('app.main');
 		} else {
@@ -154,6 +158,16 @@ angular.module('adama-web').config(["$httpProvider", function($httpProvider) {
 	$httpProvider.interceptors.push('authExpiredInterceptor');
 	$httpProvider.interceptors.push('authInterceptor');
 	$httpProvider.interceptors.push('notificationInterceptor');
+}]);
+
+'use strict';
+
+angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
+	$stateProvider.state('app.personal', {
+		abstract: true,
+		url: '/personal',
+		template: '<ui-view></ui-view>'
+	});
 }]);
 
 'use strict';
@@ -374,16 +388,6 @@ angular.module('adama-web')
 		};
 
 	});
-
-'use strict';
-
-angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
-	$stateProvider.state('app.personal', {
-		abstract: true,
-		url: '/personal',
-		template: '<ui-view></ui-view>'
-	});
-}]);
 
 'use strict';
 
