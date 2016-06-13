@@ -107,7 +107,6 @@ angular.module('adama-web').config(function($translateProvider) {
 
 angular.module('adama-web').run(function($rootScope, $state, Principal) {
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams) {
-		console.log('toState', toState);
 		if (Principal.isAuthenticated() && toState.name.indexOf('auth.') === 0 && toState.name !== 'auth.accessDenied') {
 			event.preventDefault();
 			$state.go('app.main');
