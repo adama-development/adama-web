@@ -125,11 +125,7 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 
 angular.module('adama-web').run(["$rootScope", "$state", "Principal", function($rootScope, $state, Principal) {
 	$rootScope.$on('$stateChangeStart', function(event, toState, toStateParams) {
-		console.log('toState', toState);
 		if (Principal.isAuthenticated() && toState.name.indexOf('auth.') === 0 && toState.name !== 'auth.accessDenied') {
-			console.log('Principal.isIdentityResolved()', Principal.isIdentityResolved());
-			console.log('toState.name.indexOf(auth.) === 0', toState.name.indexOf('auth.') === 0);
-			console.log('toState.name !== auth.accessDenied', toState.name !== 'auth.accessDenied');
 			event.preventDefault();
 			$state.go('app.main');
 		} else {
@@ -1002,73 +998,6 @@ angular.module('adama-web').directive('modalBtnConfirmImportXls', ["adamaConstan
 
 'use strict';
 
-angular.module('adama-web').directive('dsAuthorities', ["$parse", "adamaConstant", function($parse, adamaConstant) {
-	return {
-		scope: false,
-		link: function(scope, element, attrs) {
-			var authorities = adamaConstant.authorities;
-			$parse(attrs.data).assign(scope, authorities);
-		}
-	};
-}]);
-
-'use strict';
-
-angular.module('adama-web').directive('dsBinaryFileUrl', ["$parse", "binaryFileService", function($parse, binaryFileService) {
-	return {
-		scope: false,
-		link: function(scope, element, attrs) {
-			var updateOutput = function(binaryFileList) {
-				if (attrs.output) {
-					binaryFileList = angular.copy(binaryFileList);
-				}
-				if (!angular.isArray(binaryFileList)) {
-					binaryFileList = [binaryFileList];
-				}
-				binaryFileService.initUrlForBinaryFiles(binaryFileList).then(function() {
-					if (attrs.output) {
-						$parse(attrs.output).assign(scope, binaryFileList);
-					}
-				});
-			};
-			scope.$watch(attrs.input, function() {
-				var binaryFileList = $parse(attrs.input)(scope);
-				if (binaryFileList) {
-					updateOutput(binaryFileList);
-				}
-			});
-		}
-	};
-}]);
-
-'use strict';
-
-angular.module('adama-web').directive('dsLanguage', ["$parse", "language", function($parse, language) {
-	return {
-		scope: false,
-		link: function(scope, element, attrs) {
-			language.getAll().then(function(languages) {
-				$parse(attrs.data).assign(scope, languages);
-			});
-		}
-	};
-}]);
-
-'use strict';
-
-angular.module('adama-web').directive('dsPrincipalIdentity', ["$parse", "Principal", function($parse, Principal) {
-	return {
-		scope: false,
-		link: function(scope, element, attrs) {
-			Principal.identity().then(function(account) {
-				$parse(attrs.data).assign(scope, account);
-			});
-		}
-	};
-}]);
-
-'use strict';
-
 angular.module('adama-web').directive('layoutFix', ["$rootScope", function($rootScope) {
 	return {
 		scope: {
@@ -1134,6 +1063,73 @@ angular.module('adama-web').directive('lazyControl', ["$rootScope", "$filter", f
 angular.module('adama-web').filter('min', function() {
 	return Math.min;
 });
+
+'use strict';
+
+angular.module('adama-web').directive('dsAuthorities', ["$parse", "adamaConstant", function($parse, adamaConstant) {
+	return {
+		scope: false,
+		link: function(scope, element, attrs) {
+			var authorities = adamaConstant.authorities;
+			$parse(attrs.data).assign(scope, authorities);
+		}
+	};
+}]);
+
+'use strict';
+
+angular.module('adama-web').directive('dsBinaryFileUrl', ["$parse", "binaryFileService", function($parse, binaryFileService) {
+	return {
+		scope: false,
+		link: function(scope, element, attrs) {
+			var updateOutput = function(binaryFileList) {
+				if (attrs.output) {
+					binaryFileList = angular.copy(binaryFileList);
+				}
+				if (!angular.isArray(binaryFileList)) {
+					binaryFileList = [binaryFileList];
+				}
+				binaryFileService.initUrlForBinaryFiles(binaryFileList).then(function() {
+					if (attrs.output) {
+						$parse(attrs.output).assign(scope, binaryFileList);
+					}
+				});
+			};
+			scope.$watch(attrs.input, function() {
+				var binaryFileList = $parse(attrs.input)(scope);
+				if (binaryFileList) {
+					updateOutput(binaryFileList);
+				}
+			});
+		}
+	};
+}]);
+
+'use strict';
+
+angular.module('adama-web').directive('dsLanguage', ["$parse", "language", function($parse, language) {
+	return {
+		scope: false,
+		link: function(scope, element, attrs) {
+			language.getAll().then(function(languages) {
+				$parse(attrs.data).assign(scope, languages);
+			});
+		}
+	};
+}]);
+
+'use strict';
+
+angular.module('adama-web').directive('dsPrincipalIdentity', ["$parse", "Principal", function($parse, Principal) {
+	return {
+		scope: false,
+		link: function(scope, element, attrs) {
+			Principal.identity().then(function(account) {
+				$parse(attrs.data).assign(scope, account);
+			});
+		}
+	};
+}]);
 
 'use strict';
 
