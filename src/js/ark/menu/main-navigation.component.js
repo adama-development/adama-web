@@ -6,31 +6,20 @@ angular.module('adama-web').component('mainNavigation', {
 	},
 	controller: function($rootScope, $filter, menuService) {
 		var ctrl = this;
-		var addMenuEntry, addMenuEntries;
-		addMenuEntry = function(input, item) {
-			var copy = angular.copy(item);
-			copy.subItems = [];
-			addMenuEntries(copy.subItems, item.subItems);
-			copy.label = $filter('translate')(copy.label);
-			input.push(copy);
-		};
-		addMenuEntries = function(input, menuEntries) {
-			var i, l, menuEntry;
-			if (menuEntries && menuEntries.length) {
-				for (i = 0, l = menuEntries.length; i < l; i++) {
-					menuEntry = menuEntries[i];
-					addMenuEntry(input, menuEntry);
-				}
+		var translate = $filter('translate');
+		var translateLabels = function(itemList) {
+			if (!!itemList) {
+				angular.forEach(itemList, function(item) {
+					item.label = translate(item.labelKey);
+					translateLabels(item.subItems);
+				});
 			}
 		};
+		ctrl.menuItems = menuService.getItems();
 		var updateMenuEntries = function() {
-			ctrl.menuItems = [];
-			var items = menuService.getItems();
-			addMenuEntries(ctrl.menuItems, items);
+			translateLabels(ctrl.menuItems);
 		};
 		updateMenuEntries();
-		$rootScope.$on('$translateChangeSuccess', function() {
-			updateMenuEntries();
-		});
+		$rootScope.$on('$translateChangeSuccess', updateMenuEntries);
 	}
 });

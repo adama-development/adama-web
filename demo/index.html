@@ -153,6 +153,20 @@
 			angular.module('adamaDemoApp').config(function(adamaConstant){
 				adamaConstant.apiBase = '/';
 			});
+
+			var random = function(max){
+				return Math.floor((Math.random() * max))
+			};
+
+			angular.module('adamaDemoApp').run(function($rootScope, $interval) {
+				var badgeEvents = ['badge1-event', 'badge2-event', 'badge3-event', 'badge4-event'];
+				$interval(function(){
+					var idx = random(badgeEvents.length);
+					$rootScope.$broadcast(badgeEvents[idx], {
+						value: random(20)
+					});
+				}, 2000);
+			});
 		</script>
 	</body>
 </html>
