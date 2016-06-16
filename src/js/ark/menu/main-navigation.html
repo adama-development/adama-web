@@ -22,7 +22,14 @@
 			<li ng-repeat="subItem in item.subItems | orderBy:'rank'">
 				<a
 					ng-href="{{::subItem.url}}"
-				>{{ subItem.label }}</a>
+				>
+					{{ subItem.label }}
+					<span
+						class="label pull-right"
+						ng-if="subItem.badge && subItem.badge.value"
+						ng-class="subItem.badge.color"
+					>{{ subItem.badge.value }}</span>
+				</a>
 			</li>
 		</ul>
 	</li>
