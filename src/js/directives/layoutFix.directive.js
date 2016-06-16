@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-web').directive('layoutFix', function($rootScope) {
+angular.module('adama-web').directive('layoutFix', function($rootScope, $timeout) {
 	return {
 		scope: {
 			addEvent: '='
@@ -12,7 +12,9 @@ angular.module('adama-web').directive('layoutFix', function($rootScope) {
 					$.AdminLTE.layout.fix();
 				});
 			}
-			$.AdminLTE.layout.fix();
+			$timeout(function() {
+				$.AdminLTE.layout.fix();
+			}, 0);
 		}
 	};
 });
