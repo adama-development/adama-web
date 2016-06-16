@@ -998,74 +998,6 @@ angular.module('adama-web').directive('modalBtnConfirmImportXls', ["adamaConstan
 
 'use strict';
 
-angular.module('adama-web').directive('layoutFix', ["$rootScope", function($rootScope) {
-	return {
-		scope: {
-			addEvent: '='
-		},
-		restrict: 'E',
-		link: function postLink(scope) {
-			if (scope.addEvent) {
-				$rootScope.$on('$viewContentLoaded', function() {
-					$.AdminLTE.layout.fix();
-				});
-			}
-			$.AdminLTE.layout.fix();
-		}
-	};
-}]);
-
-'use strict';
-
-angular.module('adama-web').directive('lazyControl', ["$rootScope", "$filter", function($rootScope, $filter) {
-	var translateFilter = $filter('translate');
-	return {
-		link: function postLink(scope, element, attrs) {
-			var id, additionalLabelAttributes, labelScreenOnly, labelContainer;
-			var isPlaceholderForced = false;
-			if (attrs.type === 'checkbox') {
-				element.wrap('<div class="checkbox"><label></label></div>');
-				element.after('<span></span>');
-				labelContainer = element.next().eq(0);
-			} else {
-				id = attrs.ngModel.replace(/\./g, '_');
-				additionalLabelAttributes = ' for="' + id + '"';
-				labelScreenOnly = attrs.labelScreenOnly || false;
-				if (labelScreenOnly) {
-					additionalLabelAttributes += ' class="sr-only"';
-				}
-				if (attrs.placeholder) {
-					isPlaceholderForced = true;
-				}
-				element.attr('id', id);
-				element.addClass('form-control');
-				element.wrap('<div class="form-group"></div>');
-				element.before('<label' + additionalLabelAttributes + '></label>');
-				labelContainer = element.prev().eq(0);
-			}
-			var initLabelAndPlaceholder = function() {
-				var label = translateFilter(attrs.lazyControlLabelKey);
-				labelContainer.html(label);
-				if (!isPlaceholderForced) {
-					element.attr('placeholder', label);
-				}
-			};
-			initLabelAndPlaceholder();
-			$rootScope.$on('$translateChangeSuccess', function() {
-				initLabelAndPlaceholder();
-			});
-		}
-	};
-}]);
-
-'use strict';
-
-angular.module('adama-web').filter('min', function() {
-	return Math.min;
-});
-
-'use strict';
-
 angular.module('adama-web').directive('dsAuthorities', ["$parse", "adamaConstant", function($parse, adamaConstant) {
 	return {
 		scope: false,
@@ -1130,6 +1062,76 @@ angular.module('adama-web').directive('dsPrincipalIdentity', ["$parse", "Princip
 		}
 	};
 }]);
+
+'use strict';
+
+angular.module('adama-web').directive('layoutFix', ["$rootScope", "$timeout", function($rootScope, $timeout) {
+	return {
+		scope: {
+			addEvent: '='
+		},
+		restrict: 'E',
+		link: function postLink(scope) {
+			if (scope.addEvent) {
+				$rootScope.$on('$viewContentLoaded', function() {
+					$.AdminLTE.layout.fix();
+				});
+			}
+			$timeout(function() {
+				$.AdminLTE.layout.fix();
+			}, 0);
+		}
+	};
+}]);
+
+'use strict';
+
+angular.module('adama-web').directive('lazyControl', ["$rootScope", "$filter", function($rootScope, $filter) {
+	var translateFilter = $filter('translate');
+	return {
+		link: function postLink(scope, element, attrs) {
+			var id, additionalLabelAttributes, labelScreenOnly, labelContainer;
+			var isPlaceholderForced = false;
+			if (attrs.type === 'checkbox') {
+				element.wrap('<div class="checkbox"><label></label></div>');
+				element.after('<span></span>');
+				labelContainer = element.next().eq(0);
+			} else {
+				id = attrs.ngModel.replace(/\./g, '_');
+				additionalLabelAttributes = ' for="' + id + '"';
+				labelScreenOnly = attrs.labelScreenOnly || false;
+				if (labelScreenOnly) {
+					additionalLabelAttributes += ' class="sr-only"';
+				}
+				if (attrs.placeholder) {
+					isPlaceholderForced = true;
+				}
+				element.attr('id', id);
+				element.addClass('form-control');
+				element.wrap('<div class="form-group"></div>');
+				element.before('<label' + additionalLabelAttributes + '></label>');
+				labelContainer = element.prev().eq(0);
+			}
+			var initLabelAndPlaceholder = function() {
+				var label = translateFilter(attrs.lazyControlLabelKey);
+				labelContainer.html(label);
+				if (!isPlaceholderForced) {
+					element.attr('placeholder', label);
+				}
+			};
+			initLabelAndPlaceholder();
+			$rootScope.$on('$translateChangeSuccess', function() {
+				initLabelAndPlaceholder();
+			});
+		}
+	};
+}]);
+
+'use strict';
+
+angular.module('adama-web').filter('min', function() {
+	return Math.min;
+});
 
 'use strict';
 
@@ -2368,32 +2370,21 @@ angular.module('adama-web').component('mainNavigation', {
 	}],
 	controller: ["$rootScope", "$filter", "menuService", function($rootScope, $filter, menuService) {
 		var ctrl = this;
-		var addMenuEntry, addMenuEntries;
-		addMenuEntry = function(input, item) {
-			var copy = angular.copy(item);
-			copy.subItems = [];
-			addMenuEntries(copy.subItems, item.subItems);
-			copy.label = $filter('translate')(copy.label);
-			input.push(copy);
-		};
-		addMenuEntries = function(input, menuEntries) {
-			var i, l, menuEntry;
-			if (menuEntries && menuEntries.length) {
-				for (i = 0, l = menuEntries.length; i < l; i++) {
-					menuEntry = menuEntries[i];
-					addMenuEntry(input, menuEntry);
-				}
+		var translate = $filter('translate');
+		var translateLabels = function(itemList) {
+			if (!!itemList) {
+				angular.forEach(itemList, function(item) {
+					item.label = translate(item.labelKey);
+					translateLabels(item.subItems);
+				});
 			}
 		};
+		ctrl.menuItems = menuService.getItems();
 		var updateMenuEntries = function() {
-			ctrl.menuItems = [];
-			var items = menuService.getItems();
-			addMenuEntries(ctrl.menuItems, items);
+			translateLabels(ctrl.menuItems);
 		};
 		updateMenuEntries();
-		$rootScope.$on('$translateChangeSuccess', function() {
-			updateMenuEntries();
-		});
+		$rootScope.$on('$translateChangeSuccess', updateMenuEntries);
 	}]
 });
 
@@ -2409,13 +2400,20 @@ angular.module('adama-web').provider('menuService', function() {
 		menuItems.push(newItem);
 	};
 
-	this.$get = function() {
+	this.$get = ["$rootScope", function($rootScope) {
 		var api = {};
+		angular.forEach(menuItems, function(menuItem) {
+			if (menuItem.badge && menuItem.badge.event) {
+				$rootScope.$on(menuItem.badge.event, function(event, param) {
+					menuItem.badge.value = param.value;
+				});
+			}
+		});
 		api.getItems = function() {
 			return menuItems;
 		};
 		return api;
-	};
+	}];
 });
 
 'use strict';
