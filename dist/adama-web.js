@@ -875,7 +875,7 @@ angular.module('adama-web').controller('CrudListCtrl', ["EntityGenericResource",
 	// search data
 	ctrl.tableParams = new NgTableParams({}, {
 		total: 0,
-		getData: function($defer, params) {
+		getData: function(params) {
 			var sort = params.sorting();
 			var sortValues = [];
 			if (!angular.equals({}, sort)) {
@@ -891,9 +891,9 @@ angular.module('adama-web').controller('CrudListCtrl', ["EntityGenericResource",
 				sort: sortValues,
 				search: params.filter().$
 			}, params.filter().business);
-			EntityGenericResource.query(requestParams).$promise.then(function(entities) {
+			return EntityGenericResource.query(requestParams).$promise.then(function(entities) {
 				params.total(entities.$metadata.totalItems);
-				$defer.resolve(entities);
+				return entities;
 			});
 		}
 	});
@@ -2418,6 +2418,24 @@ angular.module('adama-web').provider('menuService', function() {
 
 'use strict';
 
+angular.module('adama-web').component('userInfo', {
+	templateUrl: /* @ngInject */ ["adamaConstant", function(adamaConstant) {
+		return adamaConstant.adamaWebToolkitTemplateUrl.userInfo;
+	}],
+	controller: ["$rootScope", "$state", "Auth", function($rootScope, $state, Auth) {
+		var ctrl = this;
+		ctrl.signout = function() {
+			Auth.logout();
+			$state.go('auth.signin');
+		};
+		$rootScope.$on('auth.updateAccount', function(event, data) {
+			ctrl.account = data.account;
+		});
+	}]
+});
+
+'use strict';
+
 angular.module('adama-web').component('selectAll', {
 	templateUrl: /* @ngInject */ ["adamaConstant", function(adamaConstant) {
 		return adamaConstant.adamaWebToolkitTemplateUrl.selectAll;
@@ -2450,24 +2468,6 @@ angular.module('adama-web').component('viewAttribute', {
 		valueKey: '@value'
 	},
 	controller: function() {}
-});
-
-'use strict';
-
-angular.module('adama-web').component('userInfo', {
-	templateUrl: /* @ngInject */ ["adamaConstant", function(adamaConstant) {
-		return adamaConstant.adamaWebToolkitTemplateUrl.userInfo;
-	}],
-	controller: ["$rootScope", "$state", "Auth", function($rootScope, $state, Auth) {
-		var ctrl = this;
-		ctrl.signout = function() {
-			Auth.logout();
-			$state.go('auth.signin');
-		};
-		$rootScope.$on('auth.updateAccount', function(event, data) {
-			ctrl.account = data.account;
-		});
-	}]
 });
 
 //# sourceMappingURL=adama-web.js.map
