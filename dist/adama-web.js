@@ -2439,6 +2439,21 @@ angular.module('adama-web').component('selectAll', {
 
 'use strict';
 
+angular.module('adama-web').component('viewAttribute', {
+	templateUrl: /* @ngInject */ ["adamaConstant", function(adamaConstant) {
+		return adamaConstant.adamaWebToolkitTemplateUrl.viewAttribute;
+	}],
+	transclude: true,
+	bindings: {
+		labelKey: '@',
+		value: '<',
+		valueKey: '@value'
+	},
+	controller: function() {}
+});
+
+'use strict';
+
 angular.module('adama-web').component('userInfo', {
 	templateUrl: /* @ngInject */ ["adamaConstant", function(adamaConstant) {
 		return adamaConstant.adamaWebToolkitTemplateUrl.userInfo;
@@ -2453,21 +2468,6 @@ angular.module('adama-web').component('userInfo', {
 			ctrl.account = data.account;
 		});
 	}]
-});
-
-'use strict';
-
-angular.module('adama-web').component('viewAttribute', {
-	templateUrl: /* @ngInject */ ["adamaConstant", function(adamaConstant) {
-		return adamaConstant.adamaWebToolkitTemplateUrl.viewAttribute;
-	}],
-	transclude: true,
-	bindings: {
-		labelKey: '@',
-		value: '<',
-		valueKey: '@value'
-	},
-	controller: function() {}
 });
 
 //# sourceMappingURL=adama-web.js.map
