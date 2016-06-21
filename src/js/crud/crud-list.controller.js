@@ -7,7 +7,7 @@ angular.module('adama-web').controller('CrudListCtrl', function(EntityGenericRes
 	// search data
 	ctrl.tableParams = new NgTableParams({}, {
 		total: 0,
-		getData: function($defer, params) {
+		getData: function(params) {
 			var sort = params.sorting();
 			var sortValues = [];
 			if (!angular.equals({}, sort)) {
@@ -23,9 +23,9 @@ angular.module('adama-web').controller('CrudListCtrl', function(EntityGenericRes
 				sort: sortValues,
 				search: params.filter().$
 			}, params.filter().business);
-			EntityGenericResource.query(requestParams).$promise.then(function(entities) {
+			return EntityGenericResource.query(requestParams).$promise.then(function(entities) {
 				params.total(entities.$metadata.totalItems);
-				$defer.resolve(entities);
+				return entities;
 			});
 		}
 	});

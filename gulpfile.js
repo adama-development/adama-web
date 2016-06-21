@@ -116,8 +116,7 @@ gulp.task('serve', [ 'js', 'css' ], function() {
 				'/adama-web' : config.mainPath + 'js/',
 				'/dist' : 'dist',
 				'/mocks' : 'mocks',
-				'/node_modules' : 'node_modules',
-				'/vendor-no-npm' : 'vendor-no-npm'
+				'/node_modules' : 'node_modules'
 			}
 		},
 		open : false
