@@ -1366,7 +1366,7 @@ angular.module('adama-web').factory('adamaResourceConfig', ["ParseLinks", "pdfSe
 			method: 'GET',
 			responseType: 'arraybuffer',
 			headers: {
-				'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+				'Accept': 'application/vnd.ms-excel'
 			},
 			transformResponse: pdfService.transformResponseToPdf
 		},
@@ -2418,24 +2418,6 @@ angular.module('adama-web').provider('menuService', function() {
 
 'use strict';
 
-angular.module('adama-web').component('userInfo', {
-	templateUrl: /* @ngInject */ ["adamaConstant", function(adamaConstant) {
-		return adamaConstant.adamaWebToolkitTemplateUrl.userInfo;
-	}],
-	controller: ["$rootScope", "$state", "Auth", function($rootScope, $state, Auth) {
-		var ctrl = this;
-		ctrl.signout = function() {
-			Auth.logout();
-			$state.go('auth.signin');
-		};
-		$rootScope.$on('auth.updateAccount', function(event, data) {
-			ctrl.account = data.account;
-		});
-	}]
-});
-
-'use strict';
-
 angular.module('adama-web').component('selectAll', {
 	templateUrl: /* @ngInject */ ["adamaConstant", function(adamaConstant) {
 		return adamaConstant.adamaWebToolkitTemplateUrl.selectAll;
@@ -2453,6 +2435,24 @@ angular.module('adama-web').component('selectAll', {
 			});
 		};
 	}
+});
+
+'use strict';
+
+angular.module('adama-web').component('userInfo', {
+	templateUrl: /* @ngInject */ ["adamaConstant", function(adamaConstant) {
+		return adamaConstant.adamaWebToolkitTemplateUrl.userInfo;
+	}],
+	controller: ["$rootScope", "$state", "Auth", function($rootScope, $state, Auth) {
+		var ctrl = this;
+		ctrl.signout = function() {
+			Auth.logout();
+			$state.go('auth.signin');
+		};
+		$rootScope.$on('auth.updateAccount', function(event, data) {
+			ctrl.account = data.account;
+		});
+	}]
 });
 
 'use strict';
