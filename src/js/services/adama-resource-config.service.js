@@ -41,7 +41,7 @@ angular.module('adama-web').factory('adamaResourceConfig', function(ParseLinks, 
 			method: 'GET',
 			responseType: 'arraybuffer',
 			headers: {
-				'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+				'Accept': 'application/vnd.ms-excel'
 			},
 			transformResponse: pdfService.transformResponseToPdf
 		},
