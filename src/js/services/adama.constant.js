@@ -19,6 +19,7 @@ angular.module('adama-web').constant('adamaConstant', {
 		recoverPassword: 'adama-web/auth/recoverPassword.html',
 		accessDenied: 'adama-web/auth/accessDenied.html',
 		binaryFileDefinition: 'adama-web/binary-file-definition/binary-file-definition.html',
+		btnConfirmEdit: 'adama-web/crud/btn-confirm-edit.html',
 		btnCreate: 'adama-web/crud/btn-create.html',
 		crudActionDropdown: 'adama-web/crud/crud-action-dropdown.html',
 		crudCustomFilter: 'adama-web/crud/crud-custom-filter.html',
