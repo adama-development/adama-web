@@ -40,6 +40,9 @@ angular.module('adama-web').factory('adamaResourceConfig', function(ParseLinks, 
 		'massExportXls': {
 			method: 'GET',
 			responseType: 'arraybuffer',
+			params: {
+				all: true
+			},
 			headers: {
 				'Accept': 'application/vnd.ms-excel'
 			},
