@@ -95,6 +95,14 @@ btn-create + crud-search-field form {
 table .crud-image {
   max-height: 10vh;
 }
+view-attribute > .row > div:first-child {
+  font-weight: bold;
+}
+input.ng-invalid,
+select.ng-invalid,
+textarea.ng-invalid {
+  border-bottom: 1px solid #d9534f;
+}
 .famfamfam-flags {
   display: inline-block;
 }
