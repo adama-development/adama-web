@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-web').factory('pdfService', function(FileSaver) {
+angular.module('adama-web').factory('binaryService', function(FileSaver) {
 	var api = {};
 
 	api.transformResponseToPdf = function(data, headersGetter, status) {

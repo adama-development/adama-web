@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('adama-web').factory('adamaResourceConfig', function(ParseLinks, pdfService) {
+angular.module('adama-web').factory('adamaResourceConfig', function(ParseLinks, binaryService) {
 	return {
 		'query': {
 			method: 'GET',
@@ -46,7 +46,7 @@ angular.module('adama-web').factory('adamaResourceConfig', function(ParseLinks, 
 			headers: {
 				'Accept': 'application/vnd.ms-excel'
 			},
-			transformResponse: pdfService.transformResponseToPdf
+			transformResponse: binaryService.transformResponseToPdf
 		},
 		'massImportXls': {
 			method: 'POST',
