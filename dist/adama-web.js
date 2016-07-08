@@ -158,6 +158,16 @@ angular.module('adama-web').config(["$httpProvider", function($httpProvider) {
 
 'use strict';
 
+angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
+	$stateProvider.state('app.personal', {
+		abstract: true,
+		url: '/personal',
+		template: '<ui-view></ui-view>'
+	});
+}]);
+
+'use strict';
+
 angular.module('adama-web').component('adamaAlertError', {
 	templateUrl: /* @ngInject */ ["adamaConstant", function(adamaConstant) {
 		return adamaConstant.adamaWebToolkitTemplateUrl.adamaAlertError;
@@ -374,16 +384,6 @@ angular.module('adama-web')
 		};
 
 	});
-
-'use strict';
-
-angular.module('adama-web').config(["$stateProvider", function($stateProvider) {
-	$stateProvider.state('app.personal', {
-		abstract: true,
-		url: '/personal',
-		template: '<ui-view></ui-view>'
-	});
-}]);
 
 'use strict';
 
@@ -1369,7 +1369,7 @@ angular.module('adama-web').factory('User', ["$resource", "adamaConstant", "adam
 
 'use strict';
 
-angular.module('adama-web').factory('adamaResourceConfig', ["ParseLinks", "pdfService", function(ParseLinks, pdfService) {
+angular.module('adama-web').factory('adamaResourceConfig', ["ParseLinks", "binaryService", function(ParseLinks, binaryService) {
 	return {
 		'query': {
 			method: 'GET',
@@ -1415,7 +1415,7 @@ angular.module('adama-web').factory('adamaResourceConfig', ["ParseLinks", "pdfSe
 			headers: {
 				'Accept': 'application/vnd.ms-excel'
 			},
-			transformResponse: pdfService.transformResponseToPdf
+			transformResponse: binaryService.transformResponseToPdf
 		},
 		'massImportXls': {
 			method: 'POST',
@@ -1731,6 +1731,31 @@ angular.module('adama-web').factory('binaryFileService', ["$http", "$q", "Upload
 
 'use strict';
 
+angular.module('adama-web').factory('binaryService', ["FileSaver", function(FileSaver) {
+	var api = {};
+
+	api.transformResponseToPdf = function(data, headersGetter, status) {
+		if (status === 200) {
+			var dataBlob = new Blob([data], {
+				type: 'application/pdf'
+			});
+			var contentDisposition = headersGetter('Content-Disposition');
+			var filename;
+			if (contentDisposition) {
+				filename = contentDisposition.substring('attachment;filename = '.length);
+			}
+			if (!filename) {
+				filename = 'file.pdf';
+			}
+			FileSaver.saveAs(dataBlob, filename);
+		}
+	};
+
+	return api;
+}]);
+
+'use strict';
+
 angular.module('adama-web').provider('language', function() {
 	var languages = ['en', 'fr'];
 	var selectorData = [{
@@ -1807,31 +1832,6 @@ angular.module('adama-web').service('ParseLinks', function() {
 		return links;
 	};
 });
-
-'use strict';
-
-angular.module('adama-web').factory('pdfService', ["FileSaver", function(FileSaver) {
-	var api = {};
-
-	api.transformResponseToPdf = function(data, headersGetter, status) {
-		if (status === 200) {
-			var dataBlob = new Blob([data], {
-				type: 'application/pdf'
-			});
-			var contentDisposition = headersGetter('Content-Disposition');
-			var filename;
-			if (contentDisposition) {
-				filename = contentDisposition.substring('attachment;filename = '.length);
-			}
-			if (!filename) {
-				filename = 'file.pdf';
-			}
-			FileSaver.saveAs(dataBlob, filename);
-		}
-	};
-
-	return api;
-}]);
 
 'use strict';
 
