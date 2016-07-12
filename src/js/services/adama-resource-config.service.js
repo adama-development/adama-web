@@ -46,7 +46,7 @@ angular.module('adama-web').factory('adamaResourceConfig', function(ParseLinks, 
 			headers: {
 				'Accept': 'application/vnd.ms-excel'
 			},
-			transformResponse: binaryService.transformResponseToPdf
+			transformResponse: binaryService.transformResponseToExcel
 		},
 		'massImportXls': {
 			method: 'POST',
