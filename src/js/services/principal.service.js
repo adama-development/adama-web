@@ -1,6 +1,8 @@
 'use strict';
 
-angular.module('adama-web').factory('Principal', function($http, $q, $rootScope, $resource, $state, adamaConstant, adamaTokenService) {
+angular.module('adama-web').factory('Principal', function($http, $q, $rootScope, $resource, $state, $log, adamaConstant, adamaTokenService) {
+	var log = $log.getInstance('adama-web.service');
+
 	var Password = $resource(adamaConstant.apiBase + 'account/change_password');
 	var PasswordResetInit = $resource(adamaConstant.apiBase + 'account/reset_password/init', {}, {});
 	var PasswordResetFinish = $resource(adamaConstant.apiBase + 'account/reset_password/finish');
@@ -96,7 +98,7 @@ angular.module('adama-web').factory('Principal', function($http, $q, $rootScope,
 			var isAuthenticated = api.isAuthenticated();
 			// an authenticated user can't access to login pages
 			if (isAuthenticated && $rootScope.toState.name && $rootScope.toState.name === 'auth.signin') {
-				console.log('redirect to main as user is authenticated and is trying to access signin');
+				log.debug('redirect to main as user is authenticated and is trying to access signin');
 				return $state.go('app.main', {}, {
 					location: 'replace'
 				});
@@ -104,7 +106,7 @@ angular.module('adama-web').factory('Principal', function($http, $q, $rootScope,
 			if ((!$rootScope.toState.data || !$rootScope.toState.data.authorities) && !isAuthenticated) {
 				// user is not signed in but desired state needs an
 				// authenticated user
-				console.log('redirect to signin as user is not authenticated and page is restricted (default conf with no authorities on state)');
+				log.debug('redirect to signin as user is not authenticated and page is restricted (default conf with no authorities on state)');
 				return $state.go('auth.signin', {}, {
 					location: 'replace'
 				});
@@ -117,7 +119,7 @@ angular.module('adama-web').factory('Principal', function($http, $q, $rootScope,
 				if (isAuthenticated) {
 					// user is signed in but not authorized for
 					// desired state
-					console.log('redirect to accessDenied as user is authenticated and does not have right privileges');
+					log.debug('redirect to accessDenied as user is authenticated and does not have right privileges');
 					return $state.go('auth.accessDenied', {}, {
 						location: 'replace'
 					});
@@ -130,7 +132,7 @@ angular.module('adama-web').factory('Principal', function($http, $q, $rootScope,
 				$rootScope.previousStateNameParams = $rootScope.toStateParams;
 				// now, send them to the signin state so they
 				// can log in
-				console.log('redirect to signin as user is not authenticated and page is restricted (conf with explicit authorities on state)');
+				log.debug('redirect to signin as user is not authenticated and page is restricted (conf with explicit authorities on state)');
 				return $state.go('auth.signin', {}, {
 					location: 'replace'
 				});

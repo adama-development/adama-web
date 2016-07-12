@@ -2,7 +2,9 @@
 /*jscs:disable requireDotNotation*/
 'use strict';
 
-angular.module('adama-web').factory('adamaTokenService', function($rootScope, $http, $q, $state, jwtHelper, localStorageService, adamaConstant) {
+angular.module('adama-web').factory('adamaTokenService', function($rootScope, $http, $q, $state, $log, jwtHelper, localStorageService, adamaConstant) {
+	var log = $log.getInstance('adama-web.service');
+
 	var api = {};
 
 	var getPayload = function(key) {
@@ -33,7 +35,7 @@ angular.module('adama-web').factory('adamaTokenService', function($rootScope, $h
 	api.getToken = function() {
 		var token = localStorageService.get('token');
 		if (token && jwtHelper.isTokenExpired(token)) {
-			console.log('adamaTokenService.getToken token is expired');
+			log.debug('adamaTokenService.getToken token is expired');
 			return api.refreshAndGetToken();
 		}
 		return $q.when(token);

@@ -11,7 +11,6 @@ angular.module('adama-web').controller('ResetPasswordCtrl', function($location, 
 			key: $location.search().key,
 			newPassword: newPassword
 		}).then(function() {
-			console.log('everything is awesome');
 			var origin = $location.search().origin;
 			console.log('origin', origin);
 			if (origin === 'front') {

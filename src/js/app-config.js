@@ -137,3 +137,11 @@ angular.module('adama-web').config(function($httpProvider) {
 	$httpProvider.interceptors.push('authInterceptor');
 	$httpProvider.interceptors.push('notificationInterceptor');
 });
+
+angular.module('adama-web').config(function(logEnhancerProvider) {
+	logEnhancerProvider.prefixPattern = '%s::[%s]>';
+	logEnhancerProvider.datetimePattern = 'DD/MM/YYYY HH:mm:ss';
+	logEnhancerProvider.logLevels = {
+		'*': logEnhancerProvider.LEVEL.OFF
+	};
+});

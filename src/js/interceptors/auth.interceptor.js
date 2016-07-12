@@ -2,7 +2,7 @@
 /*jscs:disable requireDotNotation*/
 'use strict';
 
-angular.module('adama-web').factory('authInterceptor', function($injector, adamaConstant) {
+angular.module('adama-web').factory('authInterceptor', function($injector, $log, adamaConstant) {
 	var getAdamaTokenService = (function() {
 		var service;
 		return function() {
@@ -13,11 +13,12 @@ angular.module('adama-web').factory('authInterceptor', function($injector, adama
 	return {
 		// Add authorization token to headers
 		request: function(config) {
+			var log = $log.getInstance('adama-web.interceptors');
 			config.headers = config.headers || {};
 			if (!config.headers['Authorization'] && config.url.indexOf(adamaConstant.apiBase) === 0) {
-				console.log('authInterceptor need authorization, getting token');
+				log.debug('authInterceptor need authorization, getting token');
 				return getAdamaTokenService().getToken().then(function(token) {
-					console.log('add token to http config');
+					log.debug('add token to http config');
 					if (token) {
 						config.headers['Authorization'] = 'Bearer ' + token;
 					}

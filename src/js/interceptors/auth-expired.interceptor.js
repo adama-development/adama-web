@@ -2,7 +2,7 @@
 /*jscs:disable requireDotNotation*/
 'use strict';
 
-angular.module('adama-web').factory('authExpiredInterceptor', function($injector, $q, adamaConstant) {
+angular.module('adama-web').factory('authExpiredInterceptor', function($injector, $q, $log, adamaConstant) {
 	var getHttpService = (function() {
 		var service;
 		return function() {
@@ -19,11 +19,12 @@ angular.module('adama-web').factory('authExpiredInterceptor', function($injector
 
 	return {
 		responseError: function(response) {
+			var log = $log.getInstance('adama-web.interceptors');
 			var config = response.config;
 			if (response.status === 401 && config && config.url.indexOf(adamaConstant.apiBase) === 0 && config.url.indexOf(adamaConstant.apiBase + 'login/authenticate') !== 0) {
-				console.log('authExpiredInterceptor error 401, refresh token');
+				log.debug('authExpiredInterceptor error 401, refresh token');
 				return getAdamaTokenService().refreshAndGetToken().then(function() {
-					console.log('authExpiredInterceptor token is refresh, reset Authorization header');
+					log.debug('authExpiredInterceptor token is refresh, reset Authorization header');
 					config.headers['Authorization'] = undefined;
 					return getHttpService()(config);
 				});

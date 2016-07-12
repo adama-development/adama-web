@@ -56,6 +56,7 @@
 		<script src="node_modules/ng-file-upload/dist/ng-file-upload.min.js"></script>
 		<script src="node_modules/angular-jwt/dist/angular-jwt.js"></script>
 		<script src="node_modules/ng-table/dist/ng-table.min.js"></script>
+		<script src="node_modules/angular-logger/dist/angular-logger.min.js"></script>
 		<!-- adama-web -->
 		<script src="adama-web/app.js"></script>
 		<script src="adama-web/app-config.js"></script>
@@ -123,7 +124,7 @@
 		<script src="adama-web/services/binary-file.service.js"></script>
 		<script src="adama-web/services/language.provider.js"></script>
 		<script src="adama-web/services/parse-links.service.js"></script>
-		<script src="adama-web/services/pdf.service.js"></script>
+		<script src="adama-web/services/binary.service.js"></script>
 		<script src="adama-web/services/principal.service.js"></script>
 		<script src="adama-web/user/app.js"></script>
 
@@ -152,6 +153,13 @@
 		<script>
 			angular.module('adamaDemoApp').config(function(adamaConstant){
 				adamaConstant.apiBase = '/';
+			});
+
+			angular.module('adama-web').config(function (logEnhancerProvider) {
+				logEnhancerProvider.prefixPattern = '%s - %s: ';
+				logEnhancerProvider.logLevels = {
+					'adama-web' : logEnhancerProvider.LEVEL.TRACE
+				};
 			});
 
 			var random = function(max){
