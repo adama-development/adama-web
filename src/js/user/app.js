@@ -19,6 +19,73 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 		}
 	});
 
+	$stateProvider.state('app.user.view', {
+		url: '/users/view/:id',
+		templateUrl: function(){
+			return adamaConstant.adamaWebToolkitTemplateUrl.userView;
+		},
+		controller: 'CrudViewFullpageCtrl',
+		controllerAs: 'ctrl',
+		parent: 'app',
+		resolve: {
+			entity: function($stateParams, User) {
+				return User.get({
+					id: $stateParams.id
+				}).$promise;
+			}
+		},
+		data: {
+			pageTitle: 'USER_TITLE_VIEW',
+			authorities: adamaConstant.userAuthorities
+		}
+	});
+
+	$stateProvider.state('app.user.edit', {
+		url: '/users/edit/:id',
+		templateUrl: function(){
+			return adamaConstant.adamaWebToolkitTemplateUrl.userEdit;
+		},
+		controller: 'CrudEditFullpageCtrl',
+		controllerAs: 'ctrl',
+		parent: 'app',
+		resolve: {
+			entity: function($stateParams, User) {
+				return User.get({
+					id: $stateParams.id
+				}).$promise;
+			},
+			EntityGenericResource: function(User) {
+				return User;
+			}
+		},
+		data: {
+			pageTitle: 'USER_TITLE_EDIT',
+			authorities: adamaConstant.userAuthorities
+		}
+	});
+
+	$stateProvider.state('app.user.create', {
+		url: '/users/new',
+		templateUrl: function(){
+			return adamaConstant.adamaWebToolkitTemplateUrl.userCreate;
+		},
+		controller: 'CrudEditFullpageCtrl',
+		controllerAs: 'ctrl',
+		parent: 'app',
+		resolve: {
+			entity: function() {
+				return undefined;
+			},
+			EntityGenericResource: function(User) {
+				return User;
+			}
+		},
+		data: {
+			pageTitle: 'USER_TITLE_NEW',
+			authorities: adamaConstant.userAuthorities
+		}
+	});
+
 	var openModal = function($state, $uibModal, $stateParams, controllerName, templateUrl) {
 		var resolveEntity;
 		if ($stateParams) {
@@ -45,39 +112,6 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 			$state.go('^');
 		});
 	};
-
-	$stateProvider.state('app.user.edit', {
-		url: '/edit/:id',
-		onEnter: function($state, $uibModal, $stateParams, adamaConstant) {
-			openModal($state, $uibModal, $stateParams, 'CrudEditCtrl', adamaConstant.adamaWebToolkitTemplateUrl.userEdit);
-		},
-		data: {
-			pageTitle: 'USER_TITLE_EDIT',
-			authorities: adamaConstant.userAuthorities
-		}
-	});
-
-	$stateProvider.state('app.user.create', {
-		url: '/new',
-		onEnter: function($state, $uibModal, adamaConstant) {
-			openModal($state, $uibModal, undefined, 'CrudEditCtrl', adamaConstant.adamaWebToolkitTemplateUrl.userCreate);
-		},
-		data: {
-			pageTitle: 'USER_TITLE_NEW',
-			authorities: adamaConstant.userAuthorities
-		}
-	});
-
-	$stateProvider.state('app.user.view', {
-		url: '/view/:id',
-		onEnter: function($state, $uibModal, $stateParams, adamaConstant) {
-			openModal($state, $uibModal, $stateParams, 'CrudViewCtrl', adamaConstant.adamaWebToolkitTemplateUrl.userView);
-		},
-		data: {
-			pageTitle: 'USER_TITLE_VIEW',
-			authorities: adamaConstant.userAuthorities
-		}
-	});
 
 	$stateProvider.state('app.user.delete', {
 		url: '/delete/:id',

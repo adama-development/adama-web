@@ -1,86 +1,95 @@
-<form name="form">
-	<div class="modal-header">
-		<h4 ng-if="ctrl.isEdition" translate>USER_TITLE_EDIT</h4>
-		<h4 ng-if="!ctrl.isEdition" translate>USER_TITLE_NEW</h4>
-	</div>
-	<div class="modal-body">
-		<adama-alert-error></adama-alert-error>
-		<input
-			type="text"
-			name="login"
-			ng-model="ctrl.entity.login"
-			required
-			maxlength="50"
-			lazy-control
-			lazy-control-label-key="USER_FORM_LOGIN"
-		/>
-		<div ng-messages="form.login.$error" ng-if="form.login.$touched">
-			<div ng-message="required" translate>CRUD_FORM_ERROR_REQUIRED</div>
-			<div ng-message="maxlength" translate translate-values="{maxlength: 50}">CRUD_FORM_ERROR_MAXLENGTH</div>
-		</div>
-		<input
-			type="text"
-			name="firstName"
-			ng-model="ctrl.entity.firstName"
-			maxlength="50"
-			required
-			lazy-control
-			lazy-control-label-key="USER_FORM_FIRSTNAME"
-		/>
-		<div ng-messages="form.firstName.$error" ng-if="form.firstName.$touched">
-			<div ng-message="required" translate>CRUD_FORM_ERROR_REQUIRED</div>
-			<div ng-message="maxlength" translate translate-values="{maxlength: 50}">CRUD_FORM_ERROR_MAXLENGTH</div>
-		</div>
-		<input
-			type="text"
-			name="lastName"
-			ng-model="ctrl.entity.lastName"
-			maxlength="50"
-			required
-			lazy-control
-			lazy-control-label-key="USER_FORM_LASTNAME"
-		/>
-		<div ng-messages="form.lastName.$error" ng-if="form.lastName.$touched">
-			<div ng-message="required" translate>CRUD_FORM_ERROR_REQUIRED</div>
-			<div ng-message="maxlength" translate translate-values="{maxlength: 50}">CRUD_FORM_ERROR_MAXLENGTH</div>
-		</div>
-		<input
-			type="email"
-			name="email"
-			ng-model="ctrl.entity.email"
-			required
-			maxlength="100"
-			lazy-control
-			lazy-control-label-key="USER_FORM_EMAIL"
-		/>
-		<div ng-messages="form.email.$error" ng-if="form.email.$touched">
-			<div ng-message="required" translate>CRUD_FORM_ERROR_REQUIRED</div>
-			<div ng-message="email" translate>CRUD_FORM_ERROR_EMAIL</div>
-			<div ng-message="maxlength" translate translate-values="{maxlength: 100}">CRUD_FORM_ERROR_MAXLENGTH</div>
-		</div>
-		<ds-language data="languages"></ds-language>
-		<select
-			name="langKey"
-			ng-model="ctrl.entity.langKey"
-			ng-options="language as language for language in languages track by language"
-			lazy-control
-			lazy-control-label-key="USER_FORM_LANGUAGE"
-		></select>
-		<ds-authorities data="authorities"></ds-authorities>
-		<select
-			name="authority"
-			ng-model="ctrl.entity.authority"
-			ng-options="authority for authority in authorities"
-			lazy-control
-			lazy-control-label-key="USER_FORM_AUTHORITY"
-			required
-		></select>
-		<div ng-messages="form.authority.$error" ng-if="form.authority.$touched">
-			<div ng-message="required" translate>CRUD_FORM_ERROR_REQUIRED</div>
-		</div>
-	</div>
-	<div class="modal-footer">
-		<modal-btn-cancel></modal-btn-cancel>
-		<modal-btn-confirm-edit></modal-btn-confirm-edit>
-	</div>
-</form>
+<div class="content-wrapper">
+	<section class="content-header">
+		<h1 ng-if="ctrl.isEdition" translate>USER_TITLE_EDIT</h1>
+		<h1 ng-if="!ctrl.isEdition" translate>USER_TITLE_NEW</h1>
+	</section>
+	<section class="content">
+		<form name="form" class="box" novalidate>
+			<div class="box-body">
+				<input
+					type="text"
+					name="login"
+					ng-model="ctrl.entity.login"
+					required
+					maxlength="50"
+					lazy-control
+					lazy-control-label-key="USER_FORM_LOGIN"
+				/>
+				<div ng-messages="form.login.$error" ng-if="form.login.$touched">
+					<div ng-message="required" translate>CRUD_FORM_ERROR_REQUIRED</div>
+					<div ng-message="maxlength" translate translate-values="{maxlength: 50}">CRUD_FORM_ERROR_MAXLENGTH</div>
+				</div>
+				<input
+					type="text"
+					name="firstName"
+					ng-model="ctrl.entity.firstName"
+					maxlength="50"
+					required
+					lazy-control
+					lazy-control-label-key="USER_FORM_FIRSTNAME"
+				/>
+				<div ng-messages="form.firstName.$error" ng-if="form.firstName.$touched">
+					<div ng-message="required" translate>CRUD_FORM_ERROR_REQUIRED</div>
+					<div ng-message="maxlength" translate translate-values="{maxlength: 50}">CRUD_FORM_ERROR_MAXLENGTH</div>
+				</div>
+				<input
+					type="text"
+					name="lastName"
+					ng-model="ctrl.entity.lastName"
+					maxlength="50"
+					required
+					lazy-control
+					lazy-control-label-key="USER_FORM_LASTNAME"
+				/>
+				<div ng-messages="form.lastName.$error" ng-if="form.lastName.$touched">
+					<div ng-message="required" translate>CRUD_FORM_ERROR_REQUIRED</div>
+					<div ng-message="maxlength" translate translate-values="{maxlength: 50}">CRUD_FORM_ERROR_MAXLENGTH</div>
+				</div>
+				<input
+					type="email"
+					name="email"
+					ng-model="ctrl.entity.email"
+					required
+					maxlength="100"
+					lazy-control
+					lazy-control-label-key="USER_FORM_EMAIL"
+				/>
+				<div ng-messages="form.email.$error" ng-if="form.email.$touched">
+					<div ng-message="required" translate>CRUD_FORM_ERROR_REQUIRED</div>
+					<div ng-message="email" translate>CRUD_FORM_ERROR_EMAIL</div>
+					<div ng-message="maxlength" translate translate-values="{maxlength: 100}">CRUD_FORM_ERROR_MAXLENGTH</div>
+				</div>
+				<ds-language data="languages"></ds-language>
+				<select
+					name="langKey"
+					ng-model="ctrl.entity.langKey"
+					ng-options="language as language for language in languages track by language"
+					lazy-control
+					lazy-control-label-key="USER_FORM_LANGUAGE"
+				></select>
+				<ds-authorities data="authorities"></ds-authorities>
+				<select
+					name="authority"
+					ng-model="ctrl.entity.authority"
+					ng-options="authority for authority in authorities"
+					lazy-control
+					lazy-control-label-key="USER_FORM_AUTHORITY"
+					required
+				></select>
+				<div ng-messages="form.authority.$error" ng-if="form.authority.$touched">
+					<div ng-message="required" translate>CRUD_FORM_ERROR_REQUIRED</div>
+				</div>
+			</div>
+			<div class="box-footer">
+				<a
+					ui-sref="app.user"
+					class="btn btn-default"
+				>
+					<span class="glyphicon glyphicon-arrow-left"></span>
+					<span translate>CRUD_BACK_TO_LIST</span>
+				</a>
+				<btn-confirm-edit></btn-confirm-edit>
+			</div>
+		</form>
+	</section>
+</div>

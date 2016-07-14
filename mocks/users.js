@@ -41,7 +41,7 @@ angular.module('adama-web').run(function($httpBackend, $http, adamaConstant, moc
 	var getByLogin = getByAttribute('login');
 	var getByEmail = getByAttribute('email');
 
-	$httpBackend.when('GET', /^\/users\/.*/).respond(function(method, url) {
+	$httpBackend.when('GET', /^\/users\/[^\/]*$/).respond(function(method, url) {
 		console.warn('GET /users/xx', url);
 		var id = url.substring('/users/'.length);
 		var entity = getById(id);
