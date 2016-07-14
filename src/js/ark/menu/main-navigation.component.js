@@ -4,7 +4,7 @@ angular.module('adama-web').component('mainNavigation', {
 	templateUrl: /* @ngInject */ function(adamaConstant) {
 		return adamaConstant.adamaWebToolkitTemplateUrl.mainNavigation;
 	},
-	controller: function($rootScope, $filter, menuService) {
+	controller: function($rootScope, $filter, $location, $scope, menuService) {
 		var ctrl = this;
 		var translate = $filter('translate');
 		var translateLabels = function(itemList) {
@@ -21,5 +21,18 @@ angular.module('adama-web').component('mainNavigation', {
 		};
 		updateMenuEntries();
 		$rootScope.$on('$translateChangeSuccess', updateMenuEntries);
+		var updateActiveStatus = function(){
+			if (ctrl.menuItems) {
+				angular.forEach(ctrl.menuItems, function(item){
+					item.active = !!item.url && $location.path().indexOf(item.url.substring(1)) === 0;
+				});
+			}
+		};
+		$scope.$watch(function(){
+			return $location.path();
+		}, updateActiveStatus);
+		$scope.$watch(function(){
+			return ctrl.menuItems;
+		}, updateActiveStatus);
 	}
 });
