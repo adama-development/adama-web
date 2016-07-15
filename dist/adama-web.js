@@ -734,14 +734,40 @@ angular.module('adama-web').config(["$translateProvider", function($translatePro
 
 'use strict';
 
-angular.module('adama-web').directive('btnConfirmEdit', ["adamaConstant", function(adamaConstant) {
-	return {
-		templateUrl: function() {
-			return adamaConstant.adamaWebToolkitTemplateUrl.btnConfirmEdit;
-		},
-		restrict: 'E'
-	};
-}]);
+angular.module('adama-web').component('btnConfirmEdit', {
+	templateUrl: /* @ngInject */ ["adamaConstant", function(adamaConstant) {
+		return adamaConstant.adamaWebToolkitTemplateUrl.btnConfirmEdit;
+	}],
+	bindings: {
+		entity: '<',
+		entityGenericResource: '<',
+		afterActionCallback: '&',
+		form: '<'
+	},
+	controller: ["AlertService", function(AlertService) {
+		var ctrl = this;
+		ctrl.save = function() {
+			var isEdition = !!ctrl.entity && !!ctrl.entity.id;
+			var resourceAction;
+			if (isEdition) {
+				resourceAction = ctrl.entityGenericResource.update;
+			} else {
+				resourceAction = ctrl.entityGenericResource.save;
+			}
+			resourceAction(ctrl.entity).$promise.then(function(newEntity) {
+				if (isEdition) {
+					AlertService.success('CRUD_EDIT_SUCCESS');
+				} else {
+					AlertService.success('CRUD_NEW_SUCCESS');
+				}
+				ctrl.afterActionCallback({
+					newEntity: newEntity
+				});
+			});
+		};
+
+	}]
+});
 
 'use strict';
 
@@ -798,117 +824,44 @@ angular.module('adama-web').component('crudCustomFilter', {
 
 'use strict';
 
-angular.module('adama-web').controller('CrudDeleteCtrl', ["$scope", "entity", "AlertService", function($scope, entity, AlertService) {
+angular.module('adama-web').controller('CrudDeleteCtrl', ["entity", "title", function(entity, title) {
 	var ctrl = this;
-	ctrl.dismiss = function() {
-		$scope.$dismiss();
-	};
-	ctrl.confirmDelete = function() {
-		entity.$delete().then(function() {
-			AlertService.success('CRUD_DELETE_SUCCESS');
-			$scope.$close();
-		}).catch(function() {
-			AlertService.error('CRUD_DELETE_ERROR');
-		});
-	};
+	ctrl.entity = entity;
+	ctrl.title = title;
 }]);
 
 'use strict';
 
-angular.module('adama-web').controller('CrudEditFullpageCtrl', ["entity", "EntityGenericResource", "AlertService", function(entity, EntityGenericResource, AlertService) {
+angular.module('adama-web').controller('CrudEditCtrl', ["$state", "entity", "EntityGenericResource", function($state, entity, EntityGenericResource) {
 	var ctrl = this;
-	ctrl.isEdition = !!entity;
+	ctrl.isEdition = !!entity && !!entity.id;
 	ctrl.entity = entity;
-	ctrl.save = function() {
-		var resourceAction;
+	ctrl.entityGenericResource = EntityGenericResource;
+	ctrl.afterActionCallback = function(newEntity) {
 		if (ctrl.isEdition) {
-			resourceAction = EntityGenericResource.update;
-		} else {
-			resourceAction = EntityGenericResource.save;
-		}
-		resourceAction(ctrl.entity).$promise.then(function(newEntity) {
-			if (ctrl.isEdition) {
-				AlertService.success('CRUD_EDIT_SUCCESS');
-			} else {
-				AlertService.success('CRUD_NEW_SUCCESS');
-			}
 			ctrl.entity = newEntity;
-		});
-	};
-}]);
-
-'use strict';
-
-angular.module('adama-web').controller('CrudEditCtrl', ["$scope", "entity", "EntityGenericResource", "AlertService", function($scope, entity, EntityGenericResource, AlertService) {
-	var ctrl = this;
-	ctrl.isEdition = !!entity;
-	ctrl.entity = entity;
-	ctrl.dismiss = function() {
-		$scope.$dismiss();
-	};
-	ctrl.save = function() {
-		var resourceAction;
-		if (ctrl.isEdition) {
-			resourceAction = EntityGenericResource.update;
 		} else {
-			resourceAction = EntityGenericResource.save;
+			$state.go('^.edit', {
+				entityId: newEntity.id
+			});
 		}
-		resourceAction(ctrl.entity).$promise.then(function(newEntity) {
-			if (ctrl.isEdition) {
-				AlertService.success('CRUD_EDIT_SUCCESS');
-			} else {
-				AlertService.success('CRUD_NEW_SUCCESS');
-			}
-			$scope.$close(newEntity);
-		});
 	};
 }]);
 
 'use strict';
 
-angular.module('adama-web').controller('CrudExportXlsCtrl', ["$scope", "AlertService", "EntityGenericResource", function($scope, AlertService, EntityGenericResource) {
+angular.module('adama-web').controller('CrudExportXlsCtrl', ["EntityGenericResource", "title", function(EntityGenericResource, title) {
 	var ctrl = this;
-	ctrl.dismiss = function() {
-		$scope.$dismiss();
-	};
-	ctrl.loading = false;
-	ctrl.confirmExportXls = function() {
-		ctrl.loading = true;
-		EntityGenericResource.massExportXls().$promise.then(function(newEntity) {
-			AlertService.success('CRUD_EXPORT_XLS_SUCCESS');
-			$scope.$close(newEntity);
-		}).catch(function() {
-			AlertService.error('CRUD_EXPORT_XLS_ERROR');
-		}).finally(function() {
-			ctrl.loading = false;
-		});
-	};
+	ctrl.entityGenericResource = EntityGenericResource;
+	ctrl.title = title;
 }]);
 
 'use strict';
 
-angular.module('adama-web').controller('CrudImportXlsCtrl', ["$scope", "AlertService", "EntityGenericResource", function($scope, AlertService, EntityGenericResource) {
+angular.module('adama-web').controller('CrudImportXlsCtrl', ["EntityGenericResource", "title", function(EntityGenericResource, title) {
 	var ctrl = this;
-
-	ctrl.dismiss = function() {
-		$scope.$dismiss();
-	};
-
-	ctrl.loading = false;
-	ctrl.confirmImportXls = function() {
-		var file = ctrl.file;
-		ctrl.loading = true;
-		EntityGenericResource.massImportXls({
-			file: file
-		}).$promise.then(function() {
-			AlertService.success('CRUD_IMPORT_XLS_SUCCESS');
-			$scope.$close();
-		}, function() {
-			AlertService.error('CRUD_IMPORT_XLS_ERROR');
-		}).finally(function() {
-			ctrl.loading = false;
-		});
-	};
+	ctrl.entityGenericResource = EntityGenericResource;
+	ctrl.title = title;
 }]);
 
 'use strict';
@@ -967,86 +920,102 @@ angular.module('adama-web').component('crudSearchField', {
 
 'use strict';
 
-angular.module('adama-web').controller('CrudViewFullpageCtrl', ["entity", function(entity) {
+angular.module('adama-web').controller('CrudViewCtrl', ["entity", function(entity) {
 	var ctrl = this;
 	ctrl.entity = entity;
 }]);
 
 'use strict';
 
-angular.module('adama-web').controller('CrudViewCtrl', ["$scope", "entity", function($scope, entity) {
-	var ctrl = this;
-	ctrl.entity = entity;
-	ctrl.dismiss = function() {
-		$scope.$dismiss();
-	};
-}]);
+angular.module('adama-web').component('modalBtnCancel', {
+	templateUrl: /* @ngInject */ ["adamaConstant", function(adamaConstant) {
+		return adamaConstant.adamaWebToolkitTemplateUrl.modalBtnCancel;
+	}],
+	bindings: {
+		afterActionCallback: '&'
+	}
+});
 
 'use strict';
 
-angular.module('adama-web').directive('modalBtnBackToList', ["adamaConstant", function(adamaConstant) {
-	return {
-		templateUrl: function() {
-			return adamaConstant.adamaWebToolkitTemplateUrl.modalBtnBackToList;
-		},
-		restrict: 'E'
-	};
-}]);
+angular.module('adama-web').component('modalBtnConfirmDelete', {
+	templateUrl: /* @ngInject */ ["adamaConstant", function(adamaConstant) {
+		return adamaConstant.adamaWebToolkitTemplateUrl.modalBtnConfirmDelete;
+	}],
+	bindings: {
+		entity: '<',
+		afterActionCallback: '&'
+	},
+	controller: ["AlertService", function(AlertService) {
+		var ctrl = this;
+		ctrl.confirmDelete = function() {
+			ctrl.entity.$delete().then(function() {
+				AlertService.success('CRUD_DELETE_SUCCESS');
+				ctrl.afterActionCallback();
+			}).catch(function() {
+				AlertService.error('CRUD_DELETE_ERROR');
+			});
+		};
+	}]
+});
 
 'use strict';
 
-angular.module('adama-web').directive('modalBtnCancel', ["adamaConstant", function(adamaConstant) {
-	return {
-		templateUrl: function() {
-			return adamaConstant.adamaWebToolkitTemplateUrl.modalBtnCancel;
-		},
-		restrict: 'E'
-	};
-}]);
+angular.module('adama-web').component('modalBtnConfirmExportXls', {
+	templateUrl: /* @ngInject */ ["adamaConstant", function(adamaConstant) {
+		return adamaConstant.adamaWebToolkitTemplateUrl.modalBtnConfirmExportXls;
+	}],
+	bindings: {
+		entityGenericResource: '<',
+		afterActionCallback: '&'
+	},
+	controller: ["AlertService", function(AlertService) {
+		var ctrl = this;
+		ctrl.loading = false;
+		ctrl.confirmExportXls = function() {
+			ctrl.loading = true;
+			ctrl.entityGenericResource.massExportXls().$promise.then(function() {
+				AlertService.success('CRUD_EXPORT_XLS_SUCCESS');
+				ctrl.afterActionCallback();
+			}).catch(function() {
+				AlertService.error('CRUD_EXPORT_XLS_ERROR');
+			}).finally(function() {
+				ctrl.loading = false;
+			});
+		};
+	}]
+});
 
 'use strict';
 
-angular.module('adama-web').directive('modalBtnConfirmDelete', ["adamaConstant", function(adamaConstant) {
-	return {
-		templateUrl: function() {
-			return adamaConstant.adamaWebToolkitTemplateUrl.modalBtnConfirmDelete;
-		},
-		restrict: 'E'
-	};
-}]);
-
-'use strict';
-
-angular.module('adama-web').directive('modalBtnConfirmEdit', ["adamaConstant", function(adamaConstant) {
-	return {
-		templateUrl: function() {
-			return adamaConstant.adamaWebToolkitTemplateUrl.modalBtnConfirmEdit;
-		},
-		restrict: 'E'
-	};
-}]);
-
-'use strict';
-
-angular.module('adama-web').directive('modalBtnConfirmExportXls', ["adamaConstant", function(adamaConstant) {
-	return {
-		templateUrl: function() {
-			return adamaConstant.adamaWebToolkitTemplateUrl.modalBtnConfirmExportXls;
-		},
-		restrict: 'E'
-	};
-}]);
-
-'use strict';
-
-angular.module('adama-web').directive('modalBtnConfirmImportXls', ["adamaConstant", function(adamaConstant) {
-	return {
-		templateUrl: function() {
-			return adamaConstant.adamaWebToolkitTemplateUrl.modalBtnConfirmImportXls;
-		},
-		restrict: 'E'
-	};
-}]);
+angular.module('adama-web').component('modalBtnConfirmImportXls', {
+	templateUrl: /* @ngInject */ ["adamaConstant", function(adamaConstant) {
+		return adamaConstant.adamaWebToolkitTemplateUrl.modalBtnConfirmImportXls;
+	}],
+	bindings: {
+		entityGenericResource: '<',
+		afterActionCallback: '&',
+		file: '<'
+	},
+	controller: ["AlertService", function(AlertService) {
+		var ctrl = this;
+		ctrl.loading = false;
+		ctrl.confirmImportXls = function() {
+			var file = ctrl.file;
+			ctrl.loading = true;
+			ctrl.entityGenericResource.massImportXls({
+				file: file
+			}).$promise.then(function() {
+				AlertService.success('CRUD_IMPORT_XLS_SUCCESS');
+				ctrl.afterActionCallback();
+			}, function() {
+				AlertService.error('CRUD_IMPORT_XLS_ERROR');
+			}).finally(function() {
+				ctrl.loading = false;
+			});
+		};
+	}]
+});
 
 'use strict';
 
@@ -1549,17 +1518,15 @@ angular.module('adama-web').constant('adamaConstant', {
 		crudSearchField: 'adama-web/crud/crud-search-field.html',
 		modalBtnConfirmDelete: 'adama-web/crud/modal-btn-confirm-delete.html',
 		modalBtnCancel: 'adama-web/crud/modal-btn-cancel.html',
-		modalBtnBackToList: 'adama-web/crud/modal-btn-back-to-list.html',
-		modalBtnConfirmEdit: 'adama-web/crud/modal-btn-confirm-edit.html',
 		modalBtnConfirmExportXls: 'adama-web/crud/modal-btn-confirm-export-xls.html',
 		modalBtnConfirmImportXls: 'adama-web/crud/modal-btn-confirm-import-xls.html',
 		users: 'adama-web/user/user-list.html',
 		userEdit: 'adama-web/user/user-edit.html',
 		userCreate: 'adama-web/user/user-edit.html',
 		userView: 'adama-web/user/user-view.html',
-		userDelete: 'adama-web/user/user-delete.html',
-		usersImportXls: 'adama-web/user/user-import-xls.html',
-		usersExportXls: 'adama-web/user/user-export-xls.html'
+		userDelete: 'adama-web/crud/crud-delete.html',
+		usersImportXls: 'adama-web/crud/crud-import-xls.html',
+		usersExportXls: 'adama-web/crud/crud-export-xls.html'
 	},
 	authorities: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_MANAGER'],
 	userAuthorities: ['ROLE_MANAGER', 'ROLE_ADMIN'],
@@ -2033,7 +2000,13 @@ angular.module('adama-web').factory('Principal', ["$http", "$q", "$rootScope", "
 
 angular.module('adama-web').config(["$stateProvider", "adamaConstant", function($stateProvider, adamaConstant) {
 	$stateProvider.state('app.user', {
+		abstract: true,
 		url: '/users',
+		template: '<ui-view></ui-view>'
+	});
+
+	$stateProvider.state('app.user.list', {
+		url: '',
 		templateUrl: function() {
 			return adamaConstant.adamaWebToolkitTemplateUrl.users;
 		},
@@ -2050,12 +2023,76 @@ angular.module('adama-web').config(["$stateProvider", "adamaConstant", function(
 		}
 	});
 
-	var openModal = function($state, $uibModal, $stateParams, controllerName, templateUrl) {
+	$stateProvider.state('app.user.view', {
+		url: '/view/:entityId',
+		templateUrl: function() {
+			return adamaConstant.adamaWebToolkitTemplateUrl.userView;
+		},
+		controller: 'CrudViewCtrl',
+		controllerAs: 'ctrl',
+		resolve: {
+			entity: ["$stateParams", "User", function($stateParams, User) {
+				return User.get({
+					id: $stateParams.entityId
+				}).$promise;
+			}]
+		},
+		data: {
+			pageTitle: 'USER_TITLE_VIEW',
+			authorities: adamaConstant.userAuthorities
+		}
+	});
+
+	$stateProvider.state('app.user.edit', {
+		url: '/edit/:entityId',
+		templateUrl: function() {
+			return adamaConstant.adamaWebToolkitTemplateUrl.userEdit;
+		},
+		controller: 'CrudEditCtrl',
+		controllerAs: 'ctrl',
+		resolve: {
+			entity: ["$stateParams", "User", function($stateParams, User) {
+				return User.get({
+					id: $stateParams.entityId
+				}).$promise;
+			}],
+			EntityGenericResource: ["User", function(User) {
+				return User;
+			}]
+		},
+		data: {
+			pageTitle: 'USER_TITLE_EDIT',
+			authorities: adamaConstant.userAuthorities
+		}
+	});
+
+	$stateProvider.state('app.user.create', {
+		url: '/new',
+		templateUrl: function() {
+			return adamaConstant.adamaWebToolkitTemplateUrl.userCreate;
+		},
+		controller: 'CrudEditCtrl',
+		controllerAs: 'ctrl',
+		resolve: {
+			entity: function() {
+				return undefined;
+			},
+			EntityGenericResource: ["User", function(User) {
+				return User;
+			}]
+		},
+		data: {
+			pageTitle: 'USER_TITLE_NEW',
+			authorities: adamaConstant.userAuthorities
+		}
+	});
+
+	var openModal = function($state, $uibModal, $stateParams, controllerName, templateUrl, title) {
 		var resolveEntity;
 		if ($stateParams) {
 			resolveEntity = /* @ngInject */ ["User", function(User) {
 				return User.get({
-					id: $stateParams.id
+					id: $stateParams.entityId
 				}).$promise;
 			}];
 		}
@@ -2065,7 +2102,10 @@ angular.module('adama-web').config(["$stateProvider", "adamaConstant", function(
 				entity: resolveEntity,
 				EntityGenericResource: ["User", function(User) {
 					return User;
-				}]
+				}],
+				title: function() {
+					return title;
+				}
 			},
 			controller: controllerName + ' as ctrl'
 		}).result.then(function() {
@@ -2077,43 +2117,11 @@ angular.module('adama-web').config(["$stateProvider", "adamaConstant", function(
 		});
 	};
 
-	$stateProvider.state('app.user.edit', {
-		url: '/edit/:id',
-		onEnter: ["$state", "$uibModal", "$stateParams", "adamaConstant", function($state, $uibModal, $stateParams, adamaConstant) {
-			openModal($state, $uibModal, $stateParams, 'CrudEditCtrl', adamaConstant.adamaWebToolkitTemplateUrl.userEdit);
-		}],
-		data: {
-			pageTitle: 'USER_TITLE_EDIT',
-			authorities: adamaConstant.userAuthorities
-		}
-	});
-
-	$stateProvider.state('app.user.create', {
-		url: '/new',
-		onEnter: ["$state", "$uibModal", "adamaConstant", function($state, $uibModal, adamaConstant) {
-			openModal($state, $uibModal, undefined, 'CrudEditCtrl', adamaConstant.adamaWebToolkitTemplateUrl.userCreate);
-		}],
-		data: {
-			pageTitle: 'USER_TITLE_NEW',
-			authorities: adamaConstant.userAuthorities
-		}
-	});
-
-	$stateProvider.state('app.user.view', {
-		url: '/view/:id',
-		onEnter: ["$state", "$uibModal", "$stateParams", "adamaConstant", function($state, $uibModal, $stateParams, adamaConstant) {
-			openModal($state, $uibModal, $stateParams, 'CrudViewCtrl', adamaConstant.adamaWebToolkitTemplateUrl.userView);
-		}],
-		data: {
-			pageTitle: 'USER_TITLE_VIEW',
-			authorities: adamaConstant.userAuthorities
-		}
-	});
-
 	$stateProvider.state('app.user.delete', {
-		url: '/delete/:id',
+		url: '/delete/:entityId',
+		parent: 'app.user.list',
 		onEnter: ["$state", "$uibModal", "$stateParams", "adamaConstant", function($state, $uibModal, $stateParams, adamaConstant) {
-			openModal($state, $uibModal, $stateParams, 'CrudDeleteCtrl', adamaConstant.adamaWebToolkitTemplateUrl.userDelete);
+			openModal($state, $uibModal, $stateParams, 'CrudDeleteCtrl', adamaConstant.adamaWebToolkitTemplateUrl.userDelete, 'USER_TITLE_DELETE');
 		}],
 		data: {
 			pageTitle: 'USER_TITLE_DELETE',
@@ -2123,8 +2131,9 @@ angular.module('adama-web').config(["$stateProvider", "adamaConstant", function(
 
 	$stateProvider.state('app.user.importXls', {
 		url: '/import-xls',
+		parent: 'app.user.list',
 		onEnter: ["$state", "$uibModal", "adamaConstant", function($state, $uibModal, adamaConstant) {
-			openModal($state, $uibModal, undefined, 'CrudImportXlsCtrl', adamaConstant.adamaWebToolkitTemplateUrl.usersImportXls);
+			openModal($state, $uibModal, undefined, 'CrudImportXlsCtrl', adamaConstant.adamaWebToolkitTemplateUrl.usersImportXls, 'USER_TITLE_IMPORT_XLS');
 		}],
 		data: {
 			pageTitle: 'USER_TITLE_IMPORT_XLS',
@@ -2134,8 +2143,9 @@ angular.module('adama-web').config(["$stateProvider", "adamaConstant", function(
 
 	$stateProvider.state('app.user.exportXls', {
 		url: '/export-xls',
+		parent: 'app.user.list',
 		onEnter: ["$state", "$uibModal", "adamaConstant", function($state, $uibModal, adamaConstant) {
-			openModal($state, $uibModal, undefined, 'CrudExportXlsCtrl', adamaConstant.adamaWebToolkitTemplateUrl.usersExportXls);
+			openModal($state, $uibModal, undefined, 'CrudExportXlsCtrl', adamaConstant.adamaWebToolkitTemplateUrl.usersExportXls, 'USER_TITLE_EXPORT_XLS');
 		}],
 		data: {
 			pageTitle: 'USER_TITLE_EXPORT_XLS',
@@ -2439,7 +2449,7 @@ angular.module('adama-web').component('mainNavigation', {
 	templateUrl: /* @ngInject */ ["adamaConstant", function(adamaConstant) {
 		return adamaConstant.adamaWebToolkitTemplateUrl.mainNavigation;
 	}],
-	controller: ["$rootScope", "$filter", "menuService", function($rootScope, $filter, menuService) {
+	controller: ["$rootScope", "$filter", "$location", "$scope", "menuService", function($rootScope, $filter, $location, $scope, menuService) {
 		var ctrl = this;
 		var translate = $filter('translate');
 		var translateLabels = function(itemList) {
@@ -2456,6 +2466,19 @@ angular.module('adama-web').component('mainNavigation', {
 		};
 		updateMenuEntries();
 		$rootScope.$on('$translateChangeSuccess', updateMenuEntries);
+		var updateActiveStatus = function() {
+			if (ctrl.menuItems) {
+				angular.forEach(ctrl.menuItems, function(item) {
+					item.active = !!item.url && $location.path().indexOf(item.url.substring(1)) === 0;
+				});
+			}
+		};
+		$scope.$watch(function() {
+			return $location.path();
+		}, updateActiveStatus);
+		$scope.$watch(function() {
+			return ctrl.menuItems;
+		}, updateActiveStatus);
 	}]
 });
 
