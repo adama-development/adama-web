@@ -1,6 +1,6 @@
 <div class="btn-group pull-right">
 	<a
-		ui-sref=".create"
+		ui-sref="^.create"
 		class="btn btn-default"
 		ng-if="!$ctrl.disableCreate"
 	>
@@ -18,7 +18,7 @@
 			<li
 				ng-if="!$ctrl.disableMassImport"
 			>
-				<a ui-sref=".importXls($ctrl.routeMapping)">
+				<a ui-sref="^.importXls($ctrl.routeMapping)">
 					<i class="fa fa-file-excel-o"></i>
 					<span translate>CRUD_MASS_IMPORT</span>
 				</a>
@@ -26,7 +26,7 @@
 			<li
 				ng-if="!$ctrl.disableMassExport"
 			>
-				<a ui-sref=".exportXls($ctrl.routeMapping)">
+				<a ui-sref="^.exportXls($ctrl.routeMapping)">
 					<i class="fa fa-file-excel-o"></i>
 					<span translate>CRUD_MASS_EXPORT</span>
 				</a>

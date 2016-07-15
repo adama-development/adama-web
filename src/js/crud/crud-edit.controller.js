@@ -1,26 +1,17 @@
 'use strict';
 
-angular.module('adama-web').controller('CrudEditCtrl', function($scope, entity, EntityGenericResource, AlertService) {
+angular.module('adama-web').controller('CrudEditCtrl', function($state, entity, EntityGenericResource) {
 	var ctrl = this;
-	ctrl.isEdition = !!entity;
+	ctrl.isEdition = !!entity && !!entity.id;
 	ctrl.entity = entity;
-	ctrl.dismiss = function() {
-		$scope.$dismiss();
-	};
-	ctrl.save = function() {
-		var resourceAction;
+	ctrl.entityGenericResource = EntityGenericResource;
+	ctrl.afterActionCallback = function(newEntity) {
 		if (ctrl.isEdition) {
-			resourceAction = EntityGenericResource.update;
+			ctrl.entity = newEntity;
 		} else {
-			resourceAction = EntityGenericResource.save;
+			$state.go('^.edit', {
+				entityId: newEntity.id
+			});
 		}
-		resourceAction(ctrl.entity).$promise.then(function(newEntity) {
-			if (ctrl.isEdition) {
-				AlertService.success('CRUD_EDIT_SUCCESS');
-			} else {
-				AlertService.success('CRUD_NEW_SUCCESS');
-			}
-			$scope.$close(newEntity);
-		});
 	};
 });

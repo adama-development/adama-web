@@ -1,6 +1,6 @@
 <form name="form" novalidate>
 	<div class="modal-header">
-		<h4 translate>USER_TITLE_IMPORT_XLS</h4>
+		<h4 translate>{{ ctrl.title }}</h4>
 	</div>
 	<div class="modal-body">
 		<adama-alert-error></adama-alert-error>
@@ -12,7 +12,7 @@
 			ng-model="ctrl.file"
 			ngf-drag-over-class="'dragover'"
 			ngf-multiple="false"
-			ngf-pattern="'.xls'"
+			ngf-pattern="'.xls,.xlsx'"
 		>
 			<span translate>FILEUPLOAD_DROPZONE_LABEL_MASS_IMPORT</span>
 			<span class="only-dragover" translate>FILEUPLOAD_DROPZONE_LABEL_DROP</span>
@@ -22,7 +22,7 @@
 				id="fileInput"
 				ng-model="ctrl.file"
 				ngf-select
-				ngf-pattern="'.xls'"
+				ngf-pattern="'.xls,.xlsx'"
 			/>
 		</label>
 		<div
@@ -34,7 +34,13 @@
 		</div>
 	</div>
 	<div class="modal-footer">
-		<modal-btn-cancel></modal-btn-cancel>
-		<modal-btn-confirm-import-xls></modal-btn-confirm-import-xls>
+		<modal-btn-cancel
+			after-action-callback="$dismiss()"
+		></modal-btn-cancel>
+		<modal-btn-confirm-import-xls
+			entity-generic-resource="ctrl.entityGenericResource"
+			after-action-callback="$close()"
+			file="ctrl.file"
+		></modal-btn-confirm-import-xls>
 	</div>
 </form>

@@ -1,9 +1,6 @@
 'use strict';
 
-angular.module('adama-web').controller('CrudViewCtrl', function($scope, entity) {
+angular.module('adama-web').controller('CrudViewCtrl', function(entity) {
 	var ctrl = this;
 	ctrl.entity = entity;
-	ctrl.dismiss = function() {
-		$scope.$dismiss();
-	};
 });

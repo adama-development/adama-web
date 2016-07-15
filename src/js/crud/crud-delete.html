@@ -1,0 +1,18 @@
+<div>
+	<div class="modal-header">
+		<h4 translate>{{ ctrl.title }}</h4>
+	</div>
+	<div class="modal-body">
+		<adama-alert-error></adama-alert-error>
+		<span translate>CRUD_DELETE_MESSAGE</span>
+	</div>
+	<div class="modal-footer">
+		<modal-btn-cancel
+			after-action-callback="$dismiss()"
+		></modal-btn-cancel>
+		<modal-btn-confirm-delete
+			entity="ctrl.entity"
+			after-action-callback="$close()"
+		></modal-btn-confirm-delete>
+	</div>
+</div>

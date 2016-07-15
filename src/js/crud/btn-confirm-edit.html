@@ -1,16 +1,16 @@
 <button
 	class="btn btn-primary pull-right"
 	type="submit"
-	ng-click="ctrl.save()"
-	ng-if="ctrl.isEdition"
-	ng-disabled="form.$invalid"
+	ng-click="$ctrl.save()"
+	ng-if="$ctrl.isEdition"
+	ng-disabled="$ctrl.form.$invalid"
 	translate
 >CRUD_CONFIRM_EDIT</button>
 <button
 	class="btn btn-primary pull-right"
 	type="submit"
-	ng-click="ctrl.save()"
-	ng-if="!ctrl.isEdition"
-	ng-disabled="form.$invalid"
+	ng-click="$ctrl.save()"
+	ng-if="!$ctrl.isEdition"
+	ng-disabled="$ctrl.form.$invalid"
 	translate
 >CRUD_CONFIRM_SAVE</button>

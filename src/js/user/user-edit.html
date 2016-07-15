@@ -81,14 +81,12 @@
 				</div>
 			</div>
 			<div class="box-footer">
-				<a
-					ui-sref="app.user"
-					class="btn btn-default"
-				>
-					<span class="glyphicon glyphicon-arrow-left"></span>
-					<span translate>CRUD_BACK_TO_LIST</span>
-				</a>
-				<btn-confirm-edit></btn-confirm-edit>
+				<btn-confirm-edit
+					entity="ctrl.entity"
+					entity-generic-resource="ctrl.entityGenericResource"
+					form="form"
+					after-action-callback="ctrl.afterActionCallback(newEntity)"
+				></btn-confirm-edit>
 			</div>
 		</form>
 	</section>

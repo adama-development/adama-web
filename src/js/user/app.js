@@ -2,7 +2,13 @@
 
 angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 	$stateProvider.state('app.user', {
+		abstract: true,
 		url: '/users',
+		template: '<ui-view></ui-view>'
+	});
+
+	$stateProvider.state('app.user.list', {
+		url: '',
 		templateUrl: function() {
 			return adamaConstant.adamaWebToolkitTemplateUrl.users;
 		},
@@ -20,17 +26,16 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 	});
 
 	$stateProvider.state('app.user.view', {
-		url: '/users/view/:id',
-		templateUrl: function(){
+		url: '/view/:entityId',
+		templateUrl: function() {
 			return adamaConstant.adamaWebToolkitTemplateUrl.userView;
 		},
-		controller: 'CrudViewFullpageCtrl',
+		controller: 'CrudViewCtrl',
 		controllerAs: 'ctrl',
-		parent: 'app',
 		resolve: {
 			entity: function($stateParams, User) {
 				return User.get({
-					id: $stateParams.id
+					id: $stateParams.entityId
 				}).$promise;
 			}
 		},
@@ -41,17 +46,16 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 	});
 
 	$stateProvider.state('app.user.edit', {
-		url: '/users/edit/:id',
-		templateUrl: function(){
+		url: '/edit/:entityId',
+		templateUrl: function() {
 			return adamaConstant.adamaWebToolkitTemplateUrl.userEdit;
 		},
-		controller: 'CrudEditFullpageCtrl',
+		controller: 'CrudEditCtrl',
 		controllerAs: 'ctrl',
-		parent: 'app',
 		resolve: {
 			entity: function($stateParams, User) {
 				return User.get({
-					id: $stateParams.id
+					id: $stateParams.entityId
 				}).$promise;
 			},
 			EntityGenericResource: function(User) {
@@ -65,13 +69,12 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 	});
 
 	$stateProvider.state('app.user.create', {
-		url: '/users/new',
-		templateUrl: function(){
+		url: '/new',
+		templateUrl: function() {
 			return adamaConstant.adamaWebToolkitTemplateUrl.userCreate;
 		},
-		controller: 'CrudEditFullpageCtrl',
+		controller: 'CrudEditCtrl',
 		controllerAs: 'ctrl',
-		parent: 'app',
 		resolve: {
 			entity: function() {
 				return undefined;
@@ -86,12 +89,12 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 		}
 	});
 
-	var openModal = function($state, $uibModal, $stateParams, controllerName, templateUrl) {
+	var openModal = function($state, $uibModal, $stateParams, controllerName, templateUrl, title) {
 		var resolveEntity;
 		if ($stateParams) {
 			resolveEntity = /* @ngInject */ function(User) {
 				return User.get({
-					id: $stateParams.id
+					id: $stateParams.entityId
 				}).$promise;
 			};
 		}
@@ -101,6 +104,9 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 				entity: resolveEntity,
 				EntityGenericResource: function(User) {
 					return User;
+				},
+				title: function() {
+					return title;
 				}
 			},
 			controller: controllerName + ' as ctrl'
@@ -114,9 +120,10 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 	};
 
 	$stateProvider.state('app.user.delete', {
-		url: '/delete/:id',
+		url: '/delete/:entityId',
+		parent: 'app.user.list',
 		onEnter: function($state, $uibModal, $stateParams, adamaConstant) {
-			openModal($state, $uibModal, $stateParams, 'CrudDeleteCtrl', adamaConstant.adamaWebToolkitTemplateUrl.userDelete);
+			openModal($state, $uibModal, $stateParams, 'CrudDeleteCtrl', adamaConstant.adamaWebToolkitTemplateUrl.userDelete, 'USER_TITLE_DELETE');
 		},
 		data: {
 			pageTitle: 'USER_TITLE_DELETE',
@@ -126,8 +133,9 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 
 	$stateProvider.state('app.user.importXls', {
 		url: '/import-xls',
+		parent: 'app.user.list',
 		onEnter: function($state, $uibModal, adamaConstant) {
-			openModal($state, $uibModal, undefined, 'CrudImportXlsCtrl', adamaConstant.adamaWebToolkitTemplateUrl.usersImportXls);
+			openModal($state, $uibModal, undefined, 'CrudImportXlsCtrl', adamaConstant.adamaWebToolkitTemplateUrl.usersImportXls, 'USER_TITLE_IMPORT_XLS');
 		},
 		data: {
 			pageTitle: 'USER_TITLE_IMPORT_XLS',
@@ -137,8 +145,9 @@ angular.module('adama-web').config(function($stateProvider, adamaConstant) {
 
 	$stateProvider.state('app.user.exportXls', {
 		url: '/export-xls',
+		parent: 'app.user.list',
 		onEnter: function($state, $uibModal, adamaConstant) {
-			openModal($state, $uibModal, undefined, 'CrudExportXlsCtrl', adamaConstant.adamaWebToolkitTemplateUrl.usersExportXls);
+			openModal($state, $uibModal, undefined, 'CrudExportXlsCtrl', adamaConstant.adamaWebToolkitTemplateUrl.usersExportXls, 'USER_TITLE_EXPORT_XLS');
 		},
 		data: {
 			pageTitle: 'USER_TITLE_EXPORT_XLS',

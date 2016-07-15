@@ -1,16 +1,7 @@
 'use strict';
 
-angular.module('adama-web').controller('CrudDeleteCtrl', function($scope, entity, AlertService) {
+angular.module('adama-web').controller('CrudDeleteCtrl', function(entity, title) {
 	var ctrl = this;
-	ctrl.dismiss = function() {
-		$scope.$dismiss();
-	};
-	ctrl.confirmDelete = function() {
-		entity.$delete().then(function() {
-			AlertService.success('CRUD_DELETE_SUCCESS');
-			$scope.$close();
-		}).catch(function() {
-			AlertService.error('CRUD_DELETE_ERROR');
-		});
-	};
+	ctrl.entity = entity;
+	ctrl.title = title;
 });

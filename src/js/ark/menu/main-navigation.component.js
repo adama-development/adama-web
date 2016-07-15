@@ -21,17 +21,17 @@ angular.module('adama-web').component('mainNavigation', {
 		};
 		updateMenuEntries();
 		$rootScope.$on('$translateChangeSuccess', updateMenuEntries);
-		var updateActiveStatus = function(){
+		var updateActiveStatus = function() {
 			if (ctrl.menuItems) {
-				angular.forEach(ctrl.menuItems, function(item){
+				angular.forEach(ctrl.menuItems, function(item) {
 					item.active = !!item.url && $location.path().indexOf(item.url.substring(1)) === 0;
 				});
 			}
 		};
-		$scope.$watch(function(){
+		$scope.$watch(function() {
 			return $location.path();
 		}, updateActiveStatus);
-		$scope.$watch(function(){
+		$scope.$watch(function() {
 			return ctrl.menuItems;
 		}, updateActiveStatus);
 	}

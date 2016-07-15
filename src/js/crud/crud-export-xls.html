@@ -1,0 +1,18 @@
+<div>
+	<div class="modal-header">
+		<h4 translate>{{ ctrl.title }}</h4>
+	</div>
+	<div class="modal-body">
+		<adama-alert-error></adama-alert-error>
+		<span translate>CRUD_EXPORT_XLS_MESSAGE</span>
+	</div>
+	<div class="modal-footer">
+		<modal-btn-cancel
+			after-action-callback="$dismiss()"
+		></modal-btn-cancel>
+		<modal-btn-confirm-export-xls
+			entity-generic-resource="ctrl.entityGenericResource"
+			after-action-callback="$close()"
+		></modal-btn-confirm-export-xls>
+	</div>
+</div>

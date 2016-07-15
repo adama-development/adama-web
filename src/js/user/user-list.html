@@ -10,7 +10,6 @@
 		<div class="box box-primary">
 			<div class="box-body">
 				<div class="table-responsive">
-					<ds-principal-identity data="currentAccount"></ds-principal-identity>
 					<table
 						class="table table-bordered table-striped"
 						ng-table="ctrl.tableParams"
@@ -40,7 +39,7 @@
 								<span class="label label-info">{{ user.authority }}</span>
 							</td>
 							<td class="text-right">
-								<crud-action-dropdown route-mapping="{id:user.id}"></crud-action-dropdown>
+								<crud-action-dropdown route-mapping="{entityId:user.id}"></crud-action-dropdown>
 							</td>
 						</tr>
 					</table>
