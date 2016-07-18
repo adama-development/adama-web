@@ -34,7 +34,15 @@
 	</head>
 	<body class="hold-transition skin-blue" ng-class="additionalBodyClass">
 		<ui-view></ui-view>
-
+		<script type="text/ng-template" id="error-messages">
+			<div ng-message="required" translate>CRUD_FORM_ERROR_REQUIRED</div>
+			<div ng-message="number" translate>CRUD_FORM_ERROR_NUMBER</div>
+			<div ng-message="email" translate>CRUD_FORM_ERROR_EMAIL</div>
+			<div ng-message="min" translate translate-values="{min: 0}">CRUD_FORM_ERROR_MIN</div>
+			<div ng-message="max" translate translate-values="{max: 50}">CRUD_FORM_ERROR_MAX</div>
+			<div ng-message="minlength" translate translate-values="{minlength: 0}">CRUD_FORM_ERROR_MINLENGTH</div>
+			<div ng-message="maxlength" translate translate-values="{maxlength: 50}">CRUD_FORM_ERROR_MAXLENGTH</div>
+		</script>
 		<!-- vendors -->
 		<script src="node_modules/jquery/dist/jquery.js"></script>
 		<script src="node_modules/admin-lte/bootstrap/js/bootstrap.min.js"></script>

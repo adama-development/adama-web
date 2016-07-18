@@ -16,8 +16,7 @@
 					lazy-control-label-key="USER_FORM_LOGIN"
 				/>
 				<div ng-messages="form.login.$error" ng-if="form.login.$touched">
-					<div ng-message="required" translate>CRUD_FORM_ERROR_REQUIRED</div>
-					<div ng-message="maxlength" translate translate-values="{maxlength: 50}">CRUD_FORM_ERROR_MAXLENGTH</div>
+					<div ng-messages-include="error-messages"></div>
 				</div>
 				<input
 					type="text"
@@ -29,8 +28,7 @@
 					lazy-control-label-key="USER_FORM_FIRSTNAME"
 				/>
 				<div ng-messages="form.firstName.$error" ng-if="form.firstName.$touched">
-					<div ng-message="required" translate>CRUD_FORM_ERROR_REQUIRED</div>
-					<div ng-message="maxlength" translate translate-values="{maxlength: 50}">CRUD_FORM_ERROR_MAXLENGTH</div>
+					<div ng-messages-include="error-messages"></div>
 				</div>
 				<input
 					type="text"
@@ -42,8 +40,7 @@
 					lazy-control-label-key="USER_FORM_LASTNAME"
 				/>
 				<div ng-messages="form.lastName.$error" ng-if="form.lastName.$touched">
-					<div ng-message="required" translate>CRUD_FORM_ERROR_REQUIRED</div>
-					<div ng-message="maxlength" translate translate-values="{maxlength: 50}">CRUD_FORM_ERROR_MAXLENGTH</div>
+					<div ng-messages-include="error-messages"></div>
 				</div>
 				<input
 					type="email"
@@ -55,9 +52,8 @@
 					lazy-control-label-key="USER_FORM_EMAIL"
 				/>
 				<div ng-messages="form.email.$error" ng-if="form.email.$touched">
-					<div ng-message="required" translate>CRUD_FORM_ERROR_REQUIRED</div>
-					<div ng-message="email" translate>CRUD_FORM_ERROR_EMAIL</div>
 					<div ng-message="maxlength" translate translate-values="{maxlength: 100}">CRUD_FORM_ERROR_MAXLENGTH</div>
+					<div ng-messages-include="error-messages"></div>
 				</div>
 				<ds-language data="languages"></ds-language>
 				<select
@@ -77,7 +73,7 @@
 					required
 				></select>
 				<div ng-messages="form.authority.$error" ng-if="form.authority.$touched">
-					<div ng-message="required" translate>CRUD_FORM_ERROR_REQUIRED</div>
+					<div ng-messages-include="error-messages"></div>
 				</div>
 			</div>
 			<div class="box-footer">
