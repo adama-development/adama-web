@@ -94,7 +94,7 @@ angular.module('adama-web').config(function($translateProvider) {
 		'RESET_PASSWORD_PASSWORD_CONFIRM': 'Confirmation du mot de passe',
 		'RESET_PASSWORD_PASSWORD_CONFIRM_REQUIRED': 'La confirmation est obligatoire',
 		'RESET_PASSWORD_PASSWORD_CONFIRM_MATCH': 'La confirmation ne correspond pas',
-		'RESET_PASSWORD_ERROR': 'Une erreur est intervenur, contactez un administrateur',
+		'RESET_PASSWORD_ERROR': 'Une erreur est intervenue, contactez un administrateur',
 		'RESET_PASSWORD_MESSAGE_FOR_MOBILE_USER': 'Vous pouvez vous authentifier dans l\'application mobile'
 	});
 
