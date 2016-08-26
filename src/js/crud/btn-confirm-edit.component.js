@@ -12,16 +12,16 @@ angular.module('adama-web').component('btnConfirmEdit', {
 	},
 	controller: function(AlertService) {
 		var ctrl = this;
+		ctrl.isEdition = !!ctrl.entity && !!ctrl.entity.id;
 		ctrl.save = function() {
-			var isEdition = !!ctrl.entity && !!ctrl.entity.id;
 			var resourceAction;
-			if (isEdition) {
+			if (ctrl.isEdition) {
 				resourceAction = ctrl.entityGenericResource.update;
 			} else {
 				resourceAction = ctrl.entityGenericResource.save;
 			}
 			resourceAction(ctrl.entity).$promise.then(function(newEntity) {
-				if (isEdition) {
+				if (ctrl.isEdition) {
 					AlertService.success('CRUD_EDIT_SUCCESS');
 				} else {
 					AlertService.success('CRUD_NEW_SUCCESS');
