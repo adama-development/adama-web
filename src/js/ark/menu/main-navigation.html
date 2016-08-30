@@ -11,11 +11,13 @@
 		<a ng-href="{{::item.url}}" ng-if="item.url">
 			<i ng-class="item.iconClass" ng-if="item.iconClass"></i>
 			<span>{{ item.label }}</span>
-			<span
-				class="label pull-right"
-				ng-if="item.badge && item.badge.value"
-				ng-class="item.badge.color"
-			>{{ item.badge.value }}</span>
+			<span class="pull-right-container">
+				<span
+					class="label pull-right"
+					ng-if="item.badge && item.badge.value"
+					ng-class="item.badge.color"
+				>{{ item.badge.value }}</span>
+			</span>
 		</a>
 		<a ng-if="!item.url && !item.divider">
 			<i ng-class="item.iconClass" ng-if="item.iconClass"></i>
@@ -33,11 +35,13 @@
 					ng-href="{{::subItem.url}}"
 				>
 					{{ subItem.label }}
-					<span
-						class="label pull-right"
-						ng-if="subItem.badge && subItem.badge.value"
-						ng-class="subItem.badge.color"
-					>{{ subItem.badge.value }}</span>
+					<span class="pull-right-container">
+						<span
+							class="label pull-right"
+							ng-if="subItem.badge && subItem.badge.value"
+							ng-class="subItem.badge.color"
+						>{{ subItem.badge.value }}</span>
+					</span>
 				</a>
 			</li>
 		</ul>
